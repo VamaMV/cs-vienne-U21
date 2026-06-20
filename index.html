@@ -729,11 +729,12 @@ function formCurrentWeight(){ const ps=formPesees(); if(!ps.length) return ""; p
 function updPoidsHint(){ const ps=formPesees(); if(!ps.length){ $("f_poids_hint").textContent=""; return; } ps.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const last=ps[ps.length-1]; $("f_poids_hint").textContent="Poids actuel : "+last.w+" kg"+(last.d?(" (dernière le "+frDate(last.d)+")"):""); }
 function onPeseeChange(){ updPoidsHint(); refreshTestCalcs(); updPeseeChart(); }
 function updPeseeChart(){ const ps=formPesees(); const fp={pesees:ps,poidsCible:$("f_poidsc").value}; const svg=weightChartSVG(fp,320,64); const box=$("f_pesee_chart"); if(!box) return; if(svg){ box.innerHTML='<div class="wchart">'+svg+'<div class="wcap">'+weightCaption(fp)+'</div></div>'; box.style.display="block"; } else if(ps.length>=1){ box.innerHTML='<div class="calc" style="color:var(--faint);font-weight:500">Ajoute une 2e pesée pour afficher la courbe.</div>'; box.style.display="block"; } else { box.innerHTML=""; box.style.display="none"; } }
+function fmtBroncoStr(v){ v=String(v).replace(/\D/g,"").slice(0,4); if(v.length<=1) return v; if(v.length<=3) return v[0]+":"+v.slice(1); return v.slice(0,2)+":"+v.slice(2); }
 function broncoRow(d,t){
   const r=document.createElement("div"); r.className="brow";
   r.innerHTML='<input class="bd" type="date" /><input class="bt" type="text" inputmode="numeric" placeholder="mm:ss" /><span class="orm"></span><button type="button" class="rm" aria-label="Retirer">×</button>';
   r.querySelector(".bd").value=d||""; r.querySelector(".bt").value=(t!=null?t:"");
-  const upd=()=>{ const v=vmaBronco(r.querySelector(".bt").value); r.querySelector(".orm").textContent=v?("VMA ~"+v):""; onBroncoChange(); };
+  const upd=()=>{ const bt=r.querySelector(".bt"); const f=fmtBroncoStr(bt.value); if(bt.value!==f) bt.value=f; const v=vmaBronco(bt.value); r.querySelector(".orm").textContent=v?("VMA ~"+v):""; onBroncoChange(); };
   r.querySelector(".bd").addEventListener("input",onBroncoChange);
   r.querySelector(".bt").addEventListener("input",upd);
   const v0=vmaBronco(t); r.querySelector(".orm").textContent=v0?("VMA ~"+v0):"";
@@ -899,6 +900,7 @@ async function initAuth(){
     if(data&&data.session){ hideLogin(); boot(); } else { showLogin(); }
   }catch(e){ showLogin("Erreur de connexion au serveur."); }
 }
+["b_arr","b_av3","b_av12"].forEach(function(p){ ["slow","t1","t2","t3","fast"].forEach(function(k){ const el=$(p+"_"+k); if(el) el.addEventListener("input",function(){ const f=fmtBroncoStr(el.value); if(el.value!==f) el.value=f; }); }); });
 initAuth();
 </script>
 </body>
