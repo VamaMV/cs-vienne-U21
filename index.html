@@ -281,9 +281,12 @@
          style="display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:9px;background:linear-gradient(180deg,#3FA9DC,#0F80C4);color:#fff;font-family:var(--body);font-size:.82rem;font-weight:700;text-decoration:none;box-shadow:0 2px 8px rgba(15,128,196,.28)">
         📊 Wellness
       </a>
+      <button id="btnReathle" type="button"
+         style="display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:9px;background:linear-gradient(180deg,#F97316,#EA580C);color:#fff;font-family:var(--body);font-size:.82rem;font-weight:700;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(234,88,12,.28)">
+        🩹 Réathlé
+      </button>
       <button id="btnReload" type="button">Recharger</button>
       <button id="btnBareme" type="button">Barème</button>
-      <button id="btnReathle" type="button">Réathlé</button>
       <button id="btnExport" type="button">Exporter</button>
       <button id="btnImport" type="button">Importer</button>
       <button id="btnReset" type="button" class="warn">Réinitialiser</button>
@@ -314,7 +317,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h3 — module réathlé (épisodes &amp; phases) + historiques datés</div>
+    <div style="font-size:.7rem;opacity:.5">h4 — réathlé mis en évidence (blessures &amp; phases)</div>
   </footer>
 </div>
 
@@ -383,10 +386,10 @@
     <div class="fsub">Tests musculaires <span class="fsub-note">3RM → 1RM estimée (Epley)</span></div>
     <div id="f_tests"></div>
     <button type="button" class="addrow" id="f_addtest">+ Ajouter un test</button>
-    <div class="fsub">Réathlé <span class="fsub-note">épisodes de blessure · phases de retour</span></div>
+    <div class="fsub">Réathlé <span class="fsub-note">blessures datées · phases de retour</span></div>
     <div class="calc">Ligne 1 : début · zone · type — Ligne 2 : phase · retour prévu · retour réel</div>
     <div id="f_eps"></div>
-    <button type="button" class="addrow" id="f_addep">+ Ajouter un épisode</button>
+    <button type="button" class="addrow" id="f_addep">+ Ajouter une blessure</button>
     <div class="frow">
       <label for="f_z">Zone concernée</label>
       <select id="f_z">
@@ -429,7 +432,7 @@
 </div>
 <div class="overlay" id="reathleOverlay">
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="reathleTitle">
-    <h2 id="reathleTitle">Réathlé — épisodes en cours</h2>
+    <h2 id="reathleTitle">Réathlé — blessures en cours</h2>
     <div id="reathleBody"></div>
     <div class="frow" style="margin-top:12px"><button type="button" id="reathleClose">Fermer</button></div>
   </div>
@@ -628,7 +631,7 @@ function richParts(p){
       ehtml+='<div class="tline"><b style="color:'+ph.color+'">'+ph.label+'</b> — '+esc(e.zone||EPTYPES[e.type])+(e.deb?' <span class="e">depuis le '+frDate(e.deb)+(ds!=null?' ('+ds+' j)':'')+'</span>':'')+(e.ret?' <span class="e">· retour prévu '+frDate(e.ret)+'</span>':'')+(e.note?'<br><span class="e">'+esc(e.note)+'</span>':'')+'</div>';
     });
     old.slice().reverse().forEach(e=>{ ehtml+='<div class="tline" style="opacity:.65"><b>Clos</b> — '+esc(e.zone||EPTYPES[e.type])+' <span class="e">'+(e.deb?frDate(e.deb):'?')+' → '+(e.retr?frDate(e.retr):'?')+'</span>'+(e.note?' <span class="e">· '+esc(e.note)+'</span>':'')+'</div>'; });
-    parts.push('<div class="field"><div class="label">Réathlé · épisodes</div><div class="tests-list">'+ehtml+'</div></div>');
+    parts.push('<div class="field"><div class="label">Réathlé · blessures</div><div class="tests-list">'+ehtml+'</div></div>');
   } }
   const hasAnt=p.ant&&p.ant.trim(),hasAcc=p.acc&&p.acc.trim();
   if(hasAnt) parts.push('<div class="field"><div class="label">Antécédent</div><div class="val">'+esc(p.ant)+'</div></div>');
@@ -959,7 +962,7 @@ function openReathle(){
       rows.push('<tr><td><b>'+esc(p.n)+'</b></td><td>'+esc(e.zone||EPTYPES[e.type])+'</td><td><span style="color:'+ph.color+';font-weight:700">'+ph.label+'</span></td><td>'+(ds!=null?ds+" j":"—")+'</td><td>'+(e.ret?frDate(e.ret):"—")+'</td></tr>');
     });
   });
-  $("reathleBody").innerHTML=rows.length?'<table class="rtable"><thead><tr><th>Joueur</th><th>Zone</th><th>Phase</th><th>Depuis</th><th>Retour prévu</th></tr></thead><tbody>'+rows.join("")+'</tbody></table>':'<p class="hint">Aucun épisode en cours — tout le monde est apte.</p>';
+  $("reathleBody").innerHTML=rows.length?'<table class="rtable"><thead><tr><th>Joueur</th><th>Zone</th><th>Phase</th><th>Depuis</th><th>Retour prévu</th></tr></thead><tbody>'+rows.join("")+'</tbody></table>':'<p class="hint">Aucune blessure en cours — tout le monde est apte.</p>';
   reathleOverlay.classList.add("open");
 }
 $("btnReathle").addEventListener("click",openReathle);
