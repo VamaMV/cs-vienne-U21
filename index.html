@@ -131,6 +131,17 @@
   .brow{display:flex;gap:8px;align-items:center;margin-bottom:8px}
   .brow .bd{flex:1.1} .brow .bt{flex:.7}
   .srow .sd{flex:1.15} .srow .s1,.srow .s3{flex:.6}
+  .eprow{border:1.5px solid var(--line);border-radius:12px;padding:8px;margin-bottom:8px}
+  .eprow .epl1,.eprow .epl2{display:flex;gap:8px;margin-bottom:6px}
+  .eprow .epl3{display:flex}
+  .eprow input,.eprow select{width:100%;font-family:var(--body);font-size:.9rem;padding:8px 9px;border:1.5px solid var(--line);border-radius:9px;background:#fff;outline:none}
+  .eprow input:focus,.eprow select:focus{border-color:var(--brand)}
+  .eprow .edeb{flex:0 0 128px} .eprow .ezone{flex:1.2} .eprow .etype{flex:1}
+  .eprow .ephase{flex:1.2} .eprow .eret,.eprow .eretr{flex:1}
+  .eprow .rm{flex:0 0 auto}
+  .rtable{width:100%;border-collapse:collapse;font-size:.88rem}
+  .rtable th{text-align:left;font-size:.72rem;color:var(--faint);padding:6px 8px;border-bottom:2px solid var(--line)}
+  .rtable td{padding:7px 8px;border-bottom:1px solid var(--line)}
   .brow input{width:100%;font-family:var(--body);font-size:.92rem;padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fff;outline:none}
   .brow input:focus{border-color:var(--brand)}
   .brow .orm{flex:0 0 auto;min-width:64px;font-size:.74rem;font-weight:600;color:var(--brand);text-align:right}
@@ -272,6 +283,7 @@
       </a>
       <button id="btnReload" type="button">Recharger</button>
       <button id="btnBareme" type="button">Barème</button>
+      <button id="btnReathle" type="button">Réathlé</button>
       <button id="btnExport" type="button">Exporter</button>
       <button id="btnImport" type="button">Importer</button>
       <button id="btnReset" type="button" class="warn">Réinitialiser</button>
@@ -302,7 +314,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h2 — historiques sprints &amp; muscu datés</div>
+    <div style="font-size:.7rem;opacity:.5">h3 — module réathlé (épisodes &amp; phases) + historiques datés</div>
   </footer>
 </div>
 
@@ -371,6 +383,10 @@
     <div class="fsub">Tests musculaires <span class="fsub-note">3RM → 1RM estimée (Epley)</span></div>
     <div id="f_tests"></div>
     <button type="button" class="addrow" id="f_addtest">+ Ajouter un test</button>
+    <div class="fsub">Réathlé <span class="fsub-note">épisodes de blessure · phases de retour</span></div>
+    <div class="calc">Ligne 1 : début · zone · type — Ligne 2 : phase · retour prévu · retour réel</div>
+    <div id="f_eps"></div>
+    <button type="button" class="addrow" id="f_addep">+ Ajouter un épisode</button>
     <div class="frow">
       <label for="f_z">Zone concernée</label>
       <select id="f_z">
@@ -409,6 +425,13 @@
       <button class="btn ghost" id="detailShare" type="button">Partager sa fiche</button>
       <button class="btn ghost" id="detailClose" type="button">Fermer</button>
     </div>
+  </div>
+</div>
+<div class="overlay" id="reathleOverlay">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="reathleTitle">
+    <h2 id="reathleTitle">Réathlé — épisodes en cours</h2>
+    <div id="reathleBody"></div>
+    <div class="frow" style="margin-top:12px"><button type="button" id="reathleClose">Fermer</button></div>
   </div>
 </div>
 <div class="overlay" id="baremeOverlay">
@@ -552,6 +575,10 @@ const store={
   async load(){ try{ const {data,error}=await sb.from("app_data").select("data").eq("id","roster").maybeSingle(); if(error) return null; return data?data.data:null; }catch(e){ return null; } },
   async save(data){ try{ const {error}=await sb.from("app_data").upsert({id:"roster",data:data,updated_at:new Date().toISOString()}); if(error) toast("Sauvegarde cloud échouée"); }catch(e){ toast("Sauvegarde cloud échouée"); } }
 };
+const PHASES={soins:{label:"Soins",color:"#DC2626"},reathle:{label:"Réathlé",color:"#EA580C"},reentrainement:{label:"Réentraînement",color:"#B45309"},retourp:{label:"Retour partiel",color:"#0F80C4"},clos:{label:"Clos — apte",color:"#1C8C5A"}};
+const EPTYPES={musc:"Musculaire",arti:"Articulaire",tend:"Tendineux",comm:"Commotion",mal:"Maladie",autre:"Autre"};
+function activeEpisode(p){ const a=(Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e&&e.phase!=="clos"); return a.length?a[a.length-1]:null; }
+function daysSince(iso){ if(!iso) return null; const t=new Date(iso).getTime(); if(isNaN(t)) return null; return Math.max(0,Math.round((Date.now()-t)/86400000)); }
 function normRec(p){
   let pesees=(Array.isArray(p.pesees)?p.pesees.map(x=>({d:(x&&x.d)?String(x.d):"",w:(x&&x.w!=null&&x.w!=="")?x.w:""})).filter(x=>x.w!==""):[]);
   pesees.sort((a,b)=>(a.d||"").localeCompare(b.d||""));
@@ -562,7 +589,9 @@ function normRec(p){
   let sprints=(Array.isArray(p.sprints)?p.sprints.map(x=>({d:(x&&x.d)?String(x.d):"",t10:(x&&x.t10!=null)?String(x.t10):"",t30:(x&&x.t30!=null)?String(x.t30):""})).filter(x=>x.t10!==""||x.t30!==""):[]);
   if(!sprints.length&&((p.sprint10!=null&&p.sprint10!=="")||(p.sprint30!=null&&p.sprint30!==""))) sprints=[{d:"",t10:(p.sprint10!=null?String(p.sprint10):""),t30:(p.sprint30!=null?String(p.sprint30):"")}];
   sprints.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const _lsp2=sprints.length?sprints[sprints.length-1]:null;
-  return {id:p.id||("n"+Date.now()+Math.floor(Math.random()*1000)),n:p.n||"",cat:(p.cat!=null&&p.cat!=="")?p.cat:"ESP",poste:(p.poste!=null&&p.poste!=="")?p.poste:"none",s:STATUT[p.s]?p.s:"apte",z:(p.z!=null&&p.z!=="")?p.z:"none",poids:poids,poidsCible:(p.poidsCible!=null?p.poidsCible:""),pesees:pesees,taille:(p.taille!=null?p.taille:""),tdj:(p.tdj!=null?p.tdj:""),bronco:bronco,broncos:broncos,cmjs:cmjs,cmj:cmj,sprint10:(_lsp2?_lsp2.t10:""),sprint30:(_lsp2?_lsp2.t30:""),sprints:sprints,tests:(Array.isArray(p.tests)?p.tests.map(t=>({d:(t&&t.d)?String(t.d):"",ex:(t&&t.ex)?String(t.ex):"",load:(t&&t.load!=null)?t.load:""})):[]),ant:p.ant||"",acc:p.acc||""};
+  let episodes=(Array.isArray(p.episodes)?p.episodes.map(e=>({deb:(e&&e.deb)?String(e.deb):"",zone:(e&&e.zone)?String(e.zone):"",type:(e&&e.type&&EPTYPES[e.type])?e.type:"autre",phase:(e&&e.phase&&PHASES[e.phase])?e.phase:"soins",ret:(e&&e.ret)?String(e.ret):"",retr:(e&&e.retr)?String(e.retr):"",note:(e&&e.note)?String(e.note):""})).filter(e=>e.deb!==""||e.zone!==""||e.note!==""):[]);
+  episodes.sort((a,b)=>(a.deb||"").localeCompare(b.deb||""));
+  return {id:p.id||("n"+Date.now()+Math.floor(Math.random()*1000)),n:p.n||"",cat:(p.cat!=null&&p.cat!=="")?p.cat:"ESP",poste:(p.poste!=null&&p.poste!=="")?p.poste:"none",s:STATUT[p.s]?p.s:"apte",z:(p.z!=null&&p.z!=="")?p.z:"none",poids:poids,poidsCible:(p.poidsCible!=null?p.poidsCible:""),pesees:pesees,taille:(p.taille!=null?p.taille:""),tdj:(p.tdj!=null?p.tdj:""),bronco:bronco,broncos:broncos,cmjs:cmjs,cmj:cmj,sprint10:(_lsp2?_lsp2.t10:""),sprint30:(_lsp2?_lsp2.t30:""),sprints:sprints,tests:(Array.isArray(p.tests)?p.tests.map(t=>({d:(t&&t.d)?String(t.d):"",ex:(t&&t.ex)?String(t.ex):"",load:(t&&t.load!=null)?t.load:""})):[]),episodes:episodes,ant:p.ant||"",acc:p.acc||""};
 }
 
 let players=[]; let activeFilter="all"; let query=""; let editingId=null; let viewMode="poste";
@@ -586,11 +615,21 @@ function metaHTML(p){
   if(pi.key!=="none") meta+='<span class="ptag">'+esc(posteDisplay(pi))+'</span>';
   if(p.z!=="none") meta+='<span class="tag" style="background:'+hexRgba(z.color,.12)+';color:'+darker(z.color)+'">'+esc(z.label)+'</span>';
   if(catLabel(p)) meta+='<span class="cat">'+esc(catLabel(p))+'</span>';
+  { const _ep=activeEpisode(p); if(_ep){ const ph=PHASES[_ep.phase]; meta+='<span class="tag" style="background:'+hexRgba(ph.color,.14)+';color:'+darker(ph.color)+'">'+esc(ph.label)+(_ep.zone?' · '+esc(_ep.zone):'')+'</span>'; } }
   meta+='<span class="pill" style="background:'+hexRgba(st.color,.12)+';color:'+darker(st.color)+'"><span class="pdot" style="background:'+st.color+'"></span>'+esc(st.label)+'</span>';
   return meta;
 }
 function richParts(p){
   const parts=[];
+  { const eps=(Array.isArray(p.episodes)?p.episodes:[]); if(eps.length){
+    const cur=eps.filter(e=>e.phase!=="clos"), old=eps.filter(e=>e.phase==="clos");
+    let ehtml="";
+    cur.slice().reverse().forEach(e=>{ const ph=PHASES[e.phase]; const ds=daysSince(e.deb);
+      ehtml+='<div class="tline"><b style="color:'+ph.color+'">'+ph.label+'</b> — '+esc(e.zone||EPTYPES[e.type])+(e.deb?' <span class="e">depuis le '+frDate(e.deb)+(ds!=null?' ('+ds+' j)':'')+'</span>':'')+(e.ret?' <span class="e">· retour prévu '+frDate(e.ret)+'</span>':'')+(e.note?'<br><span class="e">'+esc(e.note)+'</span>':'')+'</div>';
+    });
+    old.slice().reverse().forEach(e=>{ ehtml+='<div class="tline" style="opacity:.65"><b>Clos</b> — '+esc(e.zone||EPTYPES[e.type])+' <span class="e">'+(e.deb?frDate(e.deb):'?')+' → '+(e.retr?frDate(e.retr):'?')+'</span>'+(e.note?' <span class="e">· '+esc(e.note)+'</span>':'')+'</div>'; });
+    parts.push('<div class="field"><div class="label">Réathlé · épisodes</div><div class="tests-list">'+ehtml+'</div></div>');
+  } }
   const hasAnt=p.ant&&p.ant.trim(),hasAcc=p.acc&&p.acc.trim();
   if(hasAnt) parts.push('<div class="field"><div class="label">Antécédent</div><div class="val">'+esc(p.ant)+'</div></div>');
   if(hasAcc) parts.push('<div class="field"><div class="label">Accent en séance</div><div class="val">'+esc(p.acc)+'</div></div>');
@@ -670,6 +709,7 @@ function openEdit(id){
   const p=id?players.find(x=>x.id===id):{n:"",cat:"ESP",poste:"none",z:"none",s:"apte",poids:"",poidsCible:"",ant:"",acc:""};
   $("editTitle").textContent=id?"Modifier le joueur":"Ajouter un joueur";
   $("f_n").value=p.n; $("f_s").value=p.s; $("f_ant").value=p.ant||""; $("f_acc").value=p.acc||"";
+  $("f_eps").innerHTML=""; (Array.isArray(p.episodes)?p.episodes:[]).forEach(e=>$("f_eps").appendChild(epRow(e)));
   $("f_poidsc").value=p.poidsCible!=null?p.poidsCible:"";
   $("f_taille").value=p.taille!=null?p.taille:""; $("f_tdj").value=p.tdj!=null?p.tdj:"";
   $("f_sprints").innerHTML=""; let _sp=(Array.isArray(p.sprints)?p.sprints.slice():[]); if(!_sp.length&&((p.sprint10!==""&&p.sprint10!=null)||(p.sprint30!==""&&p.sprint30!=null))) _sp=[{d:todayISO(),t10:p.sprint10||"",t30:p.sprint30||""}]; _sp.forEach(x=>$("f_sprints").appendChild(sprintRow(x.d,x.t10,x.t30)));
@@ -695,12 +735,14 @@ $("f_save").addEventListener("click",()=>{
   sprints.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const _lsp=sprints.length?sprints[sprints.length-1]:null;
   const tests=[...$("f_tests").querySelectorAll(".trow")].map(r=>({d:(r.querySelector(".td")?r.querySelector(".td").value:""),ex:r.querySelector(".ex").value.trim(),load:r.querySelector(".ld").value.trim()})).filter(t=>t.ex);
   tests.sort((a,b)=>(a.d||"").localeCompare(b.d||""));
+  const episodes=[...$("f_eps").querySelectorAll(".eprow")].map(r=>({deb:r.querySelector(".edeb").value,zone:r.querySelector(".ezone").value.trim(),type:r.querySelector(".etype").value,phase:r.querySelector(".ephase").value,ret:r.querySelector(".eret").value,retr:r.querySelector(".eretr").value,note:r.querySelector(".enote").value.trim()})).filter(e=>e.deb!==""||e.zone!==""||e.note!=="");
+  episodes.sort((a,b)=>(a.deb||"").localeCompare(b.deb||""));
   const pesees=[...$("f_pesees").querySelectorAll(".prow")].map(r=>({d:r.querySelector(".pd").value,w:r.querySelector(".pw").value.trim()})).filter(x=>x.w!=="");
   pesees.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const curPoids=pesees.length?pesees[pesees.length-1].w:"";
   const broncos=[...$("f_broncos").querySelectorAll(".brow")].map(r=>({d:r.querySelector(".bd").value,t:r.querySelector(".bt").value.trim()})).filter(x=>x.t!=="");
   broncos.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const curBronco=broncos.length?broncos[broncos.length-1].t:"";
   const cmjs=[...$("f_cmjs").querySelectorAll(".brow")].map(r=>({d:r.querySelector(".cd").value,v:r.querySelector(".cv").value.trim()})).filter(x=>x.v!==""); cmjs.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const curCmj=cmjs.length?cmjs[cmjs.length-1].v:"";
-  const data={n:name,cat:readSelectCustom($("f_cat"),$("f_cat_custom")),s:$("f_s").value,poste:readSelectCustom($("f_poste"),$("f_poste_custom")),z:readSelectCustom($("f_z"),$("f_z_custom")),poids:curPoids,poidsCible:$("f_poidsc").value.trim(),pesees:pesees,taille:$("f_taille").value.trim(),tdj:$("f_tdj").value.trim(),bronco:curBronco,broncos:broncos,cmj:curCmj,cmjs:cmjs,sprint10:(_lsp?_lsp.t10:""),sprint30:(_lsp?_lsp.t30:""),sprints:sprints,tests:tests,ant:$("f_ant").value.trim(),acc:$("f_acc").value.trim()};
+  const data={n:name,cat:readSelectCustom($("f_cat"),$("f_cat_custom")),s:$("f_s").value,poste:readSelectCustom($("f_poste"),$("f_poste_custom")),z:readSelectCustom($("f_z"),$("f_z_custom")),poids:curPoids,poidsCible:$("f_poidsc").value.trim(),pesees:pesees,taille:$("f_taille").value.trim(),tdj:$("f_tdj").value.trim(),bronco:curBronco,broncos:broncos,cmj:curCmj,cmjs:cmjs,sprint10:(_lsp?_lsp.t10:""),sprint30:(_lsp?_lsp.t30:""),sprints:sprints,tests:tests,episodes:episodes,ant:$("f_ant").value.trim(),acc:$("f_acc").value.trim()};
   if(editingId){ Object.assign(players.find(x=>x.id===editingId),data); } else { players.push(Object.assign({id:"n"+Date.now()+Math.floor(Math.random()*1000)},data)); }
   persist(); render(); const wasEdit=!!editingId; closeEdit(); toast(wasEdit?"Modifié et enregistré":"Joueur ajouté");
 });
@@ -759,6 +801,19 @@ function broncoRow(d,t){
 function formBroncos(){ return [...$("f_broncos").querySelectorAll(".brow")].map(r=>({d:r.querySelector(".bd").value,t:r.querySelector(".bt").value.trim()})).filter(x=>x.t!==""); }
 function updBroncoGauge(){ const bs=formBroncos(); const box=$("f_bronco_gauge"); if(!box) return; const pv=readSelectCustom($("f_poste"),$("f_poste_custom")); const _n=(POSTES[pv]&&POSTES[pv].num)?POSTES[pv].num:0; const grp=(_n>=1&&_n<=5)?"av12":((_n>=6&&_n<=8)?"av3":"arr"); if(bs.length>=1){ const g=broncoGaugeHTML(bs,grp); box.innerHTML=(g||"")+'<div class="wcap">'+broncoEvol(bs,grp)+'</div>'; box.style.display="block"; } else { box.innerHTML=""; box.style.display="none"; } }
 function onBroncoChange(){ updBroncoGauge(); }
+function epRow(e){
+  e=e||{};
+  const r=document.createElement("div"); r.className="eprow";
+  r.innerHTML='<div class="epl1"><input class="edeb" type="date" title="Début" /><input class="ezone" type="text" placeholder="Zone (ex. Ischio D)" /><select class="etype"></select><button type="button" class="rm" aria-label="Retirer">×</button></div>'
+    +'<div class="epl2"><select class="ephase"></select><input class="eret" type="date" title="Retour prévu" /><input class="eretr" type="date" title="Retour réel" /></div>'
+    +'<div class="epl3"><input class="enote" type="text" placeholder="Note (protocole, restrictions...)" /></div>';
+  const ts=r.querySelector(".etype"); Object.keys(EPTYPES).forEach(k=>{ const o=document.createElement("option"); o.value=k; o.textContent=EPTYPES[k]; ts.appendChild(o); });
+  const ps=r.querySelector(".ephase"); Object.keys(PHASES).forEach(k=>{ const o=document.createElement("option"); o.value=k; o.textContent=PHASES[k].label; ps.appendChild(o); });
+  r.querySelector(".edeb").value=e.deb||""; r.querySelector(".ezone").value=e.zone||""; ts.value=(e.type&&EPTYPES[e.type])?e.type:"autre"; ps.value=(e.phase&&PHASES[e.phase])?e.phase:"soins";
+  r.querySelector(".eret").value=e.ret||""; r.querySelector(".eretr").value=e.retr||""; r.querySelector(".enote").value=e.note||"";
+  r.querySelector(".rm").addEventListener("click",()=>r.remove());
+  return r;
+}
 function sprintRow(d,t10,t30){
   const r=document.createElement("div"); r.className="brow srow";
   r.innerHTML='<input class="sd" type="date" /><input class="s1" type="number" inputmode="decimal" step="0.01" placeholder="10 m (s)" /><input class="s3" type="number" inputmode="decimal" step="0.01" placeholder="30 m (s)" /><button type="button" class="rm" aria-label="Retirer">×</button>';
@@ -794,6 +849,7 @@ function onCmjChange(){ updCmjGauge(); }
 $("f_addbronco").addEventListener("click",()=>{ $("f_broncos").appendChild(broncoRow(todayISO(),"")); onBroncoChange(); });
 $("f_addcmj").addEventListener("click",()=>{ $("f_cmjs").appendChild(cmjRow(todayISO(),"")); onCmjChange(); });
 $("f_addsprint").addEventListener("click",()=>{ $("f_sprints").appendChild(sprintRow(todayISO(),"","")); });
+$("f_addep").addEventListener("click",()=>{ $("f_eps").appendChild(epRow({deb:todayISO()})); });
 $("f_addtest").addEventListener("click",()=>{ $("f_tests").appendChild(testRow(todayISO(),"","")); });
 $("f_addpesee").addEventListener("click",()=>{ $("f_pesees").appendChild(peseeRow(todayISO(),"")); onPeseeChange(); });
 $("f_poidsc").addEventListener("input",updPeseeChart);
@@ -813,6 +869,7 @@ function playerText(p){
   if(Array.isArray(p.broncos)&&p.broncos.length){ const bd=p.broncos.filter(x=>x&&x.t).slice().sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const _g=broncoGrp(p); const bl=bd.map(x=>{ const v=vmaBronco(x.t); const z=baremeZone(broncoSec(x.t),_g); return (x.d?frDate(x.d)+" : ":"")+x.t+(v?" (VMA ~"+v+(z?", "+z.label:"")+")":""); }); if(bl.length){ L.push(""); L.push("Bronco :"); bl.forEach(x=>L.push("• "+x)); } }
   if(Array.isArray(p.cmjs)&&p.cmjs.length){ const cd=p.cmjs.filter(x=>x&&cmjNum(x.v)!=null).slice().sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const _gc=cmjGrp(p); const cl=cd.map(x=>{ const cm=cmjNum(x.v); const z=cmjZone(cm,_gc); return (x.d?frDate(x.d)+" : ":"")+frD(cm)+" cm"+(z?" ("+z.label+")":""); }); if(cl.length){ L.push(""); L.push("CMJ :"); cl.forEach(x=>L.push("• "+x)); } }
   if(Array.isArray(p.tests)&&p.tests.length){ const tl=p.tests.filter(t=>t&&t.ex&&String(t.ex).trim()&&t.load!==""&&t.load!=null).map(t=>{ const o=epley1RM(t.load); const rt=ratioFP(o,p.poids); const fz=forceZone(t.ex,rt,grpOf(p)); return t.ex+" 3RM "+t.load+" kg"+(o?" (1RM ~"+o+(rt?" · "+rt+"× PdC":"")+(fz?" · "+fz.label:"")+")":""); }); if(tl.length){ L.push(""); L.push("Tests musculaires :"); tl.forEach(x=>L.push("• "+x)); } }
+  { const cur=(Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e.phase!=="clos"); if(cur.length){ L.push(""); L.push("Réathlé :"); cur.forEach(e=>{ const ph=PHASES[e.phase]; L.push("• "+(e.zone||EPTYPES[e.type])+" — "+ph.label+(e.deb?" depuis "+frDate(e.deb):"")+(e.ret?" · retour prévu "+frDate(e.ret):"")); }); } }
   if(Array.isArray(p.pesees)&&p.pesees.length){ const pl=pesWeights(p).slice(-6).map(x=>(x.d?frDate(x.d)+" : ":"")+x.w+" kg"); if(pl.length){ L.push(""); L.push("Pesées récentes :"); pl.forEach(x=>L.push("• "+x)); } }
   if(p.z!=="none") L.push("Zone concernée : "+zoneInfo(p).label);
   if(p.ant&&p.ant.trim()){ L.push(""); L.push("Antécédent : "+p.ant); }
@@ -893,6 +950,21 @@ function openBareme(){
 }
 function closeBareme(){ baremeOverlay.classList.remove("open"); }
 $("btnBareme").addEventListener("click",openBareme);
+const reathleOverlay=$("reathleOverlay");
+function openReathle(){
+  const rows=[];
+  players.slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
+    (Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e.phase!=="clos").forEach(e=>{
+      const ph=PHASES[e.phase]; const ds=daysSince(e.deb);
+      rows.push('<tr><td><b>'+esc(p.n)+'</b></td><td>'+esc(e.zone||EPTYPES[e.type])+'</td><td><span style="color:'+ph.color+';font-weight:700">'+ph.label+'</span></td><td>'+(ds!=null?ds+" j":"—")+'</td><td>'+(e.ret?frDate(e.ret):"—")+'</td></tr>');
+    });
+  });
+  $("reathleBody").innerHTML=rows.length?'<table class="rtable"><thead><tr><th>Joueur</th><th>Zone</th><th>Phase</th><th>Depuis</th><th>Retour prévu</th></tr></thead><tbody>'+rows.join("")+'</tbody></table>':'<p class="hint">Aucun épisode en cours — tout le monde est apte.</p>';
+  reathleOverlay.classList.add("open");
+}
+$("btnReathle").addEventListener("click",openReathle);
+$("reathleClose").addEventListener("click",()=>reathleOverlay.classList.remove("open"));
+reathleOverlay.addEventListener("click",e=>{ if(e.target===reathleOverlay) reathleOverlay.classList.remove("open"); });
 $("b_cancel").addEventListener("click",closeBareme);
 baremeOverlay.addEventListener("click",e=>{ if(e.target===baremeOverlay) closeBareme(); });
 $("b_save").addEventListener("click",()=>{ const g=id=>$(id).value.trim();
