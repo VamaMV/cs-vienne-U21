@@ -220,6 +220,27 @@
   .pf-block span{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8A9BA8}
   .pf-block p{margin:3px 0 0;font-size:13px;line-height:1.45}
   .pf-foot{margin-top:24px;padding-top:10px;border-top:1px solid #D3E2EC;font-size:10px;color:#566B7D;text-align:center}
+  .rf-sec{border-left:4px solid #ccc;padding-left:11px;margin:16px 0 0}
+  .rf-sech{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-bottom:7px}
+  .rf-sech .rf-n{background:#EEF4F8;color:#41566A;border-radius:99px;padding:1px 7px;font-size:10px;margin-left:4px}
+  .rf-row{padding:7px 0;border-bottom:1px solid #EDF3F7;break-inside:avoid}
+  .rf-row:last-child{border-bottom:none}
+  .rf-r1{display:flex;align-items:center;gap:8px;font-size:13.5px}
+  .rf-ph{font-size:9.5px;font-weight:700;padding:1px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em}
+  .rf-r2{font-size:11.5px;color:#41566A;margin-top:1px}
+  .rf-r3{font-size:10.5px;color:#566B7D;margin-top:3px}
+  .rf-r3 .rf-k{font-size:8.5px;text-transform:uppercase;letter-spacing:.06em;color:#8A9BA8;font-weight:700;margin-left:7px;margin-right:3px}
+  .rf-r3 .rf-k:first-child{margin-left:0}
+  .rf-r4{display:flex;align-items:center;gap:8px;margin-top:5px}
+  .rf-bar{flex:0 0 92px;height:5px;background:#E8EFF4;border-radius:99px;overflow:hidden}
+  .rf-bar i{display:block;height:100%;border-radius:99px}
+  .rf-jn{font-size:10px;color:#566B7D;font-weight:700}
+  .rf-med{font-size:9.5px;font-weight:700;padding:1px 7px;border-radius:99px}
+  .rf-med.ok{background:#E4F4EB;color:#1C6B45}
+  .rf-med.no{background:#FBE6E6;color:#A32020}
+  .rf-note{font-size:10.5px;color:#566B7D;font-style:italic;margin-top:3px}
+  .rf-empty{margin:22px 0;padding:16px;background:#F4F9FC;border-radius:9px;text-align:center;font-size:13px;color:#41566A}
+  .rf-disc{margin-top:18px;padding:9px 11px;background:#FFF6EC;border:1px solid #F3DCC2;border-radius:8px;font-size:9.5px;line-height:1.5;color:#6B4E22}
   @media print{
     @page{size:A4;margin:14mm}
     html,body{background:#fff !important}
@@ -338,7 +359,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h7 — réathlé : fenêtre de retour estimée + point staff partageable</div>
+    <div style="font-size:.7rem;opacity:.5">h8 — réathlé : fiche PDF staff + fenêtre de retour estimée</div>
   </footer>
 </div>
 
@@ -457,7 +478,7 @@
     <div id="reathleBody"></div>
     <div class="frow" style="margin-top:12px;gap:8px">
       <button type="button" id="reathleCopy">Copier le point staff</button>
-      <button type="button" id="reathleMail">Envoyer par mail</button>
+      <button type="button" id="reathleFiche">Fiche PDF</button>
       <button type="button" id="reathleClose">Fermer</button>
     </div>
   </div>
@@ -608,20 +629,20 @@ const EPTYPES={musc:"Musculaire",arti:"Articulaire",tend:"Tendineux",comm:"Commo
 /* Referentiel indicatif : fourchettes de retour au jeu issues de la litterature.
    Reperes de pilotage, PAS une autorisation de reprise. */
 const PATHOS={
- "musc_g1":{fam:"musc",lab:"Lesion musculaire grade 1 (elongation)",min:11,max:21,src:"BAMIC 0-1, RTP 11-25 j"},
- "musc_g2":{fam:"musc",lab:"Lesion musculaire grade 2 (dechirure partielle)",min:21,max:42,src:"BAMIC 2, 3-6 sem"},
- "musc_g2c":{fam:"musc",lab:"Lesion musc. atteinte tendineuse (2c)",min:28,max:56,src:"BAMIC 2c, 4-8 sem"},
- "musc_g3":{fam:"musc",lab:"Lesion musculaire grade 3 (etendue)",min:56,max:112,src:"BAMIC 3c, 8-16 sem"},
+ "musc_g1":{fam:"musc",lab:"Lésion musculaire grade 1 (élongation)",min:11,max:21,src:"BAMIC 0-1, RTP 11-25 j"},
+ "musc_g2":{fam:"musc",lab:"Lésion musculaire grade 2 (déchirure partielle)",min:21,max:42,src:"BAMIC 2, 3-6 sem"},
+ "musc_g2c":{fam:"musc",lab:"Lésion musc. avec atteinte tendineuse (2c)",min:28,max:56,src:"BAMIC 2c, 4-8 sem"},
+ "musc_g3":{fam:"musc",lab:"Lésion musculaire grade 3 (étendue)",min:56,max:112,src:"BAMIC 3c, 8-16 sem"},
  "musc_ischio_t":{fam:"musc",lab:"Ischio avec tendon intramusculaire",min:60,max:100,src:"Kerin 2024 rugby pro, ~78 j moyen"},
  "arti_cheville1":{fam:"arti",lab:"Entorse cheville grade 1",min:7,max:21,src:"RTP 1-3 sem"},
  "arti_cheville2":{fam:"arti",lab:"Entorse cheville grade 2",min:21,max:42,src:"jusqu a 6 sem"},
  "arti_cheville3":{fam:"arti",lab:"Entorse cheville grade 3",min:56,max:90,src:"2-3 mois (4-12 sem selon etudes)"},
  "arti_syndesmose":{fam:"arti",lab:"Entorse haute / syndesmose",min:39,max:71,src:"39 j conservateur, 71 j chirurgical"},
- "arti_genou_lat":{fam:"arti",lab:"Entorse genou LLI/LLE (benin a modere)",min:21,max:56,src:"repere clinique 3-8 sem"},
- "arti_epaule_lux":{fam:"arti",lab:"Luxation/subluxation epaule (conservateur)",min:42,max:112,src:"6-16 sem, avis chirurgical frequent"},
+ "arti_genou_lat":{fam:"arti",lab:"Entorse genou LLI/LLE (bénin à modéré)",min:21,max:56,src:"repere clinique 3-8 sem"},
+ "arti_epaule_lux":{fam:"arti",lab:"Luxation/subluxation épaule (conservateur)",min:42,max:112,src:"6-16 sem, avis chirurgical frequent"},
  "tend_tendinop":{fam:"tend",lab:"Tendinopathie (charge progressive)",min:42,max:84,src:"6-12 sem, pilotee par la douleur"},
- "comm_grtp":{fam:"comm",lab:"Commotion, protocole GRTP",min:23,max:23,src:"MINIMUM 23 j chez les -20 ans, 6 etapes, accord medical ecrit obligatoire"},
- "autre":{fam:"autre",lab:"Autre / non classe",min:0,max:0,src:"pas de fourchette de reference"}
+ "comm_grtp":{fam:"comm",lab:"Commotion — protocole GRTP",min:23,max:23,src:"MINIMUM 23 j chez les -20 ans, 6 etapes, accord medical ecrit obligatoire"},
+ "autre":{fam:"autre",lab:"Autre / non classé",min:0,max:0,src:"pas de fourchette de reference"}
 };
 const JALONS={
  musc:["Indolence au repos et a la marche","Amplitude complete sans douleur","Force isometrique symetrique (>90%)","Course en ligne progressive sans douleur","Excentrique tolere (Nordic ou charge)","Sprint progressif jusqu a 90-100%","Changements de direction sous fatigue"],
@@ -1045,6 +1066,55 @@ function ficheHTML(p){
   h+='<div class="pf-foot">CS Vienne Rugby · fondé en 1899 — Fiche générée le '+dd+' · Document confidentiel</div>';
   h+='</div>'; return h;
 }
+function reathleFicheHTML(){
+  const auj=new Date().toISOString().slice(0,10);
+  const grp={depasse:[],fin:[],dans:[],avant:[],inconnu:[]};
+  players.slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
+    (Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e.phase!=="clos").forEach(e=>{
+      grp[ecartFourchette(e).etat].push({p:p,e:e});
+    });
+  });
+  const total=Object.keys(grp).reduce((n,k)=>n+grp[k].length,0);
+  let h='<div class="pf">';
+  h+='<div class="pf-head"><div class="pf-crest"></div><div><div class="pf-club">CS Vienne Rugby · Espoirs Reichel Accession U21</div><div class="pf-title">Point réathlé · staff</div></div></div>';
+  h+='<div class="pf-name">Suivi des blessures</div>';
+  h+='<div class="pf-tags"><span class="pf-badge">Au '+frDate(auj)+'</span><span class="pf-badge">'+total+' blessure'+(total>1?"s":"")+' en cours</span></div>';
+  if(!total){
+    h+='<div class="rf-empty">Aucune blessure en cours — effectif complet.</div>';
+    h+='<div class="pf-foot">Document de travail interne · CS Vienne Rugby</div></div>';
+    return h;
+  }
+  const blocs=[["depasse","Au-delà de la fourchette — à creuser"],["fin","Fin de fourchette — à tester"],["dans","Dans les temps"],["avant","Délai en cours"],["inconnu","Sans référence"]];
+  blocs.forEach(function(b){
+    const k=b[0], titre=b[1]; if(!grp[k].length) return;
+    const col=ETATCOL[k].c;
+    h+='<div class="rf-sec" style="border-left-color:'+col+'">';
+    h+='<div class="rf-sech" style="color:'+col+'">'+titre+' <span class="rf-n">'+grp[k].length+'</span></div>';
+    grp[k].forEach(function(it){
+      const p=it.p, e=it.e, ph=PHASES[e.phase], pth=pathoOf(e), jl=jalonsOf(e), nOk=(e.jal||[]).filter(Boolean).length, ds=daysSince(e.deb);
+      const pct=jl.length?Math.round(nOk/jl.length*100):0;
+      h+='<div class="rf-row">';
+      h+='<div class="rf-r1"><b>'+esc(p.n)+'</b><span class="rf-ph" style="background:'+hexRgba(ph.color,.13)+';color:'+darker(ph.color)+'">'+esc(ph.label)+'</span></div>';
+      h+='<div class="rf-r2">'+esc(e.zone||EPTYPES[e.type]||"non précisé")+(pth?' · '+esc(pth.lab):'')+'</div>';
+      h+='<div class="rf-r3">';
+      h+='<span class="rf-k">Depuis</span> '+(ds!=null?"J+"+ds:"—");
+      if(pth) h+=' <span class="rf-k">Repère</span> '+pth.min+'-'+pth.max+' j';
+      if(fenetreTxt(e)) h+=' <span class="rf-k">Fenêtre estimée</span> <b>'+fenetreTxt(e)+'</b>';
+      h+='</div>';
+      h+='<div class="rf-r4"><div class="rf-bar"><i style="width:'+pct+'%;background:'+col+'"></i></div><span class="rf-jn">Jalons '+nOk+'/'+jl.length+'</span>';
+      if(e.phase==="retourp") h+=e.medok?'<span class="rf-med ok">Accord médical OK</span>':'<span class="rf-med no">Accord médical à obtenir</span>';
+      h+='</div>';
+      if(e.note) h+='<div class="rf-note">'+esc(e.note)+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+  });
+  h+='<div class="rf-disc"><b>Fourchettes indicatives</b> issues de la littérature (BAMIC, consensus rugby, World Rugby). Elles ne valent pas autorisation de reprise : la décision de retour au jeu appartient au médecin ou au kiné ayant examiné le joueur. Commotion : minimum 23 jours chez les moins de 20 ans et accord médical écrit obligatoire.</div>';
+  h+='<div class="pf-foot">Document de travail interne · données de santé · diffusion staff uniquement</div>';
+  h+='</div>';
+  return h;
+}
+function printReathle(){ document.getElementById("printArea").innerHTML=reathleFicheHTML(); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
 function printFiche(id){ const p=players.find(x=>x.id===id); if(!p) return; document.getElementById("printArea").innerHTML=ficheHTML(p); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
 const dataOverlay=$("dataOverlay");
 function closeData(){ dataOverlay.classList.remove("open"); }
@@ -1119,7 +1189,7 @@ function openReathle(){
 }
 $("btnReathle").addEventListener("click",openReathle);
 $("reathleCopy").addEventListener("click",()=>{ const t=reathleTexte(); try{ navigator.clipboard.writeText(t); toast("Point staff copié"); }catch(err){ toast("Copie indisponible"); } });
-$("reathleMail").addEventListener("click",()=>{ const t=reathleTexte(); const suj="Point réathlé U21 — "+frDate(new Date().toISOString().slice(0,10)); window.location.href="mailto:?subject="+encodeURIComponent(suj)+"&body="+encodeURIComponent(t); });
+$("reathleFiche").addEventListener("click",()=>{ reathleOverlay.classList.remove("open"); setTimeout(printReathle,120); });
 $("reathleClose").addEventListener("click",()=>reathleOverlay.classList.remove("open"));
 reathleOverlay.addEventListener("click",e=>{ if(e.target===reathleOverlay) reathleOverlay.classList.remove("open"); });
 $("b_cancel").addEventListener("click",closeBareme);
