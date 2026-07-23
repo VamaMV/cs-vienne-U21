@@ -180,6 +180,24 @@
   .clogo-img{background:#fff;box-shadow:0 1px 3px rgba(19,40,59,.16);overflow:hidden}
   .clogo-img img{width:100%;height:100%;object-fit:contain;display:block}
   .nm .clogo{width:38px;height:38px;font-size:.86rem;margin-right:0;box-shadow:0 0 0 2px rgba(255,255,255,.28)}
+  .tdj-sum2{display:flex;flex-wrap:wrap;gap:9px;margin:4px 0 8px}
+  .tdj-sum2 span{font-size:.75rem;color:var(--faint)}
+  .tdj-sum2 b{color:var(--ink)}
+  .tdj-sum2 i{font-style:normal;font-weight:700}
+  .tdj-sum2 i.up{color:#1C8C5A} .tdj-sum2 i.dn{color:#B45309}
+  .tbars{display:flex;align-items:flex-end;gap:3px;margin:6px 0 10px;padding:7px 8px 4px;background:#F6FAFD;border:1px solid #E1EDF5;border-radius:9px;overflow-x:auto}
+  .tbars .tb{flex:0 0 auto;width:19px;text-align:center}
+  .tbars.tbars-c .tb{width:15px}
+  .tb-col{height:52px;display:flex;align-items:flex-end;justify-content:center}
+  .tbars.tbars-c .tb-col{height:38px}
+  .tb-col i{display:block;width:11px;border-radius:3px 3px 0 0}
+  .tbars.tbars-c .tb-col i{width:9px}
+  .tb-t{background:#0F80C4} .tb-r{background:#3FA9DC} .tb-bl{background:#DC2626} .tb-nc{background:#C7D4DD} .tb-0{background:#E2EAF0}
+  .tb-j{display:block;font-size:.56rem;color:var(--faint);margin-top:2px}
+  .tdjfocus{margin-top:13px;padding:11px;background:#F6FAFD;border:1px solid #E1EDF5;border-radius:10px}
+  .tdjfocus select{width:100%;font-family:var(--body);font-size:.88rem;padding:8px 9px;border:1.5px solid var(--line);border-radius:9px;background:#fff}
+  .tdjtag{background:#EAF3FA;color:#0E5E8E}
+  .surtag{background:#FBE6E6;color:#A32020;font-weight:800}
   .tdj-sum{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:7px}
   .tdj-sum span{font-size:.78rem;color:var(--faint);background:#F4F9FC;border-radius:8px;padding:4px 9px}
   .tdj-sum b{color:var(--ink);font-size:.92rem}
@@ -406,7 +424,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h14 — logos des adversaires</div>
+    <div style="font-size:.7rem;opacity:.5">h16 — focus temps de jeu par joueur (fiche + comparaison équipe)</div>
   </footer>
 </div>
 
@@ -712,6 +730,36 @@ function joursAvant(iso){
   if(isNaN(b.getTime())) return null;
   return Math.round((b.getTime()-a.getTime())/86400000);
 }
+function tdjParMatch(p){
+  /* pour chaque match deja joue par l equipe : minutes, statut, presence */
+  const par={}; (Array.isArray(p.tdjs)?p.tdjs:[]).forEach(x=>{ if(x&&x.d) par[x.d]=x; });
+  return matchsPasses().map(m=>{
+    const x=par[m.d]||null;
+    const min=x?(parseInt(x.min,10)||0):0;
+    return {m:m,min:min,st:x?(x.st||""):"",saisi:!!x};
+  });
+}
+function tauxTitu(p){
+  const j=(Array.isArray(p.tdjs)?p.tdjs:[]).filter(x=>x&&x.st==="t").length;
+  const n=nbMatchs(p); return n?Math.round(j/n*100):0;
+}
+function moyEquipe(){
+  const l=players.map(totalMin).filter(t=>t>0);
+  return l.length?Math.round(l.reduce((a,b)=>a+b,0)/l.length):0;
+}
+function barresTdj(p,compact){
+  const arr=tdjParMatch(p); if(!arr.length) return "";
+  if(!arr.some(a=>a.saisi)) return "";
+  const maxi=Math.max(80,...arr.map(a=>a.min));
+  let h='<div class="tbars'+(compact?" tbars-c":"")+'">';
+  arr.forEach(a=>{
+    const pc=Math.round(a.min/maxi*100);
+    const cls=a.min>0?(a.st==="t"?"tb-t":"tb-r"):(a.st==="bl"?"tb-bl":(a.st==="nc"?"tb-nc":"tb-0"));
+    const ti=esc(a.m.adv)+" (J"+a.m.j+") — "+(a.min>0?a.min+" min":(a.st&&TDJSTAT[a.st]?TDJSTAT[a.st]:"non joué"));
+    h+='<div class="tb" title="'+ti+'"><div class="tb-col"><i class="'+cls+'" style="height:'+Math.max(pc,3)+'%"></i></div><span class="tb-j">J'+a.m.j+'</span></div>';
+  });
+  return h+'</div>';
+}
 function matchDe(d){ for(let i=0;i<CALENDRIER.length;i++){ if(CALENDRIER[i].d===d) return CALENDRIER[i]; } return null; }
 function matchsPasses(){ const auj=new Date().toISOString().slice(0,10); return CALENDRIER.filter(m=>m.d<=auj); }
 function minutesDe(p){ return (Array.isArray(p.tdjs)?p.tdjs:[]).filter(x=>x&&x.min!==""&&x.min!=null); }
@@ -825,6 +873,10 @@ function metaHTML(p){
   if(p.z!=="none") meta+='<span class="tag" style="background:'+hexRgba(z.color,.12)+';color:'+darker(z.color)+'">'+esc(z.label)+'</span>';
   if(catLabel(p)) meta+='<span class="cat">'+esc(catLabel(p))+'</span>';
   { const _ep=activeEpisode(p); if(_ep){ const ph=PHASES[_ep.phase]; meta+='<span class="tag" style="background:'+hexRgba(ph.color,.14)+';color:'+darker(ph.color)+'">'+esc(ph.label)+(_ep.zone?' · '+esc(_ep.zone):'')+'</span>'; } }
+  { const _tot=totalMin(p), _nb=nbMatchs(p);
+    if(_nb>0) meta+='<span class="tag tdjtag">'+_tot+' min · '+_nb+' match'+(_nb>1?'s':'')+'</span>';
+    const _se=serieConsecutive(p);
+    if(_se>=3) meta+='<span class="tag surtag">'+_se+' matchs d\'affilée</span>'; }
   meta+='<span class="pill" style="background:'+hexRgba(st.color,.12)+';color:'+darker(st.color)+'"><span class="pdot" style="background:'+st.color+'"></span>'+esc(st.label)+'</span>';
   return meta;
 }
@@ -838,7 +890,14 @@ function richParts(p){
       const st=x.st&&TDJSTAT[x.st]?' <span class="e">'+TDJSTAT[x.st]+'</span>':'';
       return '<div class="tline">'+lab+' — <b>'+(parseInt(x.min,10)||0)+' min</b>'+st+'</div>';
     });
-    parts.push('<div class="field"><div class="label">Temps de jeu</div>'+th+'<div class="tests-list">'+lignes.join("")+'</div></div>');
+    const titu=tauxTitu(p), me=moyEquipe();
+    let extra='<div class="tdj-sum2">';
+    extra+='<span>Titularisations <b>'+titu+'%</b></span>';
+    if(me) extra+='<span>Moyenne équipe <b>'+me+'</b> min '+(tot>me?'<i class="up">+'+(tot-me)+'</i>':(tot<me?'<i class="dn">'+(tot-me)+'</i>':''))+'</span>';
+    const manq=tdjParMatch(p).filter(a=>a.min===0);
+    if(manq.length) extra+='<span>Matchs sans jeu <b>'+manq.length+'</b></span>';
+    extra+='</div>';
+    parts.push('<div class="field"><div class="label">Temps de jeu</div>'+th+extra+barresTdj(p,true)+'<div class="tests-list">'+lignes.join("")+'</div></div>');
   } }
   { const eps=(Array.isArray(p.episodes)?p.episodes:[]); if(eps.length){
     const cur=eps.filter(e=>e.phase!=="clos"), old=eps.filter(e=>e.phase==="clos");
@@ -1402,7 +1461,26 @@ function openTdj(){
     h+='<tr><td><b>'+esc(r.p.n)+'</b><div class="tdjbar"><i style="width:'+pc+'%"></i></div></td><td><b>'+r.tot+'</b> min</td><td>'+r.nb+'</td><td>'+r.moy+'</td><td>'+r.m21+'</td><td>'+(r.serie>2?'<span style="color:#C32A2A;font-weight:700">'+r.serie+'</span>':r.serie)+'</td></tr>';
   });
   h+='</tbody></table>';
+  h+='<div class="tdjfocus"><label class="mini" style="display:block;margin-bottom:5px">Focus joueur</label><select id="tdjSel"><option value="">— Choisir un joueur —</option>'
+    +rows.map(r=>'<option value="'+esc(r.p.id)+'">'+esc(r.p.n)+'</option>').join("")+'</select><div id="tdjFocusBody"></div></div>';
   $("tdjBody").innerHTML=h;
+  const sel=document.getElementById("tdjSel");
+  if(sel) sel.addEventListener("change",()=>{
+    const p=players.find(x=>x.id===sel.value);
+    const box=document.getElementById("tdjFocusBody");
+    if(!p){ box.innerHTML=""; return; }
+    const tot=totalMin(p), nb=nbMatchs(p), moy=moyMin(p), m21=minSurJours(p,21), serie=serieConsecutive(p), titu=tauxTitu(p), me=moyEquipe();
+    let b='<div class="tdj-sum"><span><b>'+tot+'</b> min</span><span><b>'+nb+'</b> match'+(nb>1?'s':'')+'</span><span><b>'+moy+'</b> min/match</span><span><b>'+m21+'</b> min / 21 j</span><span><b>'+titu+'%</b> titulaire</span>'+(serie>=3?'<span class="surtag"><b>'+serie+'</b> matchs d\'affilée</span>':'')+'</div>';
+    if(me) b+='<div class="hint" style="margin:4px 0 8px">Moyenne équipe : '+me+' min — '+(tot>me?'<b style="color:#C32A2A">+'+(tot-me)+' min</b>':(tot<me?'<b style="color:#0E5E8E">'+(tot-me)+' min</b>':'au niveau'))+'</div>';
+    b+=barresTdj(p,false);
+    const det=tdjParMatch(p).slice().reverse().map(a=>{
+      const lab=pastilleClub(a.m.adv)+'J'+a.m.j+' · '+esc(a.m.adv)+' <span class="e">('+(a.m.lieu==="D"?"dom.":"ext.")+')</span>';
+      const val=a.min>0?('<b>'+a.min+' min</b>'+(a.st&&TDJSTAT[a.st]?' <span class="e">'+TDJSTAT[a.st]+'</span>':'')):('<span class="e">'+(a.st&&TDJSTAT[a.st]?TDJSTAT[a.st]:'non joué')+'</span>');
+      return '<div class="tline">'+lab+' — '+val+'</div>';
+    });
+    b+='<div class="tests-list">'+det.join("")+'</div>';
+    box.innerHTML=b;
+  });
   tdjOverlay.classList.add("open");
 }
 $("btnTdj").addEventListener("click",openTdj);
