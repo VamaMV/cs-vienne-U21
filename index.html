@@ -242,6 +242,8 @@
   .rf-med.ok{background:#E4F4EB;color:#1C6B45}
   .rf-med.no{background:#FBE6E6;color:#A32020}
   .rf-med.att{background:#F1EAFE;color:#5B3FA8}
+  .nodiag{display:inline-block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;background:#FBE6E6;color:#A32020;padding:1px 7px;border-radius:99px;margin-left:4px}
+  .nodiag-rap{font-size:.78rem;color:#A32020;background:#FDF0F0;border:1px solid #F6D6D6;border-radius:8px;padding:6px 9px;margin-bottom:7px}
   .rf-note{font-size:10.5px;color:#566B7D;font-style:italic;margin-top:3px}
   .rf-empty{margin:22px 0;padding:16px;background:#F4F9FC;border-radius:9px;text-align:center;font-size:13px;color:#41566A}
   .rf-disc{margin-top:16px;font-size:9px;font-style:italic;color:#8A9BA8;text-align:center}
@@ -363,7 +365,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h10 — réathlé : suivi des joueurs en attente de diagnostic</div>
+    <div style="font-size:.7rem;opacity:.5">h11 — réathlé : trace des retours sans diagnostic</div>
   </footer>
 </div>
 
@@ -656,6 +658,7 @@ const JALONS={
  mal:["Apyrexie et symptomes resolus","Reprise aerobie legere toleree","Charge normale sans fatigue anormale"],
  autre:["Indolence","Charge progressive toleree","Retour aux gestes specifiques"]
 };
+function closSansDiag(e){ return !!e && e.phase==="clos" && !e.patho && (!e.diag || e.diag==="norv" || e.diag==="rdv"); }
 function pathoOf(e){ return (e&&e.patho&&PATHOS[e.patho])?PATHOS[e.patho]:null; }
 function jalonsOf(e){ const p=pathoOf(e); const fam=p?p.fam:((e&&e.type)?e.type:"autre"); return JALONS[fam]||JALONS.autre; }
 const SEUIL_ATTENTE=10;
@@ -738,8 +741,9 @@ function richParts(p){
         +((e.phase==="attente")?'<br><span class="e">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"Statut à préciser")+(e.rdv?' · RDV le '+frDate(e.rdv):'')+'</span>':'<br><span class="e">Jalons validés '+nOk+'/'+jl.length+'</span>')+(e.medok?' <span style="color:#1C8C5A;font-weight:700">· accord médical OK</span>':((e.phase==="retourp")?' <span style="color:#C32A2A;font-weight:700">· accord médical requis</span>':''))
         +(e.note?'<br><span class="e">'+esc(e.note)+'</span>':'')+'</div>';
     });
-    old.slice().reverse().forEach(e=>{ ehtml+='<div class="tline" style="opacity:.65"><b>Clos</b> — '+esc(e.zone||EPTYPES[e.type])+' <span class="e">'+(e.deb?frDate(e.deb):'?')+' → '+(e.retr?frDate(e.retr):'?')+'</span>'+(e.note?' <span class="e">· '+esc(e.note)+'</span>':'')+'</div>'; });
-    parts.push('<div class="field"><div class="label">Réathlé · blessures</div><div class="tests-list">'+ehtml+'</div></div>');
+    old.slice().reverse().forEach(e=>{ ehtml+='<div class="tline" style="opacity:.65"><b>Clos</b> — '+esc(e.zone||EPTYPES[e.type])+' <span class="e">'+(e.deb?frDate(e.deb):'?')+' → '+(e.retr?frDate(e.retr):'?')+'</span>'+(closSansDiag(e)?' <span class="nodiag">Retour sans diagnostic</span>':'')+(e.note?' <span class="e">· '+esc(e.note)+'</span>':'')+'</div>'; });
+    const nd=eps.filter(closSansDiag).length;
+    parts.push('<div class="field"><div class="label">Réathlé · blessures</div>'+(nd?'<div class="nodiag-rap">'+nd+' retour'+(nd>1?'s':'')+' sans diagnostic dans l\'historique — à signaler si la zone se réveille.</div>':'')+'<div class="tests-list">'+ehtml+'</div></div>');
   } }
   const hasAnt=p.ant&&p.ant.trim(),hasAcc=p.acc&&p.acc.trim();
   if(hasAnt) parts.push('<div class="field"><div class="label">Antécédent</div><div class="val">'+esc(p.ant)+'</div></div>');
@@ -1021,6 +1025,7 @@ function playerText(p){
   if(Array.isArray(p.broncos)&&p.broncos.length){ const bd=p.broncos.filter(x=>x&&x.t).slice().sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const _g=broncoGrp(p); const bl=bd.map(x=>{ const v=vmaBronco(x.t); const z=baremeZone(broncoSec(x.t),_g); return (x.d?frDate(x.d)+" : ":"")+x.t+(v?" (VMA ~"+v+(z?", "+z.label:"")+")":""); }); if(bl.length){ L.push(""); L.push("Bronco :"); bl.forEach(x=>L.push("• "+x)); } }
   if(Array.isArray(p.cmjs)&&p.cmjs.length){ const cd=p.cmjs.filter(x=>x&&cmjNum(x.v)!=null).slice().sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const _gc=cmjGrp(p); const cl=cd.map(x=>{ const cm=cmjNum(x.v); const z=cmjZone(cm,_gc); return (x.d?frDate(x.d)+" : ":"")+frD(cm)+" cm"+(z?" ("+z.label+")":""); }); if(cl.length){ L.push(""); L.push("CMJ :"); cl.forEach(x=>L.push("• "+x)); } }
   if(Array.isArray(p.tests)&&p.tests.length){ const tl=p.tests.filter(t=>t&&t.ex&&String(t.ex).trim()&&t.load!==""&&t.load!=null).map(t=>{ const o=epley1RM(t.load); const rt=ratioFP(o,p.poids); const fz=forceZone(t.ex,rt,grpOf(p)); return t.ex+" 3RM "+t.load+" kg"+(o?" (1RM ~"+o+(rt?" · "+rt+"× PdC":"")+(fz?" · "+fz.label:"")+")":""); }); if(tl.length){ L.push(""); L.push("Tests musculaires :"); tl.forEach(x=>L.push("• "+x)); } }
+  { const nd=(Array.isArray(p.episodes)?p.episodes:[]).filter(closSansDiag); if(nd.length){ L.push(""); L.push("Antécédents sans diagnostic :"); nd.forEach(e=>L.push("• "+(e.zone||EPTYPES[e.type])+" "+(e.deb?frDate(e.deb):"?")+" → "+(e.retr?frDate(e.retr):"?")+" — retour sans diagnostic")); } }
   { const cur=(Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e.phase!=="clos"); if(cur.length){ L.push(""); L.push("Réathlé :"); cur.forEach(e=>{ const ph=PHASES[e.phase]; L.push("• "+(e.zone||EPTYPES[e.type])+" — "+ph.label+(e.deb?" depuis "+frDate(e.deb):"")+(e.ret?" · retour prévu "+frDate(e.ret):"")); }); } }
   if(Array.isArray(p.pesees)&&p.pesees.length){ const pl=pesWeights(p).slice(-6).map(x=>(x.d?frDate(x.d)+" : ":"")+x.w+" kg"); if(pl.length){ L.push(""); L.push("Pesées récentes :"); pl.forEach(x=>L.push("• "+x)); } }
   if(p.z!=="none") L.push("Zone concernée : "+zoneInfo(p).label);
@@ -1077,6 +1082,19 @@ function ficheHTML(p){
   h+='<div class="pf-foot">CS Vienne Rugby · fondé en 1899 — Fiche générée le '+dd+' · Document confidentiel</div>';
   h+='</div>'; return h;
 }
+function blocSansDiag(){
+  const nd=[];
+  players.slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
+    (Array.isArray(p.episodes)?p.episodes:[]).filter(closSansDiag).forEach(e=>{ nd.push({p:p,e:e}); });
+  });
+  if(!nd.length) return "";
+  let h='<div class="rf-sec" style="border-left-color:#A32020;margin-top:18px">';
+  h+='<div class="rf-sech" style="color:#A32020">Retours sans diagnostic <span class="rf-n">'+nd.length+'</span></div>';
+  nd.forEach(function(it){
+    h+='<div class="rf-row"><div class="rf-r1"><b>'+esc(it.p.n)+'</b></div><div class="rf-r2">'+esc(it.e.zone||EPTYPES[it.e.type]||"non précisé")+' · '+(it.e.deb?frDate(it.e.deb):'?')+' → '+(it.e.retr?frDate(it.e.retr):'?')+'</div></div>';
+  });
+  return h+'</div>';
+}
 function reathleFicheHTML(){
   const auj=new Date().toISOString().slice(0,10);
   const grp={attente_long:[],attente:[],depasse:[],fin:[],dans:[],avant:[],inconnu:[]};
@@ -1092,7 +1110,8 @@ function reathleFicheHTML(){
   h+='<div class="pf-tags"><span class="pf-badge">Au '+frDate(auj)+'</span><span class="pf-badge">'+total+' blessure'+(total>1?"s":"")+' en cours</span></div>';
   if(!total){
     h+='<div class="rf-empty">Aucune blessure en cours — effectif complet.</div>';
-    h+='<div class="pf-foot">Document de travail interne · CS Vienne Rugby</div></div>';
+    h+=blocSansDiag();
+    h+='<div class="pf-foot">Document de travail interne · données de santé · diffusion staff uniquement</div></div>';
     return h;
   }
   const blocs=[["attente_long","Sans diagnostic depuis plus de "+SEUIL_ATTENTE+" jours — à relancer"],["attente","En attente de diagnostic"],["depasse","Au-delà de la fourchette — à creuser"],["fin","Fin de fourchette — à tester"],["dans","Dans les temps"],["avant","Délai en cours"],["inconnu","Sans référence"]];
@@ -1126,6 +1145,7 @@ function reathleFicheHTML(){
     });
     h+='</div>';
   });
+  h+=blocSansDiag();
   h+='<div class="rf-disc">Fenêtres de retour : repères indicatifs et estimations, à confirmer au cas par cas.</div>';
   h+='<div class="pf-foot">Document de travail interne · données de santé · diffusion staff uniquement</div>';
   h+='</div>';
