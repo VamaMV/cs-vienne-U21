@@ -137,6 +137,9 @@
   .eprow .epl2b{display:flex;margin-bottom:6px}
   .eprow .epatho{width:100%}
   .eprow .epl2c{display:flex;margin-bottom:6px}
+  .eprow .epatt{display:none;gap:8px;margin-bottom:6px;padding:7px 9px;background:#F5F1FE;border:1px solid #E0D6F8;border-radius:9px}
+  .eprow .ediag{flex:1.3}
+  .eprow .epatt label.mini{flex:1;color:#5B3FA8}
   .eprow .ephase{width:100%}
   .eprow .epfold{margin-bottom:6px}
   .eprow .foldbtn{width:100%;text-align:left;font-family:var(--body);font-size:.82rem;font-weight:700;color:var(--brand);background:#F6FAFD;border:1px solid #E1EDF5;border-radius:9px;padding:7px 10px;cursor:pointer}
@@ -238,9 +241,10 @@
   .rf-med{font-size:9.5px;font-weight:700;padding:1px 7px;border-radius:99px}
   .rf-med.ok{background:#E4F4EB;color:#1C6B45}
   .rf-med.no{background:#FBE6E6;color:#A32020}
+  .rf-med.att{background:#F1EAFE;color:#5B3FA8}
   .rf-note{font-size:10.5px;color:#566B7D;font-style:italic;margin-top:3px}
   .rf-empty{margin:22px 0;padding:16px;background:#F4F9FC;border-radius:9px;text-align:center;font-size:13px;color:#41566A}
-  .rf-disc{margin-top:18px;padding:9px 11px;background:#FFF6EC;border:1px solid #F3DCC2;border-radius:8px;font-size:9.5px;line-height:1.5;color:#6B4E22}
+  .rf-disc{margin-top:16px;font-size:9px;font-style:italic;color:#8A9BA8;text-align:center}
   @media print{
     @page{size:A4;margin:14mm}
     html,body{background:#fff !important}
@@ -359,7 +363,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h8 — réathlé : fiche PDF staff + fenêtre de retour estimée</div>
+    <div style="font-size:.7rem;opacity:.5">h10 — réathlé : suivi des joueurs en attente de diagnostic</div>
   </footer>
 </div>
 
@@ -624,7 +628,7 @@ const store={
   async load(){ try{ const {data,error}=await sb.from("app_data").select("data").eq("id","roster").maybeSingle(); if(error) return null; return data?data.data:null; }catch(e){ return null; } },
   async save(data){ try{ const {error}=await sb.from("app_data").upsert({id:"roster",data:data,updated_at:new Date().toISOString()}); if(error) toast("Sauvegarde cloud échouée"); }catch(e){ toast("Sauvegarde cloud échouée"); } }
 };
-const PHASES={soins:{label:"Soins",color:"#DC2626"},reathle:{label:"Réathlé",color:"#EA580C"},reentrainement:{label:"Réentraînement",color:"#B45309"},retourp:{label:"Retour partiel",color:"#0F80C4"},clos:{label:"Clos — apte",color:"#1C8C5A"}};
+const PHASES={attente:{label:"En attente de diagnostic",color:"#7C3AED"},soins:{label:"Soins",color:"#DC2626"},reathle:{label:"Réathlé",color:"#EA580C"},reentrainement:{label:"Réentraînement",color:"#B45309"},retourp:{label:"Retour partiel",color:"#0F80C4"},clos:{label:"Clos — apte",color:"#1C8C5A"}};
 const EPTYPES={musc:"Musculaire",arti:"Articulaire",tend:"Tendineux",comm:"Commotion",mal:"Maladie",autre:"Autre"};
 /* Referentiel indicatif : fourchettes de retour au jeu issues de la litterature.
    Reperes de pilotage, PAS une autorisation de reprise. */
@@ -654,7 +658,10 @@ const JALONS={
 };
 function pathoOf(e){ return (e&&e.patho&&PATHOS[e.patho])?PATHOS[e.patho]:null; }
 function jalonsOf(e){ const p=pathoOf(e); const fam=p?p.fam:((e&&e.type)?e.type:"autre"); return JALONS[fam]||JALONS.autre; }
+const SEUIL_ATTENTE=10;
+const DIAGSTAT={norv:"Pas encore de RDV",rdv:"RDV pris",exam:"Examens en cours"};
 function ecartFourchette(e){
+  if(e&&e.phase==="attente"){ const ja=daysSince(e.deb); return {j:ja,min:null,max:null,etat:(ja!=null&&ja>=SEUIL_ATTENTE)?"attente_long":"attente"}; }
   const p=pathoOf(e); const j=daysSince(e&&e.deb);
   if(j==null||!p||!p.max) return {j:j,min:null,max:null,etat:"inconnu"};
   let etat="dans";
@@ -675,7 +682,7 @@ function fenetreTxt(e){
   const f=fenetreRetour(e); if(!f) return "";
   return f.memeJour?("pas avant le "+frDate(f.min)):(frDate(f.min)+" – "+frDate(f.max));
 }
-const ETATCOL={avant:{c:"#0F80C4",l:"Delai en cours"},dans:{c:"#1C8C5A",l:"Dans les temps"},fin:{c:"#B45309",l:"Fin de fourchette, a tester"},depasse:{c:"#C32A2A",l:"Au-dela de la fourchette"},inconnu:{c:"#6B7280",l:"Pas de reference"}};
+const ETATCOL={attente_long:{c:"#C32A2A",l:"Sans diagnostic depuis plus de 10 j"},attente:{c:"#7C3AED",l:"En attente de diagnostic"},avant:{c:"#0F80C4",l:"Delai en cours"},dans:{c:"#1C8C5A",l:"Dans les temps"},fin:{c:"#B45309",l:"Fin de fourchette, a tester"},depasse:{c:"#C32A2A",l:"Au-dela de la fourchette"},inconnu:{c:"#6B7280",l:"Pas de reference"}};
 function activeEpisode(p){ const a=(Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e&&e.phase!=="clos"); return a.length?a[a.length-1]:null; }
 function daysSince(iso){ if(!iso) return null; const t=new Date(iso).getTime(); if(isNaN(t)) return null; return Math.max(0,Math.round((Date.now()-t)/86400000)); }
 function normRec(p){
@@ -688,7 +695,7 @@ function normRec(p){
   let sprints=(Array.isArray(p.sprints)?p.sprints.map(x=>({d:(x&&x.d)?String(x.d):"",t10:(x&&x.t10!=null)?String(x.t10):"",t30:(x&&x.t30!=null)?String(x.t30):""})).filter(x=>x.t10!==""||x.t30!==""):[]);
   if(!sprints.length&&((p.sprint10!=null&&p.sprint10!=="")||(p.sprint30!=null&&p.sprint30!==""))) sprints=[{d:"",t10:(p.sprint10!=null?String(p.sprint10):""),t30:(p.sprint30!=null?String(p.sprint30):"")}];
   sprints.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const _lsp2=sprints.length?sprints[sprints.length-1]:null;
-  let episodes=(Array.isArray(p.episodes)?p.episodes.map(e=>({deb:(e&&e.deb)?String(e.deb):"",zone:(e&&e.zone)?String(e.zone):"",type:(e&&e.type&&EPTYPES[e.type])?e.type:"autre",patho:(e&&e.patho&&PATHOS[e.patho])?e.patho:"",phase:(e&&e.phase&&PHASES[e.phase])?e.phase:"soins",ret:(e&&e.ret)?String(e.ret):"",retr:(e&&e.retr)?String(e.retr):"",note:(e&&e.note)?String(e.note):"",jal:(e&&Array.isArray(e.jal))?e.jal.map(x=>!!x):[],medok:!!(e&&e.medok)})).filter(e=>e.deb!==""||e.zone!==""||e.note!==""):[]);
+  let episodes=(Array.isArray(p.episodes)?p.episodes.map(e=>({deb:(e&&e.deb)?String(e.deb):"",zone:(e&&e.zone)?String(e.zone):"",type:(e&&e.type&&EPTYPES[e.type])?e.type:"autre",patho:(e&&e.patho&&PATHOS[e.patho])?e.patho:"",diag:(e&&e.diag&&DIAGSTAT[e.diag])?e.diag:"",rdv:(e&&e.rdv)?String(e.rdv):"",phase:(e&&e.phase&&PHASES[e.phase])?e.phase:"soins",ret:(e&&e.ret)?String(e.ret):"",retr:(e&&e.retr)?String(e.retr):"",note:(e&&e.note)?String(e.note):"",jal:(e&&Array.isArray(e.jal))?e.jal.map(x=>!!x):[],medok:!!(e&&e.medok)})).filter(e=>e.deb!==""||e.zone!==""||e.note!==""):[]);
   episodes.sort((a,b)=>(a.deb||"").localeCompare(b.deb||""));
   return {id:p.id||("n"+Date.now()+Math.floor(Math.random()*1000)),n:p.n||"",cat:(p.cat!=null&&p.cat!=="")?p.cat:"ESP",poste:(p.poste!=null&&p.poste!=="")?p.poste:"none",s:STATUT[p.s]?p.s:"apte",z:(p.z!=null&&p.z!=="")?p.z:"none",poids:poids,poidsCible:(p.poidsCible!=null?p.poidsCible:""),pesees:pesees,taille:(p.taille!=null?p.taille:""),tdj:(p.tdj!=null?p.tdj:""),bronco:bronco,broncos:broncos,cmjs:cmjs,cmj:cmj,sprint10:(_lsp2?_lsp2.t10:""),sprint30:(_lsp2?_lsp2.t30:""),sprints:sprints,tests:(Array.isArray(p.tests)?p.tests.map(t=>({d:(t&&t.d)?String(t.d):"",ex:(t&&t.ex)?String(t.ex):"",load:(t&&t.load!=null)?t.load:""})):[]),episodes:episodes,ant:p.ant||"",acc:p.acc||""};
 }
@@ -728,7 +735,7 @@ function richParts(p){
       const jl=jalonsOf(e); const nOk=(e.jal||[]).filter(Boolean).length;
       ehtml+='<div class="tline"><b style="color:'+ph.color+'">'+ph.label+'</b> — '+esc(e.zone||EPTYPES[e.type])+(e.deb?' <span class="e">depuis le '+frDate(e.deb)+(ds!=null?' ('+ds+' j)':'')+'</span>':'')+(e.ret?' <span class="e">· retour prévu '+frDate(e.ret)+'</span>':'')
         +(pth?'<br><span class="e">'+esc(pth.lab)+' · repère '+pth.min+'-'+pth.max+' j</span> <span style="color:'+ec.c+';font-weight:700">'+ec.l+'</span>':'')+(fenetreTxt(e)?'<br><span class="e">Fenêtre estimée : <b>'+fenetreTxt(e)+'</b></span>':'')
-        +'<br><span class="e">Jalons validés '+nOk+'/'+jl.length+'</span>'+(e.medok?' <span style="color:#1C8C5A;font-weight:700">· accord médical OK</span>':((e.phase==="retourp")?' <span style="color:#C32A2A;font-weight:700">· accord médical requis</span>':''))
+        +((e.phase==="attente")?'<br><span class="e">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"Statut à préciser")+(e.rdv?' · RDV le '+frDate(e.rdv):'')+'</span>':'<br><span class="e">Jalons validés '+nOk+'/'+jl.length+'</span>')+(e.medok?' <span style="color:#1C8C5A;font-weight:700">· accord médical OK</span>':((e.phase==="retourp")?' <span style="color:#C32A2A;font-weight:700">· accord médical requis</span>':''))
         +(e.note?'<br><span class="e">'+esc(e.note)+'</span>':'')+'</div>';
     });
     old.slice().reverse().forEach(e=>{ ehtml+='<div class="tline" style="opacity:.65"><b>Clos</b> — '+esc(e.zone||EPTYPES[e.type])+' <span class="e">'+(e.deb?frDate(e.deb):'?')+' → '+(e.retr?frDate(e.retr):'?')+'</span>'+(e.note?' <span class="e">· '+esc(e.note)+'</span>':'')+'</div>'; });
@@ -839,7 +846,7 @@ $("f_save").addEventListener("click",()=>{
   sprints.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const _lsp=sprints.length?sprints[sprints.length-1]:null;
   const tests=[...$("f_tests").querySelectorAll(".trow")].map(r=>({d:(r.querySelector(".td")?r.querySelector(".td").value:""),ex:r.querySelector(".ex").value.trim(),load:r.querySelector(".ld").value.trim()})).filter(t=>t.ex);
   tests.sort((a,b)=>(a.d||"").localeCompare(b.d||""));
-  const episodes=[...$("f_eps").querySelectorAll(".eprow")].map(r=>{ const pv=r.querySelector(".epatho").value; return {deb:r.querySelector(".edeb").value,zone:r.querySelector(".ezone").value.trim(),type:(pv&&PATHOS[pv])?PATHOS[pv].fam:"autre",patho:pv,phase:r.querySelector(".ephase").value,ret:r.querySelector(".eret").value,retr:r.querySelector(".eretr").value,note:r.querySelector(".enote").value.trim(),jal:[...r.querySelectorAll(".epjal input")].map(i=>i.checked),medok:r.querySelector(".emedok").checked}; }).filter(e=>e.deb!==""||e.zone!==""||e.note!=="");
+  const episodes=[...$("f_eps").querySelectorAll(".eprow")].map(r=>{ const pv=r.querySelector(".epatho").value; return {deb:r.querySelector(".edeb").value,zone:r.querySelector(".ezone").value.trim(),type:(pv&&PATHOS[pv])?PATHOS[pv].fam:"autre",patho:pv,diag:r.querySelector(".ediag").value,rdv:r.querySelector(".erdv").value,phase:r.querySelector(".ephase").value,ret:r.querySelector(".eret").value,retr:r.querySelector(".eretr").value,note:r.querySelector(".enote").value.trim(),jal:[...r.querySelectorAll(".epjal input")].map(i=>i.checked),medok:r.querySelector(".emedok").checked}; }).filter(e=>e.deb!==""||e.zone!==""||e.note!=="");
   episodes.sort((a,b)=>(a.deb||"").localeCompare(b.deb||""));
   const pesees=[...$("f_pesees").querySelectorAll(".prow")].map(r=>({d:r.querySelector(".pd").value,w:r.querySelector(".pw").value.trim()})).filter(x=>x.w!=="");
   pesees.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const curPoids=pesees.length?pesees[pesees.length-1].w:"";
@@ -911,6 +918,7 @@ function epRow(e){
   r.innerHTML='<div class="epl1"><input class="edeb" type="date" title="Début" /><input class="ezone" type="text" placeholder="Zone (ex. Ischio D)" /><button type="button" class="rm" aria-label="Retirer">×</button></div>'
     +'<div class="epl2b"><select class="epatho" title="Pathologie"></select></div>'
     +'<div class="epl2c"><select class="ephase"></select></div>'
+    +'<div class="epatt"><select class="ediag"></select><label class="mini">RDV prévu<input class="erdv" type="date" /></label></div>'
     +'<div class="epfold"><button type="button" class="foldbtn fb-det">Détails <span class="car">▸</span></button><div class="foldbody fb-detbody">'
       +'<div class="epl2"><label class="mini">Retour prévu<input class="eret" type="date" /></label><label class="mini">Retour réel<input class="eretr" type="date" /></label></div>'
       +'<div class="epl3"><input class="enote" type="text" placeholder="Note (protocole, restrictions...)" /></div>'
@@ -927,6 +935,7 @@ function epRow(e){
       fams[f].forEach(k=>{ const o=document.createElement("option"); o.value=k; o.textContent=PATHOS[k].lab+(PATHOS[k].max?" — "+PATHOS[k].min+"-"+PATHOS[k].max+" j":""); g.appendChild(o); });
       pa.appendChild(g); }); }
 
+  const dg=r.querySelector(".ediag"); { const o0=document.createElement("option"); o0.value=""; o0.textContent="Où en est-on ?"; dg.appendChild(o0); Object.keys(DIAGSTAT).forEach(k=>{ const o=document.createElement("option"); o.value=k; o.textContent=DIAGSTAT[k]; dg.appendChild(o); }); }
   const jalWrap=r.querySelector(".epjalwrap"), jalBox=r.querySelector(".epjal"), jalBtn=r.querySelector(".fb-jal"), jalCnt=jalBtn.querySelector(".cnt");
   function majCnt(){ const ins=[...jalBox.querySelectorAll("input")]; jalCnt.textContent=ins.filter(i=>i.checked).length+"/"+ins.length; }
   function drawJal(){
@@ -941,6 +950,8 @@ function epRow(e){
     const montrer=(ph==="reathle"||ph==="reentrainement"||ph==="retourp");
     jalWrap.style.display=montrer?"block":"none";
     r.querySelector(".epmed").style.display=(ph==="retourp"||ph==="clos")?"block":"none";
+    r.querySelector(".epatt").style.display=(ph==="attente")?"flex":"none";
+    r.querySelector(".epatho").parentNode.style.display=(ph==="attente")?"none":"flex";
   }
   function fold(btn,body){ btn.addEventListener("click",()=>{ const open=body.classList.toggle("open"); btn.querySelector(".car").textContent=open?"▾":"▸"; }); }
   fold(r.querySelector(".fb-det"),r.querySelector(".fb-detbody"));
@@ -950,7 +961,7 @@ function epRow(e){
 
   r.querySelector(".edeb").value=e.deb||""; r.querySelector(".ezone").value=e.zone||""; ps.value=(e.phase&&PHASES[e.phase])?e.phase:"soins";
   r.querySelector(".eret").value=e.ret||""; r.querySelector(".eretr").value=e.retr||""; r.querySelector(".enote").value=e.note||"";
-  pa.value=(e.patho&&PATHOS[e.patho])?e.patho:""; r.querySelector(".emedok").checked=!!e.medok;
+  pa.value=(e.patho&&PATHOS[e.patho])?e.patho:""; r.querySelector(".emedok").checked=!!e.medok; dg.value=(e.diag&&DIAGSTAT[e.diag])?e.diag:""; r.querySelector(".erdv").value=e.rdv||"";
   drawJal(); majVisibilite();
   r.querySelector(".rm").addEventListener("click",()=>r.remove());
   return r;
@@ -1068,7 +1079,7 @@ function ficheHTML(p){
 }
 function reathleFicheHTML(){
   const auj=new Date().toISOString().slice(0,10);
-  const grp={depasse:[],fin:[],dans:[],avant:[],inconnu:[]};
+  const grp={attente_long:[],attente:[],depasse:[],fin:[],dans:[],avant:[],inconnu:[]};
   players.slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
     (Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e.phase!=="clos").forEach(e=>{
       grp[ecartFourchette(e).etat].push({p:p,e:e});
@@ -1084,7 +1095,7 @@ function reathleFicheHTML(){
     h+='<div class="pf-foot">Document de travail interne · CS Vienne Rugby</div></div>';
     return h;
   }
-  const blocs=[["depasse","Au-delà de la fourchette — à creuser"],["fin","Fin de fourchette — à tester"],["dans","Dans les temps"],["avant","Délai en cours"],["inconnu","Sans référence"]];
+  const blocs=[["attente_long","Sans diagnostic depuis plus de "+SEUIL_ATTENTE+" jours — à relancer"],["attente","En attente de diagnostic"],["depasse","Au-delà de la fourchette — à creuser"],["fin","Fin de fourchette — à tester"],["dans","Dans les temps"],["avant","Délai en cours"],["inconnu","Sans référence"]];
   blocs.forEach(function(b){
     const k=b[0], titre=b[1]; if(!grp[k].length) return;
     const col=ETATCOL[k].c;
@@ -1101,15 +1112,21 @@ function reathleFicheHTML(){
       if(pth) h+=' <span class="rf-k">Repère</span> '+pth.min+'-'+pth.max+' j';
       if(fenetreTxt(e)) h+=' <span class="rf-k">Fenêtre estimée</span> <b>'+fenetreTxt(e)+'</b>';
       h+='</div>';
-      h+='<div class="rf-r4"><div class="rf-bar"><i style="width:'+pct+'%;background:'+col+'"></i></div><span class="rf-jn">Jalons '+nOk+'/'+jl.length+'</span>';
-      if(e.phase==="retourp") h+=e.medok?'<span class="rf-med ok">Accord médical OK</span>':'<span class="rf-med no">Accord médical à obtenir</span>';
-      h+='</div>';
+      if(e.phase==="attente"){
+        h+='<div class="rf-r4"><span class="rf-med att">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"Statut à préciser")+'</span>';
+        if(e.rdv) h+='<span class="rf-jn">RDV le '+frDate(e.rdv)+'</span>';
+        h+='</div>';
+      } else {
+        h+='<div class="rf-r4"><div class="rf-bar"><i style="width:'+pct+'%;background:'+col+'"></i></div><span class="rf-jn">Jalons '+nOk+'/'+jl.length+'</span>';
+        if(e.phase==="retourp") h+=e.medok?'<span class="rf-med ok">Accord médical OK</span>':'<span class="rf-med no">Accord médical à obtenir</span>';
+        h+='</div>';
+      }
       if(e.note) h+='<div class="rf-note">'+esc(e.note)+'</div>';
       h+='</div>';
     });
     h+='</div>';
   });
-  h+='<div class="rf-disc"><b>Fourchettes indicatives</b> issues de la littérature (BAMIC, consensus rugby, World Rugby). Elles ne valent pas autorisation de reprise : la décision de retour au jeu appartient au médecin ou au kiné ayant examiné le joueur. Commotion : minimum 23 jours chez les moins de 20 ans et accord médical écrit obligatoire.</div>';
+  h+='<div class="rf-disc">Fenêtres de retour : repères indicatifs et estimations, à confirmer au cas par cas.</div>';
   h+='<div class="pf-foot">Document de travail interne · données de santé · diffusion staff uniquement</div>';
   h+='</div>';
   return h;
@@ -1146,7 +1163,7 @@ function reathleTexte(){
   L.push("POINT REATHLE — CS Vienne U21");
   L.push("Au "+frDate(auj));
   L.push("");
-  const grp={depasse:[],fin:[],dans:[],avant:[],inconnu:[]};
+  const grp={attente_long:[],attente:[],depasse:[],fin:[],dans:[],avant:[],inconnu:[]};
   players.slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
     (Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e.phase!=="clos").forEach(e=>{
       const ef=ecartFourchette(e); const pth=pathoOf(e); const jl=jalonsOf(e); const nOk=(e.jal||[]).filter(Boolean).length;
@@ -1155,13 +1172,14 @@ function reathleTexte(){
       if(pth) l+=" ("+pth.lab+")";
       l+="\n  Phase : "+PHASES[e.phase].label+(ds!=null?" · J+"+ds:"");
       if(fenetreTxt(e)) l+=" · fenêtre estimée "+fenetreTxt(e);
-      l+="\n  Jalons "+nOk+"/"+jl.length;
-      if(e.phase==="retourp") l+=(e.medok?" · accord médical OK":" · ACCORD MEDICAL A OBTENIR");
+      if(e.phase==="attente"){ l+="\n  "+(e.diag&&DIAGSTAT[e.diag]?DIAGSTAT[e.diag]:"Statut à préciser")+(e.rdv?" · RDV le "+frDate(e.rdv):""); }
+      else { l+="\n  Jalons "+nOk+"/"+jl.length;
+      if(e.phase==="retourp") l+=(e.medok?" · accord médical OK":" · ACCORD MEDICAL A OBTENIR"); }
       if(e.note) l+="\n  Note : "+e.note;
       grp[ef.etat].push(l);
     });
   });
-  const ordre=[["depasse","AU-DELA DE LA FOURCHETTE — a creuser"],["fin","FIN DE FOURCHETTE — a tester"],["dans","DANS LES TEMPS"],["avant","DELAI EN COURS"],["inconnu","SANS REFERENCE"]];
+  const ordre=[["attente_long","SANS DIAGNOSTIC DEPUIS PLUS DE "+SEUIL_ATTENTE+" JOURS — a relancer"],["attente","EN ATTENTE DE DIAGNOSTIC"],["depasse","AU-DELA DE LA FOURCHETTE — a creuser"],["fin","FIN DE FOURCHETTE — a tester"],["dans","DANS LES TEMPS"],["avant","DELAI EN COURS"],["inconnu","SANS REFERENCE"]];
   let total=0;
   ordre.forEach(function(o){ const k=o[0],titre=o[1]; if(grp[k].length){ total+=grp[k].length; L.push(titre+" ("+grp[k].length+")"); L.push(grp[k].join("\n")); L.push(""); } });
   if(!total) return "POINT REATHLE — CS Vienne U21\nAu "+frDate(auj)+"\n\nAucune blessure en cours — effectif complet.";
@@ -1178,13 +1196,13 @@ function openReathle(){
       const ph=PHASES[e.phase]; const ds=daysSince(e.deb);
       const ef=ecartFourchette(e); const ec=ETATCOL[ef.etat]; const pth=pathoOf(e);
       const jl=jalonsOf(e); const nOk=(e.jal||[]).filter(Boolean).length;
-      rows.push({etat:ef.etat,html:'<tr><td><b>'+esc(p.n)+'</b></td><td>'+esc(e.zone||EPTYPES[e.type])+(pth?'<br><span class="sub">'+esc(pth.lab)+'</span>':'')+'</td><td><span style="color:'+ph.color+';font-weight:700">'+ph.label+'</span></td><td>'+(ds!=null?ds+" j":"—")+(pth?'<br><span class="sub">repère '+pth.min+'-'+pth.max+' j</span>':'')+'</td><td>'+(fenetreTxt(e)||'<span class="sub">—</span>')+'</td><td><span style="color:'+ec.c+';font-weight:700">'+ec.l+'</span></td><td>'+nOk+'/'+jl.length+'</td><td>'+(e.medok?'<span style="color:#1C8C5A;font-weight:700">oui</span>':((e.phase==="retourp")?'<span style="color:#C32A2A;font-weight:700">requis</span>':'<span class="sub">—</span>'))+'</td></tr>'});
+      rows.push({etat:ef.etat,html:'<tr><td><b>'+esc(p.n)+'</b></td><td>'+esc(e.zone||EPTYPES[e.type])+(pth?'<br><span class="sub">'+esc(pth.lab)+'</span>':'')+'</td><td><span style="color:'+ph.color+';font-weight:700">'+ph.label+'</span></td><td>'+(ds!=null?ds+" j":"—")+(pth?'<br><span class="sub">repère '+pth.min+'-'+pth.max+' j</span>':'')+'</td><td>'+(fenetreTxt(e)||'<span class="sub">—</span>')+'</td><td><span style="color:'+ec.c+';font-weight:700">'+ec.l+'</span></td><td>'+((e.phase==="attente")?('<span class="sub">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"à préciser")+(e.rdv?'<br>RDV '+frDate(e.rdv):'')+'</span>'):(nOk+'/'+jl.length))+'</td><td>'+(e.medok?'<span style="color:#1C8C5A;font-weight:700">oui</span>':((e.phase==="retourp")?'<span style="color:#C32A2A;font-weight:700">requis</span>':'<span class="sub">—</span>'))+'</td></tr>'});
     });
   });
-  const ordre={depasse:0,fin:1,dans:2,avant:3,inconnu:4};
+  const ordre={attente_long:0,attente:1,depasse:2,fin:3,dans:4,avant:5,inconnu:6};
   rows.sort((a,b)=>(ordre[a.etat]-ordre[b.etat]));
   $("reathleBody").innerHTML=(rows.length?'<table class="rtable"><thead><tr><th>Joueur</th><th>Zone / pathologie</th><th>Phase</th><th>Depuis</th><th>Fenêtre estimée</th><th>Positionnement</th><th>Jalons</th><th>Accord méd.</th></tr></thead><tbody>'+rows.map(r=>r.html).join("")+'</tbody></table>':'<p class="hint">Aucune blessure en cours — tout le monde est apte.</p>')
-    +'<div class="rdisc">Les fourchettes sont des <b>repères indicatifs</b> issus de la littérature (BAMIC, consensus rugby, World Rugby). Elles ne constituent pas une autorisation de reprise : la décision de retour au jeu appartient au médecin ou au kiné qui a examiné le joueur. Pour les commotions, le protocole GRTP impose un minimum de 23 jours chez les moins de 20 ans et un accord médical écrit.</div>';
+    ;
   reathleOverlay.classList.add("open");
 }
 $("btnReathle").addEventListener("click",openReathle);
