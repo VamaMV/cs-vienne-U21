@@ -301,6 +301,13 @@
   .rf-note{font-size:10.5px;color:#566B7D;font-style:italic;margin-top:3px}
   .rf-empty{margin:22px 0;padding:16px;background:#F4F9FC;border-radius:9px;text-align:center;font-size:13px;color:#41566A}
   .rf-disc{margin-top:16px;font-size:9px;font-style:italic;color:#8A9BA8;text-align:center}
+  .tdjt{width:100%;border-collapse:collapse;margin-top:12px;font-size:10.5px}
+  .tdjt th{text-align:left;font-size:8.5px;text-transform:uppercase;letter-spacing:.05em;color:#8A9BA8;padding:5px 6px;border-bottom:1.5px solid #D3E2EC}
+  .tdjt td{padding:5px 6px;border-bottom:1px solid #EDF3F7;vertical-align:top}
+  .tdjt td b{font-size:11px}
+  .tdjt tr.tdjt-al td{background:#FDF3F3}
+  .tdjt-bar{height:3px;background:#E8EFF4;border-radius:99px;margin-top:3px;overflow:hidden;max-width:150px}
+  .tdjt-bar i{display:block;height:100%;background:#0F80C4;border-radius:99px}
   @media print{
     @page{size:A4;margin:14mm}
     html,body{background:#fff !important}
@@ -424,7 +431,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h16 — focus temps de jeu par joueur (fiche + comparaison équipe)</div>
+    <div style="font-size:.7rem;opacity:.5">h18 — fiche temps de jeu allégée</div>
   </footer>
 </div>
 
@@ -543,7 +550,11 @@
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="tdjTitle">
     <h2 id="tdjTitle">Temps de jeu — cumul équipe</h2>
     <div id="tdjBody"></div>
-    <div class="frow" style="margin-top:12px"><button type="button" id="tdjClose">Fermer</button></div>
+    <div class="frow" style="margin-top:12px;gap:8px">
+      <button type="button" id="tdjCopy">Copier</button>
+      <button type="button" id="tdjFiche">Fiche PDF</button>
+      <button type="button" id="tdjClose">Fermer</button>
+    </div>
   </div>
 </div>
 <div class="overlay" id="reathleOverlay">
@@ -1353,6 +1364,42 @@ function reathleFicheHTML(){
   h+='</div>';
   return h;
 }
+function tdjFicheHTML(){
+  const auj=new Date().toISOString().slice(0,10);
+  const joues=CALENDRIER.filter(m=>m.d<=auj);
+  const rows=players.slice().map(p=>({p:p,tot:totalMin(p),nb:nbMatchs(p),moy:moyMin(p),m21:minSurJours(p,21),serie:serieConsecutive(p),titu:tauxTitu(p)}))
+    .filter(r=>r.nb>0||r.tot>0).sort((a,b)=>b.tot-a.tot);
+  let h='<div class="pf">';
+  h+='<div class="pf-head"><div class="pf-crest"></div><div><div class="pf-club">CS Vienne Rugby · Espoirs Reichel Accession U21</div><div class="pf-title">Temps de jeu · staff</div></div></div>';
+  h+='<div class="pf-name">Cumul par joueur</div>';
+  h+='<div class="pf-tags"><span class="pf-badge">Au '+frDate(auj)+'</span><span class="pf-badge">'+joues.length+' match'+(joues.length>1?"s":"")+' disputé'+(joues.length>1?"s":"")+'</span>'+'</div>';
+  if(!rows.length){
+    h+='<div class="rf-empty">Aucune minute saisie'+(joues.length?" — "+joues.length+" match"+(joues.length>1?"s":"")+" déjà joué"+(joues.length>1?"s":""):" — la saison démarre le 05/09/2026")+'.</div>';
+    h+='<div class="pf-foot">Document de travail interne · CS Vienne Rugby</div></div>';
+    return h;
+  }
+  const maxi=rows[0].tot||1;
+  const show21=rows.some(function(r){ return r.m21>0; });
+  h+='<table class="tdjt"><thead><tr><th>Joueur</th><th>Total</th><th>M</th><th>Moy.</th>'+(show21?'<th>21 j</th>':'')+'<th>Titu.</th><th>Série</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    const pc=Math.round(r.tot/maxi*100);
+    const alerte=(r.serie>=3);
+    h+='<tr'+(alerte?' class="tdjt-al"':'')+'><td><b>'+esc(r.p.n)+'</b><div class="tdjt-bar"><i style="width:'+pc+'%"></i></div></td>'
+      +'<td><b>'+r.tot+'</b></td><td>'+r.nb+'</td><td>'+r.moy+'</td>'+(show21?'<td>'+r.m21+'</td>':'')+'<td>'+r.titu+'%</td>'
+      +'<td>'+(alerte?'<b style="color:#A32020">'+r.serie+'</b>':r.serie)+'</td></tr>';
+  });
+  h+='</tbody></table>';
+  const sur=rows.filter(r=>r.serie>=3);
+  if(sur.length){
+    h+='<div class="rf-sec" style="border-left-color:#A32020;margin-top:16px"><div class="rf-sech" style="color:#A32020">Enchaînements à surveiller <span class="rf-n">'+sur.length+'</span></div>';
+    sur.forEach(function(r){ h+='<div class="rf-row"><div class="rf-r1"><b>'+esc(r.p.n)+'</b></div><div class="rf-r2">'+r.serie+' matchs consécutifs · '+r.tot+' min cumulées'+(r.m21>0?' · '+r.m21+' min sur 21 jours':'')+'</div></div>'; });
+    h+='</div>';
+  }
+  h+='<div class="rf-disc">Minutes déclaratives saisies par le staff · cumuls indicatifs.</div>';
+  h+='<div class="pf-foot">Document de travail interne · diffusion staff uniquement</div></div>';
+  return h;
+}
+function printTdj(){ document.getElementById("printArea").innerHTML=tdjFicheHTML(); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
 function printReathle(){ document.getElementById("printArea").innerHTML=reathleFicheHTML(); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
 function printFiche(id){ const p=players.find(x=>x.id===id); if(!p) return; document.getElementById("printArea").innerHTML=ficheHTML(p); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
 const dataOverlay=$("dataOverlay");
@@ -1484,6 +1531,23 @@ function openTdj(){
   tdjOverlay.classList.add("open");
 }
 $("btnTdj").addEventListener("click",openTdj);
+function tdjTexte(){
+  const auj=new Date().toISOString().slice(0,10);
+  const joues=CALENDRIER.filter(m=>m.d<=auj).length;
+  const rows=players.slice().map(p=>({p:p,tot:totalMin(p),nb:nbMatchs(p),moy:moyMin(p),m21:minSurJours(p,21),serie:serieConsecutive(p),titu:tauxTitu(p)}))
+    .filter(r=>r.nb>0||r.tot>0).sort((a,b)=>b.tot-a.tot);
+  if(!rows.length) return "TEMPS DE JEU — CS Vienne U21\nAu "+frDate(auj)+"\n\nAucune minute saisie.";
+  const L=["TEMPS DE JEU — CS Vienne U21","Au "+frDate(auj)+" · "+joues+" match"+(joues>1?"s":"")+" disputé"+(joues>1?"s":""),""];
+  L.push("");
+  rows.forEach(function(r){
+    L.push("• "+r.p.n+" — "+r.tot+" min / "+r.nb+" match"+(r.nb>1?"s":"")+" · moy "+r.moy+(r.m21>0?" · 21 j "+r.m21:"")+" · titu "+r.titu+"%"+(r.serie>=3?" · "+r.serie+" MATCHS D AFFILEE":""));
+  });
+  const sur=rows.filter(r=>r.serie>=3);
+  if(sur.length){ L.push(""); L.push("Enchaînements à surveiller : "+sur.map(r=>r.p.n+" ("+r.serie+")").join(", ")); }
+  return L.join("\n");
+}
+$("tdjCopy").addEventListener("click",()=>{ const t=tdjTexte(); try{ navigator.clipboard.writeText(t); toast("Temps de jeu copié"); }catch(err){ toast("Copie indisponible"); } });
+$("tdjFiche").addEventListener("click",()=>{ tdjOverlay.classList.remove("open"); setTimeout(printTdj,120); });
 $("tdjClose").addEventListener("click",()=>tdjOverlay.classList.remove("open"));
 tdjOverlay.addEventListener("click",e=>{ if(e.target===tdjOverlay) tdjOverlay.classList.remove("open"); });
 $("btnReathle").addEventListener("click",openReathle);
