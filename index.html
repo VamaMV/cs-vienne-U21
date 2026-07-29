@@ -127,6 +127,12 @@
   .wcap b{font-family:var(--display);font-weight:600;color:var(--ink)}
   .pf-chart{margin:4px 0 10px}
   .pf-pese{max-width:300px}
+  .pf-bilan{font-size:12px;color:#41566A;margin:2px 0 7px;padding:5px 9px;background:#F4F9FC;border-radius:7px;display:inline-block}
+  .pf-force{margin:0 0 9px}
+  .pf-force-h{display:flex;align-items:baseline;gap:8px;font-size:12px;margin-bottom:4px}
+  .pf-force-ex{font-weight:800;color:#13283B}
+  .pf-force-v{color:#566B7D;flex:1}
+  .pf-force-z{font-weight:800}
   .pf-gap{font-size:12px;color:#13283B;margin:2px 0 9px;font-weight:600}
   .brow{display:flex;gap:8px;align-items:center;margin-bottom:8px}
   .brow .bd{flex:1.1} .brow .bt{flex:.7}
@@ -431,7 +437,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h18 — fiche temps de jeu allégée</div>
+    <div style="font-size:.7rem;opacity:.5">h19 — fiche joueur : bilan de poids + tests muscu visuels</div>
   </footer>
 </div>
 
@@ -684,6 +690,22 @@ function baremeZone(sec,grp){ if(sec==null) return null; const B=baremeOf(grp); 
 function broncoGaugeHTML(broncos,grp){ const B=baremeOf(grp); const S=broncoSec(B.slow),F=broncoSec(B.fast),T1=broncoSec(B.t1),T2=broncoSec(B.t2),T3=broncoSec(B.t3); if([S,F,T1,T2,T3].some(v=>v==null)||S<=F) return ""; const pct=sec=>{ let r=(S-sec)/(S-F); r=Math.max(0,Math.min(1,r)); return r*100; }; const segs=[[S,T1,"#DC2626"],[T1,T2,"#B45309"],[T2,T3,"#2E9E5B"],[T3,F,"#1C8C5A"]]; const bar=segs.map(z=>'<div style="width:'+(pct(z[1])-pct(z[0])).toFixed(1)+'%;background:'+z[2]+'"></div>').join(""); const data=(Array.isArray(broncos)?broncos:[]).filter(x=>x&&x.t).slice().sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const marks=data.map((x,i)=>{ const sec=broncoSec(x.t); if(sec==null) return ""; const last=i===data.length-1; return '<div class="bmark'+(last?" last":"")+'" style="left:'+pct(sec).toFixed(1)+'%"></div>'; }).join(""); return '<div class="bgauge"><div class="bbar">'+bar+'</div>'+marks+'</div>'; }
 function broncoEvol(broncos,grp){ const data=(Array.isArray(broncos)?broncos:[]).filter(x=>x&&x.t).slice().sort((a,b)=>(a.d||"").localeCompare(b.d||"")); if(!data.length) return ""; const Lt=data[data.length-1]; const vL=vmaBronco(Lt.t); const zL=baremeZone(broncoSec(Lt.t),grp); const gl=grp==="av12"?"1re/2e L":(grp==="av3"?"3e ligne":"arrières"); let s='<b>'+Lt.t+'</b>'+(vL?'<span>VMA ~'+frD(vL)+' km/h</span>':''); if(zL) s+='<span style="color:'+zL.color+';font-weight:600">'+zL.label+' · '+gl+'</span>'; if(data.length>=2){ const P=data[data.length-2]; const vP=vmaBronco(P.t); if(vL&&vP){ const d=Math.round((vL-vP)*10)/10; s+='<span>'+(d>0?"↑ +"+d:(d<0?"↓ "+d:"="))+' km/h vs '+P.t+'</span>'; } } return s; }
 function epley1RM(load){ const w=parseFloat(String(load).replace(",",".")); if(isNaN(w)||w<=0) return null; return Math.round(w*1.1*2)/2; }
+function bilanPoids(p){
+  const d=pesWeights(p); if(d.length<2) return null;
+  const a=parseFloat(String(d[0].w).replace(",",".")); const b=parseFloat(String(d[d.length-1].w).replace(",","."));
+  if(isNaN(a)||isNaN(b)) return null;
+  return {delta:Math.round((b-a)*10)/10, depuis:d[0].d, premier:a, dernier:b, n:d.length};
+}
+function forceGaugeHTML(name,ratio,grp){
+  const lift=detectLift(name); if(!lift||ratio==null||!isFinite(ratio)) return "";
+  const g=(grp==="avants")?"avants":"troisquarts"; const th=FORCE_BAREME[lift]&&FORCE_BAREME[lift][g]; if(!th) return "";
+  const L=Math.max(0.4,th[0]-0.3), H=th[2]+0.3;
+  const pct=r=>{ let x=(r-L)/(H-L); x=Math.max(0,Math.min(1,x)); return x*100; };
+  const segs=[[L,th[0],"#DC2626"],[th[0],th[1],"#B45309"],[th[1],th[2],"#2E9E5B"],[th[2],H,"#1C8C5A"]];
+  const bar=segs.map(z=>'<div style="width:'+(pct(z[1])-pct(z[0])).toFixed(1)+'%;background:'+z[2]+'"></div>').join("");
+  const mark='<div class="bmark last" style="left:'+pct(ratio).toFixed(1)+'%"></div>';
+  return '<div class="bgauge"><div class="bbar">'+bar+'</div>'+mark+'</div>';
+}
 function ratioFP(orm,poids){ const w=parseFloat(String(poids).replace(",",".")); if(orm==null||isNaN(w)||w<=0) return null; return Math.round((orm/w)*100)/100; }
 function pesWeights(p){ return (Array.isArray(p.pesees)?p.pesees:[]).filter(x=>x&&x.w!==""&&x.w!=null).slice().sort((a,b)=>String(a.d||"").localeCompare(String(b.d||""))); }
 function weightChartSVG(p,W,H){
@@ -1240,7 +1262,7 @@ function playerText(p){
   if(Array.isArray(p.tests)&&p.tests.length){ const tl=p.tests.filter(t=>t&&t.ex&&String(t.ex).trim()&&t.load!==""&&t.load!=null).map(t=>{ const o=epley1RM(t.load); const rt=ratioFP(o,p.poids); const fz=forceZone(t.ex,rt,grpOf(p)); return t.ex+" 3RM "+t.load+" kg"+(o?" (1RM ~"+o+(rt?" · "+rt+"× PdC":"")+(fz?" · "+fz.label:"")+")":""); }); if(tl.length){ L.push(""); L.push("Tests musculaires :"); tl.forEach(x=>L.push("• "+x)); } }
   { const nd=(Array.isArray(p.episodes)?p.episodes:[]).filter(closSansDiag); if(nd.length){ L.push(""); L.push("Antécédents sans diagnostic :"); nd.forEach(e=>L.push("• "+(e.zone||EPTYPES[e.type])+" "+(e.deb?frDate(e.deb):"?")+" → "+(e.retr?frDate(e.retr):"?")+" — retour sans diagnostic")); } }
   { const cur=(Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e.phase!=="clos"); if(cur.length){ L.push(""); L.push("Réathlé :"); cur.forEach(e=>{ const ph=PHASES[e.phase]; L.push("• "+(e.zone||EPTYPES[e.type])+" — "+ph.label+(e.deb?" depuis "+frDate(e.deb):"")+(e.ret?" · retour prévu "+frDate(e.ret):"")); }); } }
-  if(Array.isArray(p.pesees)&&p.pesees.length){ const pl=pesWeights(p).slice(-6).map(x=>(x.d?frDate(x.d)+" : ":"")+x.w+" kg"); if(pl.length){ L.push(""); L.push("Pesées récentes :"); pl.forEach(x=>L.push("• "+x)); } }
+  if(Array.isArray(p.pesees)&&p.pesees.length){ const pl=pesWeights(p).slice(-6).map(x=>(x.d?frDate(x.d)+" : ":"")+x.w+" kg"); if(pl.length){ L.push(""); L.push("Pesées récentes :"); { const b=bilanPoids(p); if(b){ const signe=b.delta>0?"+":""; L.push("Bilan depuis le "+frDate(b.depuis)+" : "+signe+frD(b.delta)+" kg"); } } pl.forEach(x=>L.push("• "+x)); } }
   if(p.z!=="none") L.push("Zone concernée : "+zoneInfo(p).label);
   if(p.ant&&p.ant.trim()){ L.push(""); L.push("Antécédent : "+p.ant); }
   if(p.acc&&p.acc.trim()){ L.push("Accent prévention : "+p.acc); }
@@ -1276,7 +1298,8 @@ function ficheHTML(p){
   cell("Poids cible",(p.poidsCible!==""&&p.poidsCible!=null)?p.poidsCible+" kg":"");
   cell("Temps de jeu",(p.tdj!==""&&p.tdj!=null)?p.tdj+" min":"");
   if(mes.length) h+='<div class="pf-sec">Mesures</div><div class="pf-grid">'+mes.join("")+'</div>';
-  { const pdata=pesWeights(p); if(pdata.length){ const wsvg=weightChartSVG(p,680,150); const rws=pdata.slice(-10).map(x=>'<tr><td>'+esc(frDate(x.d))+'</td><td>'+esc(x.w)+' kg</td></tr>').join(""); const cw=parseFloat(String(pdata[pdata.length-1].w).replace(",",".")); const tg=parseFloat(String(p.poidsCible).replace(",",".")); let gap=""; if(!isNaN(cw)&&!isNaN(tg)&&tg>0){ const ec=Math.round((cw-tg)*10)/10; gap='<div class="pf-gap">Poids actuel '+cw+' kg · cible '+p.poidsCible+' kg · écart '+(ec>0?"+":"")+ec+' kg</div>'; } h+='<div class="pf-sec">Suivi du poids</div>'+gap+(wsvg?'<div class="pf-chart">'+wsvg+'</div>':'')+'<table class="pf-table pf-pese"><thead><tr><th>Date</th><th>Poids</th></tr></thead><tbody>'+rws+'</tbody></table>'; } }
+  { const pdata=pesWeights(p); if(pdata.length){ const wsvg=weightChartSVG(p,680,150); const rws=pdata.slice(-10).map(x=>'<tr><td>'+esc(frDate(x.d))+'</td><td>'+esc(x.w)+' kg</td></tr>').join(""); const cw=parseFloat(String(pdata[pdata.length-1].w).replace(",",".")); const tg=parseFloat(String(p.poidsCible).replace(",",".")); let gap=""; if(!isNaN(cw)&&!isNaN(tg)&&tg>0){ const ec=Math.round((cw-tg)*10)/10; gap='<div class="pf-gap">Poids actuel '+cw+' kg · cible '+p.poidsCible+' kg · écart '+(ec>0?"+":"")+ec+' kg</div>'; } let bil=""; { const b=bilanPoids(p); if(b){ const c=b.delta>0?"#1C8C5A":(b.delta<0?"#C32A2A":"#566B7D"); const signe=b.delta>0?"+":""; bil='<div class="pf-bilan">Depuis le '+frDate(b.depuis)+' ('+b.n+' pesées) : <b style="color:'+c+'">'+signe+frD(b.delta)+' kg</b> · de '+frD(b.premier)+' à '+frD(b.dernier)+' kg</div>'; } }
+    h+='<div class="pf-sec">Suivi du poids</div>'+bil+gap+(wsvg?'<div class="pf-chart">'+wsvg+'</div>':'')+'<table class="pf-table pf-pese"><thead><tr><th>Date</th><th>Poids</th></tr></thead><tbody>'+rws+'</tbody></table>'; } }
   const pf=[]; const pcell=(l,v)=>{ if(v!==""&&v!=null) pf.push('<div class="pf-cell"><span>'+l+'</span><b>'+esc(v)+'</b></div>'); };
   if(p.sprint10!==""&&p.sprint10!=null) pcell("Sprint 10 m",frD(p.sprint10)+" s");
   if(p.sprint30!==""&&p.sprint30!=null) pcell("Sprint 30 m",frD(p.sprint30)+" s");
@@ -1284,8 +1307,8 @@ function ficheHTML(p){
   { const bd=(Array.isArray(p.broncos)?p.broncos:[]).filter(x=>x&&x.t); if(bd.length){ const _g=broncoGrp(p); const bg=broncoGaugeHTML(p.broncos,_g); h+='<div class="pf-sec">Bronco · barème</div>'+(bg?'<div class="pf-gauge">'+bg+'</div>':'')+'<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#566B7D;margin:4px 0 8px">'+broncoEvol(p.broncos,_g)+'</div>'; } }
   { const cd=(Array.isArray(p.cmjs)?p.cmjs:[]).filter(x=>x&&cmjNum(x.v)!=null); if(cd.length){ const _gc=cmjGrp(p); const cg=cmjGaugeHTML(p.cmjs,_gc); h+='<div class="pf-sec">CMJ · détente</div>'+(cg?'<div class="pf-gauge">'+cg+'</div>':'')+'<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#566B7D;margin:4px 0 8px">'+cmjEvol(p.cmjs,_gc)+'</div>'; } }
   if(Array.isArray(p.tests)){
-    const rows=p.tests.filter(t=>t&&t.ex&&String(t.ex).trim()&&t.load!==""&&t.load!=null).map(t=>{ const o=epley1RM(t.load); const rt=ratioFP(o,p.poids); const fz=forceZone(t.ex,rt,grpOf(p)); return '<tr><td>'+esc(t.ex)+'</td><td>'+esc(t.load)+' kg</td><td>'+(o?"~"+frD(o)+" kg":"—")+'</td><td>'+(rt?frD(rt)+"× PdC":"—")+(fz?' <span style="color:'+fz.color+';font-weight:700">'+fz.label+'</span>':'')+'</td></tr>'; });
-    if(rows.length) h+='<div class="pf-sec">Tests musculaires · 3RM → 1RM estimée (Epley)</div><table class="pf-table"><thead><tr><th>Exercice</th><th>3RM</th><th>1RM est.</th><th>Force rel.</th></tr></thead><tbody>'+rows.join("")+'</tbody></table>';
+    const rows=p.tests.filter(t=>t&&t.ex&&String(t.ex).trim()&&t.load!==""&&t.load!=null).map(t=>{ const o=epley1RM(t.load); const rt=ratioFP(o,p.poids); const fz=forceZone(t.ex,rt,grpOf(p)); const gau=forceGaugeHTML(t.ex,rt,grpOf(p)); return '<div class="pf-force"><div class="pf-force-h"><span class="pf-force-ex">'+esc(t.ex)+'</span><span class="pf-force-v">3RM '+esc(t.load)+' kg · 1RM ~'+(o?frD(o):"—")+' kg'+(rt?' · '+frD(rt)+'× PdC':'')+'</span>'+(fz?'<span class="pf-force-z" style="color:'+fz.color+'">'+fz.label+'</span>':'')+'</div>'+(gau?gau:'')+'</div>'; });
+    if(rows.length) h+='<div class="pf-sec">Tests musculaires · 3RM → 1RM estimée (Epley)</div>'+rows.join("");
   }
   const med=[];
   if(p.ant&&p.ant.trim()) med.push('<div class="pf-block"><span>Antécédent</span><p>'+esc(p.ant)+'</p></div>');
