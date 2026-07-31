@@ -262,6 +262,7 @@
   #printArea{display:none}
   #printArea,#printArea *{-webkit-print-color-adjust:exact;print-color-adjust:exact;box-sizing:border-box}
   .pf{font-family:var(--body);color:#13283B}
+  .pfwrap.pfbreak{break-after:page;page-break-after:always}
   .pf-head{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--brand);border-radius:10px}
   .pf-crest{flex:0 0 auto;width:50px;height:50px;background-color:#fff;background-image:var(--logo);background-size:contain;background-repeat:no-repeat;background-position:center;border-radius:8px;padding:4px}
   .pf-club{color:#EAF5FC;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
@@ -406,6 +407,7 @@
         🩹 Réathlé
       </button>
       <button id="btnReload" type="button">Recharger</button>
+      <button id="btnFiches" type="button">Fiches PDF</button>
       <button id="btnBareme" type="button">Barème</button>
       <button id="btnExport" type="button">Exporter</button>
       <button id="btnImport" type="button">Importer</button>
@@ -437,7 +439,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h19 — fiche joueur : bilan de poids + tests muscu visuels</div>
+    <div style="font-size:.7rem;opacity:.5">h20 — impression groupée des fiches joueurs</div>
   </footer>
 </div>
 
@@ -1000,6 +1002,7 @@ function render(){
   renderCounts();
   const rows=filteredBase();
   elCount.textContent=rows.length+(rows.length>1?" joueurs":" joueur");
+  { const bf=document.getElementById("btnFiches"); if(bf) bf.textContent="Fiches PDF ("+rows.length+")"; }
   elList.innerHTML="";
   if(rows.length===0){ const e=document.createElement("div"); e.className="empty"; e.innerHTML='<p>Aucun joueur ne correspond.</p><button class="btn" type="button">Tout afficher</button>'; e.querySelector("button").addEventListener("click",()=>{ elQ.value=""; query=""; elClear.classList.remove("show"); activeFilter="all"; [...elChips.children].forEach(x=>x.setAttribute("aria-pressed",x.dataset.key==="all"?"true":"false")); render(); }); elList.appendChild(e); return; }
   const showGroups=(query==="");
@@ -1424,6 +1427,16 @@ function tdjFicheHTML(){
 }
 function printTdj(){ document.getElementById("printArea").innerHTML=tdjFicheHTML(); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
 function printReathle(){ document.getElementById("printArea").innerHTML=reathleFicheHTML(); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
+function printFiches(list){
+  const arr=(list||[]).filter(Boolean);
+  if(!arr.length){ toast("Aucune fiche à imprimer"); return; }
+  const html=arr.map(function(p,i){
+    return '<div class="pfwrap'+(i<arr.length-1?" pfbreak":"")+'">'+ficheHTML(p)+'</div>';
+  }).join("");
+  document.getElementById("printArea").innerHTML=html;
+  if(window.print){ toast(arr.length+" fiche"+(arr.length>1?"s":"")+" préparée"+(arr.length>1?"s":"")); setTimeout(function(){ window.print(); },150); }
+  else { toast("Ouvre le fichier dans un navigateur pour le PDF"); }
+}
 function printFiche(id){ const p=players.find(x=>x.id===id); if(!p) return; document.getElementById("printArea").innerHTML=ficheHTML(p); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
 const dataOverlay=$("dataOverlay");
 function closeData(){ dataOverlay.classList.remove("open"); }
@@ -1448,6 +1461,7 @@ function openBareme(){
   baremeOverlay.classList.add("open");
 }
 function closeBareme(){ baremeOverlay.classList.remove("open"); }
+$("btnFiches").addEventListener("click",()=>{ printFiches(filteredBase()); });
 $("btnBareme").addEventListener("click",openBareme);
 const reathleOverlay=$("reathleOverlay");
 function reathleTexte(){
