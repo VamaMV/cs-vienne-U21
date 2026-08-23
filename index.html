@@ -454,7 +454,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h25 — accueil personnalisé par utilisateur</div>
+    <div style="font-size:.7rem;opacity:.5">h26 — comptes du staff (Sébastien, Simon, Cyril)</div>
   </footer>
 </div>
 
@@ -701,18 +701,21 @@ function cmjEvol(cmjs,grp){ const data=(Array.isArray(cmjs)?cmjs:[]).filter(x=>x
 /* ---- UTILISATEURS : ajouter ici chaque compte cree dans Supabase ----
    role "admin" = tous les droits (prepa physique) · "coach" = consultation seule */
 const UTILISATEURS={
-  "matis.vachon1998@gmail.com":{nom:"Matis",role:"admin"}
-  /* ,"prenom.nom@exemple.com":{nom:"Melvin",role:"coach"} */
+  "matis.vachon1998@gmail.com":{nom:"Matis",role:"admin",fonction:"Préparateur physique"},
+  "sebp.csv@gmail.com":{nom:"Sébastien",role:"coach",fonction:"Coach des avants"},
+  "chatagner.simon@orange.fr":{nom:"Simon",role:"coach",fonction:"Coach des trois-quarts"},
+  "ciryl.payet-morice80@laposte.net":{nom:"Cyril",role:"coach",fonction:"Coach de la mêlée"}
+  /* ,"prenom.nom@exemple.com":{nom:"Prenom",role:"coach",fonction:"Fonction"} */
 };
-let ROLE="coach", UNOM="";
+let ROLE="coach", UNOM="", UFONC="";
 function isAdmin(){ return ROLE==="admin"; }
 function profilDe(email){
   const e=String(email||"").trim().toLowerCase();
   const u=UTILISATEURS[e];
-  if(u) return {nom:u.nom||"",role:(u.role==="admin"?"admin":"coach")};
+  if(u) return {nom:u.nom||"",role:(u.role==="admin"?"admin":"coach"),fonction:u.fonction||""};
   const av=e.split("@")[0].replace(/[._-]+/g," ").trim();
   const nom=av?av.charAt(0).toUpperCase()+av.slice(1):"";
-  return {nom:nom,role:"coach"};
+  return {nom:nom,role:"coach",fonction:""};
 }
 function salutation(){
   const h=new Date().getHours();
@@ -1063,7 +1066,7 @@ function renderHello(){
     const bl=players.filter(function(p){ return activeEpisode(p); }).length;
     ctx=nb+" joueurs"+(bl?" · "+bl+" en réathlé":"");
   } else {
-    ctx="Accès consultation";
+    ctx=(UFONC?UFONC+" · ":"")+"Accès consultation";
   }
   el.innerHTML='<div class="hello"><span class="hello-t">'+salutation()+(UNOM?" "+esc(UNOM):"")+'</span><span class="hello-c">'+esc(ctx)+'</span></div>';
 }
@@ -1786,7 +1789,7 @@ async function initAuth(){
     const {data}=await sb.auth.getSession();
     if(data&&data.session){
       const em=((data.session.user&&data.session.user.email)||"");
-      const pr=profilDe(em); ROLE=pr.role; UNOM=pr.nom;
+      const pr=profilDe(em); ROLE=pr.role; UNOM=pr.nom; UFONC=pr.fonction||"";
       hideLogin(); appliquerRole(); boot();
     } else { showLogin(); }
   }catch(e){ showLogin("Erreur de connexion au serveur."); }
