@@ -173,6 +173,9 @@
   .eprow .epmed label{display:flex;align-items:center;gap:7px;font-size:.85rem;font-weight:600;color:#8A5200}
   .eprow .epmed input{width:auto;flex:0 0 auto}
   .rtable .sub{font-size:.74rem;color:var(--faint)}
+  .hello{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:9px}
+  .hello-t{font-family:var(--display);font-weight:700;font-size:1.02rem;color:var(--ink);letter-spacing:-.01em}
+  .hello-c{font-size:.78rem;color:var(--faint)}
   .nm{display:flex;align-items:center;gap:11px;padding:9px 13px;background:linear-gradient(135deg,#0F80C4,#13283B);border-radius:11px;margin-bottom:11px;box-shadow:0 2px 10px rgba(15,128,196,.2)}
   .nm.nm-proche{background:linear-gradient(135deg,#E08A00,#B45309)}
   .nm.nm-urg{background:linear-gradient(135deg,#DC2626,#991B1B)}
@@ -401,6 +404,7 @@
 </header>
 <div class="wrap">
   <div class="top">
+    <div id="hello"></div>
     <div id="nextMatch"></div>
     <div class="counts" id="counts"></div>
     <div class="datalinks">
@@ -450,7 +454,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h23 — comparaison des matchs + logo Rumilly</div>
+    <div style="font-size:.7rem;opacity:.5">h25 — accueil personnalisé par utilisateur</div>
   </footer>
 </div>
 
@@ -694,6 +698,26 @@ function cmjZone(cm,grp){ if(cm==null) return null; const B=cmjOf(grp); if(cm>=B
 function cmjGaugeHTML(cmjs,grp){ const B=cmjOf(grp); const L=B.low,H=B.high,M1=B.m1,M2=B.m2,M3=B.m3; if([L,H,M1,M2,M3].some(v=>v==null)||H<=L) return ""; const pct=cm=>{ let r=(cm-L)/(H-L); r=Math.max(0,Math.min(1,r)); return r*100; }; const segs=[[L,M1,"#DC2626"],[M1,M2,"#B45309"],[M2,M3,"#2E9E5B"],[M3,H,"#1C8C5A"]]; const bar=segs.map(z=>'<div style="width:'+(pct(z[1])-pct(z[0])).toFixed(1)+'%;background:'+z[2]+'"></div>').join(""); const data=(Array.isArray(cmjs)?cmjs:[]).filter(x=>x&&cmjNum(x.v)!=null).slice().sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const marks=data.map((x,i)=>{ const cm=cmjNum(x.v); const last=i===data.length-1; return '<div class="bmark'+(last?" last":"")+'" style="left:'+pct(cm).toFixed(1)+'%"></div>'; }).join(""); return '<div class="bgauge"><div class="bbar">'+bar+'</div>'+marks+'</div>'; }
 function cmjEvol(cmjs,grp){ const data=(Array.isArray(cmjs)?cmjs:[]).filter(x=>x&&cmjNum(x.v)!=null).slice().sort((a,b)=>(a.d||"").localeCompare(b.d||"")); if(!data.length) return ""; const cm=cmjNum(data[data.length-1].v); const z=cmjZone(cm,grp); const gl=(grp==="avants")?"avants":"3/4"; let s='<b>'+frD(cm)+' cm</b>'; if(z) s+='<span style="color:'+z.color+';font-weight:600">'+z.label+' · '+gl+'</span>'; if(data.length>=2){ const pcm=cmjNum(data[data.length-2].v); if(pcm!=null){ const d=Math.round((cm-pcm)*10)/10; s+='<span>'+(d>0?"↑ +"+d:(d<0?"↓ "+d:"="))+' cm vs '+frD(pcm)+' cm</span>'; } } return s; }
 /* ===== Supabase (cloud + connexion) ===== */
+/* ---- UTILISATEURS : ajouter ici chaque compte cree dans Supabase ----
+   role "admin" = tous les droits (prepa physique) · "coach" = consultation seule */
+const UTILISATEURS={
+  "matis.vachon1998@gmail.com":{nom:"Matis",role:"admin"}
+  /* ,"prenom.nom@exemple.com":{nom:"Melvin",role:"coach"} */
+};
+let ROLE="coach", UNOM="";
+function isAdmin(){ return ROLE==="admin"; }
+function profilDe(email){
+  const e=String(email||"").trim().toLowerCase();
+  const u=UTILISATEURS[e];
+  if(u) return {nom:u.nom||"",role:(u.role==="admin"?"admin":"coach")};
+  const av=e.split("@")[0].replace(/[._-]+/g," ").trim();
+  const nom=av?av.charAt(0).toUpperCase()+av.slice(1):"";
+  return {nom:nom,role:"coach"};
+}
+function salutation(){
+  const h=new Date().getHours();
+  return (h<5||h>=18)?"Bonsoir":"Bonjour";
+}
 const SUPA_URL="https://lhbosovcordgzalxkgjx.supabase.co";
 const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxoYm9zb3Zjb3JkZ3phbHhrZ2p4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NzA2OTEsImV4cCI6MjA5NzQ0NjY5MX0.6N9HwIKRdc1JT36yDaRVRWP04tFG0bwvzZvW0wWSEC4";
 const sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SUPA_URL,SUPA_KEY):null;
@@ -939,7 +963,7 @@ function normRec(p){
 let players=[]; let activeFilter="all"; let query=""; let editingId=null; let viewMode="poste";
 const $=id=>document.getElementById(id);
 const elList=$("list"),elCount=$("count"),elChips=$("chips"),elQ=$("q"),elClear=$("clear"),elCounts=$("counts"),elToast=$("toast");
-function persist(){ store.save(players); }
+function persist(){ if(!isAdmin()){ toast("Accès en consultation seule"); return; } store.save(players); }
 function toast(msg){ elToast.textContent=msg; elToast.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>elToast.classList.remove("show"),1600); }
 
 CHIPS.forEach(c=>{ const b=document.createElement("button"); b.className="chip"; b.type="button"; b.dataset.key=c.key; b.setAttribute("aria-pressed",c.key===activeFilter?"true":"false"); b.innerHTML=(c.color?'<span class="dot" style="background:'+c.color+'"></span>':"")+c.label; b.addEventListener("click",()=>{ activeFilter=c.key; [...elChips.children].forEach(x=>x.setAttribute("aria-pressed",x.dataset.key===activeFilter?"true":"false")); render(); }); elChips.appendChild(b); });
@@ -991,17 +1015,17 @@ function richParts(p){
       const ef=ecartFourchette(e); const ec=ETATCOL[ef.etat]; const pth=pathoOf(e);
       const jl=jalonsOf(e); const nOk=(e.jal||[]).filter(Boolean).length;
       ehtml+='<div class="tline"><b style="color:'+ph.color+'">'+ph.label+'</b> — '+esc(e.zone||EPTYPES[e.type])+(e.deb?' <span class="e">depuis le '+frDate(e.deb)+(ds!=null?' ('+ds+' j)':'')+'</span>':'')+(e.ret?' <span class="e">· retour prévu '+frDate(e.ret)+'</span>':'')
-        +(pth?'<br><span class="e">'+esc(pth.lab)+' · repère '+pth.min+'-'+pth.max+' j</span> <span style="color:'+ec.c+';font-weight:700">'+ec.l+'</span>':'')+(fenetreTxt(e)?'<br><span class="e">Fenêtre estimée : <b>'+fenetreTxt(e)+'</b></span>':'')
-        +((e.phase==="attente")?'<br><span class="e">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"Statut à préciser")+(e.rdv?' · RDV le '+frDate(e.rdv):'')+'</span>':'<br><span class="e">Jalons validés '+nOk+'/'+jl.length+'</span>')+(e.medok?' <span style="color:#1C8C5A;font-weight:700">· accord médical OK</span>':((e.phase==="retourp")?' <span style="color:#C32A2A;font-weight:700">· accord médical requis</span>':''))
-        +(e.note?'<br><span class="e">'+esc(e.note)+'</span>':'')+'</div>';
+        +((pth&&isAdmin())?'<br><span class="e">'+esc(pth.lab)+' · repère '+pth.min+'-'+pth.max+' j</span> <span style="color:'+ec.c+';font-weight:700">'+ec.l+'</span>':'')+((fenetreTxt(e)&&isAdmin())?'<br><span class="e">Fenêtre estimée : <b>'+fenetreTxt(e)+'</b></span>':'')
+        +(!isAdmin()?'':((e.phase==="attente")?'<br><span class="e">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"Statut à préciser")+(e.rdv?' · RDV le '+frDate(e.rdv):'')+'</span>':'<br><span class="e">Jalons validés '+nOk+'/'+jl.length+'</span>'))+(!isAdmin()?'':(e.medok?' <span style="color:#1C8C5A;font-weight:700">· accord médical OK</span>':((e.phase==="retourp")?' <span style="color:#C32A2A;font-weight:700">· accord médical requis</span>':'')))
+        +((e.note&&isAdmin())?'<br><span class="e">'+esc(e.note)+'</span>':'')+'</div>';
     });
     old.slice().reverse().forEach(e=>{ ehtml+='<div class="tline" style="opacity:.65"><b>Clos</b> — '+esc(e.zone||EPTYPES[e.type])+' <span class="e">'+(e.deb?frDate(e.deb):'?')+' → '+(e.retr?frDate(e.retr):'?')+'</span>'+(closSansDiag(e)?' <span class="nodiag">Retour sans diagnostic</span>':'')+(e.note?' <span class="e">· '+esc(e.note)+'</span>':'')+'</div>'; });
     const nd=eps.filter(closSansDiag).length;
     parts.push('<div class="field"><div class="label">Réathlé · blessures</div>'+(nd?'<div class="nodiag-rap">'+nd+' retour'+(nd>1?'s':'')+' sans diagnostic dans l\'historique — à signaler si la zone se réveille.</div>':'')+'<div class="tests-list">'+ehtml+'</div></div>');
   } }
   const hasAnt=p.ant&&p.ant.trim(),hasAcc=p.acc&&p.acc.trim();
-  if(hasAnt) parts.push('<div class="field"><div class="label">Antécédent</div><div class="val">'+esc(p.ant)+'</div></div>');
-  if(hasAcc) parts.push('<div class="field"><div class="label">Accent en séance</div><div class="val">'+esc(p.acc)+'</div></div>');
+  if(hasAnt&&isAdmin()) parts.push('<div class="field"><div class="label">Antécédent</div><div class="val">'+esc(p.ant)+'</div></div>');
+  if(hasAcc&&isAdmin()) parts.push('<div class="field"><div class="label">Accent en séance</div><div class="val">'+esc(p.acc)+'</div></div>');
   const stats=[]; const addStat=(l,v)=>{ if(v!==""&&v!=null) stats.push('<div class="stat"><span class="sl">'+l+'</span><span class="sv">'+esc(v)+'</span></div>'); };
   const u=(v,su)=>(v!==""&&v!=null)?(v+su):"";
   addStat("Taille",u(p.taille," cm")); addStat("Poids",u(p.poids," kg")); addStat("Cible",u(p.poidsCible," kg")); addStat("Temps de jeu",u(p.tdj," min")); addStat("10 m",u(p.sprint10," s")); addStat("30 m",u(p.sprint30," s"));
@@ -1031,6 +1055,18 @@ function card(p){
 function sectionEl(txt){ const d=document.createElement("div"); d.className="section"; d.textContent=txt; return d; }
 function groupEl(label,count){ const h=document.createElement("div"); h.className="group"; h.innerHTML=esc(label)+' <span>· '+count+'</span>'; return h; }
 
+function renderHello(){
+  const el=document.getElementById("hello"); if(!el) return;
+  const nb=players.length;
+  let ctx="";
+  if(isAdmin()){
+    const bl=players.filter(function(p){ return activeEpisode(p); }).length;
+    ctx=nb+" joueurs"+(bl?" · "+bl+" en réathlé":"");
+  } else {
+    ctx="Accès consultation";
+  }
+  el.innerHTML='<div class="hello"><span class="hello-t">'+salutation()+(UNOM?" "+esc(UNOM):"")+'</span><span class="hello-c">'+esc(ctx)+'</span></div>';
+}
 function renderNextMatch(){
   const el=document.getElementById("nextMatch"); if(!el) return;
   const m=prochainMatch();
@@ -1048,6 +1084,7 @@ function renderNextMatch(){
     +'<div class="nm-cd"><b>'+cd+'</b><span>'+frDate(m.d)+'</span></div></div>';
 }
 function render(){
+  renderHello();
   renderNextMatch();
   renderCounts();
   const rows=filteredBase();
@@ -1383,7 +1420,7 @@ function ficheHTML(p){
   const med=[];
   if(p.ant&&p.ant.trim()) med.push('<div class="pf-block"><span>Antécédent</span><p>'+esc(p.ant)+'</p></div>');
   if(p.acc&&p.acc.trim()) med.push('<div class="pf-block"><span>Accent en séance</span><p>'+esc(p.acc)+'</p></div>');
-  if(med.length) R+='<div class="pf-sec">Suivi médical &amp; prévention</div>'+med.join("");
+  if(med.length&&isAdmin()) R+='<div class="pf-sec">Suivi médical &amp; prévention</div>'+med.join("");
 
   h+='<table class="pf-cols"><tr><td class="pf-cl">'+L+'</td><td class="pf-cr">'+R+'</td></tr></table>';
   const d=new Date(); const dd=String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear();
@@ -1571,7 +1608,7 @@ function openReathle(){
       const ph=PHASES[e.phase]; const ds=daysSince(e.deb);
       const ef=ecartFourchette(e); const ec=ETATCOL[ef.etat]; const pth=pathoOf(e);
       const jl=jalonsOf(e); const nOk=(e.jal||[]).filter(Boolean).length;
-      rows.push({etat:ef.etat,html:'<tr><td><b>'+esc(p.n)+'</b></td><td>'+esc(e.zone||EPTYPES[e.type])+(pth?'<br><span class="sub">'+esc(pth.lab)+'</span>':'')+'</td><td><span style="color:'+ph.color+';font-weight:700">'+ph.label+'</span></td><td>'+(ds!=null?ds+" j":"—")+(pth?'<br><span class="sub">repère '+pth.min+'-'+pth.max+' j</span>':'')+'</td><td>'+(fenetreTxt(e)||'<span class="sub">—</span>')+'</td><td><span style="color:'+ec.c+';font-weight:700">'+ec.l+'</span></td><td>'+((e.phase==="attente")?('<span class="sub">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"à préciser")+(e.rdv?'<br>RDV '+frDate(e.rdv):'')+'</span>'):(nOk+'/'+jl.length))+'</td><td>'+(e.medok?'<span style="color:#1C8C5A;font-weight:700">oui</span>':((e.phase==="retourp")?'<span style="color:#C32A2A;font-weight:700">requis</span>':'<span class="sub">—</span>'))+'</td></tr>'});
+      rows.push({etat:ef.etat,html:'<tr><td><b>'+esc(p.n)+'</b></td><td>'+esc(e.zone||EPTYPES[e.type])+((pth&&isAdmin())?'<br><span class="sub">'+esc(pth.lab)+'</span>':'')+'</td><td><span style="color:'+ph.color+';font-weight:700">'+ph.label+'</span></td><td>'+(ds!=null?ds+" j":"—")+((pth&&isAdmin())?'<br><span class="sub">repère '+pth.min+'-'+pth.max+' j</span>':'')+'</td>'+(isAdmin()?('<td>'+(fenetreTxt(e)||'<span class="sub">—</span>')+'</td>'+'<td><span style="color:'+ec.c+';font-weight:700">'+ec.l+'</span></td>'+'<td>'+((e.phase==="attente")?('<span class="sub">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"à préciser")+(e.rdv?'<br>RDV '+frDate(e.rdv):'')+'</span>'):(nOk+'/'+jl.length))+'</td>'+'<td>'+(e.medok?'<span style="color:#1C8C5A;font-weight:700">oui</span>':((e.phase==="retourp")?'<span style="color:#C32A2A;font-weight:700">requis</span>':'<span class="sub">—</span>'))+'</td>'):'')+'</tr>'});
     });
   });
   const retours=[];
@@ -1595,7 +1632,7 @@ function openReathle(){
     });
     calh+='</div>';
   }
-  $("reathleBody").innerHTML=calh+(rows.length?'<table class="rtable"><thead><tr><th>Joueur</th><th>Zone / pathologie</th><th>Phase</th><th>Depuis</th><th>Fenêtre estimée</th><th>Positionnement</th><th>Jalons</th><th>Accord méd.</th></tr></thead><tbody>'+rows.map(r=>r.html).join("")+'</tbody></table>':'<p class="hint">Aucune blessure en cours — tout le monde est apte.</p>')
+  $("reathleBody").innerHTML=calh+(rows.length?'<table class="rtable"><thead><tr><th>Joueur</th><th>Zone</th><th>Phase</th><th>Depuis</th>'+(isAdmin()?'<th>Fenêtre estimée</th><th>Positionnement</th><th>Jalons</th><th>Accord méd.</th>':'')+'</tr></thead><tbody>'+rows.map(r=>r.html).join("")+'</tbody></table>':'<p class="hint">Aucune blessure en cours — tout le monde est apte.</p>')
     ;
   reathleOverlay.classList.add("open");
 }
@@ -1737,11 +1774,21 @@ $("loginBtn").addEventListener("click",doLogin);
 $("loginPass").addEventListener("keydown",function(e){ if(e.key==="Enter") doLogin(); });
 $("loginEmail").addEventListener("keydown",function(e){ if(e.key==="Enter") doLogin(); });
 $("btnLogout").addEventListener("click",async function(){ try{ if(sb) await sb.auth.signOut(); }catch(e){} location.reload(); });
+function appliquerRole(){
+  if(isAdmin()) return;
+  ["fab","btnImport","btnReset","detailEdit","btnBareme"].forEach(function(id){ const el=document.getElementById(id); if(el) el.style.display="none"; });
+  const b=document.getElementById("dataHint"); if(b) b.textContent="Accès consultation — les modifications sont réservées au préparateur physique.";
+  document.body.classList.add("role-coach");
+}
 async function initAuth(){
   if(!sb){ showLogin("Serveur indisponible. Vérifie ta connexion internet puis recharge la page."); return; }
   try{
     const {data}=await sb.auth.getSession();
-    if(data&&data.session){ hideLogin(); boot(); } else { showLogin(); }
+    if(data&&data.session){
+      const em=((data.session.user&&data.session.user.email)||"");
+      const pr=profilDe(em); ROLE=pr.role; UNOM=pr.nom;
+      hideLogin(); appliquerRole(); boot();
+    } else { showLogin(); }
   }catch(e){ showLogin("Erreur de connexion au serveur."); }
 }
 ["b_arr","b_av3","b_av12"].forEach(function(p){ ["slow","t1","t2","t3","fast"].forEach(function(k){ const el=$(p+"_"+k); if(el) el.addEventListener("input",function(){ const f=fmtBroncoStr(el.value); if(el.value!==f) el.value=f; }); }); });
