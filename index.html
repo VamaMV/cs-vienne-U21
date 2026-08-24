@@ -173,6 +173,18 @@
   .eprow .epmed label{display:flex;align-items:center;gap:7px;font-size:.85rem;font-weight:600;color:#8A5200}
   .eprow .epmed input{width:auto;flex:0 0 auto}
   .rtable .sub{font-size:.74rem;color:var(--faint)}
+  .login-link{display:block;width:100%;margin-top:8px;background:none;border:none;color:var(--brand);font-family:var(--body);font-size:.82rem;font-weight:600;cursor:pointer;text-decoration:underline;padding:4px}
+  .login-reset-t{font-family:var(--display);font-weight:700;font-size:.95rem;color:var(--ink);margin-bottom:9px;text-align:center}
+  .splash{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;background:linear-gradient(150deg,#0F80C4,#13283B);opacity:0;transition:opacity .38s ease}
+  .splash.on{display:flex;opacity:1}
+  .splash-in{text-align:center;color:#fff;padding:24px;max-width:340px}
+  .splash-in .login-crest{margin:0 auto 16px}
+  .splash-hi{font-family:var(--display);font-weight:800;font-size:1.55rem;letter-spacing:-.01em}
+  .splash-fn{font-size:.9rem;opacity:.85;margin-top:4px}
+  .splash-bar{width:150px;height:3px;border-radius:99px;background:rgba(255,255,255,.22);margin:20px auto 9px;overflow:hidden}
+  .splash-bar i{display:block;width:40%;height:100%;border-radius:99px;background:#fff;animation:spl 1.05s ease-in-out infinite}
+  @keyframes spl{0%{transform:translateX(-100%)}100%{transform:translateX(275%)}}
+  .splash-load{font-size:.76rem;opacity:.7;letter-spacing:.04em}
   .hello{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:9px}
   .hello-t{font-family:var(--display);font-weight:700;font-size:1.02rem;color:var(--ink);letter-spacing:-.01em}
   .hello-c{font-size:.78rem;color:var(--faint)}
@@ -389,7 +401,24 @@
       <input id="loginPass" type="password" placeholder="Mot de passe" autocomplete="current-password" aria-label="Mot de passe" />
       <button id="loginBtn" type="button" class="login-go">Se connecter</button>
       <div id="loginErr" class="login-err"></div>
+      <button id="loginForgot" type="button" class="login-link">Mot de passe oublié ?</button>
     </div>
+    <div class="login-card" id="resetCard" style="display:none">
+      <div class="login-reset-t">Choisis ton nouveau mot de passe</div>
+      <input id="newPass" type="password" placeholder="Nouveau mot de passe" autocomplete="new-password" />
+      <input id="newPass2" type="password" placeholder="Confirme le mot de passe" autocomplete="new-password" />
+      <button id="newPassBtn" type="button" class="login-go">Enregistrer</button>
+      <div id="resetErr" class="login-err"></div>
+    </div>
+  </div>
+</div>
+<div id="splash" class="splash">
+  <div class="splash-in">
+    <div class="login-crest" role="img" aria-label="Blason CS Vienne Rugby"></div>
+    <div class="splash-hi" id="splashHi"></div>
+    <div class="splash-fn" id="splashFn"></div>
+    <div class="splash-bar"><i></i></div>
+    <div class="splash-load">Chargement de l\'effectif…</div>
   </div>
 </div>
 <header class="masthead">
@@ -454,7 +483,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h26 — comptes du staff (Sébastien, Simon, Cyril)</div>
+    <div style="font-size:.7rem;opacity:.5">h27 — écran d accueil + mot de passe oublié</div>
   </footer>
 </div>
 
@@ -1760,6 +1789,17 @@ $("b_save").addEventListener("click",()=>{ const g=id=>$(id).value.trim();
 async function boot(){ const bm=await loadBareme(); if(bm&&typeof bm==="object"){ const bb=bm.bronco?bm.bronco:bm; if(bb&&typeof bb==="object"){ if(bb.slow||bb.fast){ const o=Object.assign({},bb); BAREME={arr:Object.assign({},BAREME.arr,o),av3:Object.assign({},BAREME.av3,o),av12:Object.assign({},BAREME.av12,o)}; } else if(bb.avants||bb.troisquarts){ if(bb.troisquarts) BAREME.arr=Object.assign({},BAREME.arr,bb.troisquarts); if(bb.avants){ BAREME.av3=Object.assign({},BAREME.av3,bb.avants); BAREME.av12=Object.assign({},BAREME.av12,bb.avants); } } else { if(bb.arr) BAREME.arr=Object.assign({},BAREME.arr,bb.arr); if(bb.av3) BAREME.av3=Object.assign({},BAREME.av3,bb.av3); if(bb.av12) BAREME.av12=Object.assign({},BAREME.av12,bb.av12); } } if(bm.force&&typeof bm.force==="object"){ for(const k in FORCE_BAREME){ if(bm.force[k]){ if(Array.isArray(bm.force[k].avants)) FORCE_BAREME[k].avants=bm.force[k].avants.slice(); if(Array.isArray(bm.force[k].troisquarts)) FORCE_BAREME[k].troisquarts=bm.force[k].troisquarts.slice(); } } } if(bm.cmj&&typeof bm.cmj==="object"){ for(const g of ["avants","troisquarts"]){ const c=bm.cmj[g]; if(c){ if(c.m1!=null) CMJ_BAREME[g].m1=c.m1; if(c.m2!=null) CMJ_BAREME[g].m2=c.m2; if(c.m3!=null) CMJ_BAREME[g].m3=c.m3; CMJ_BAREME[g].low=(c.low!=null)?c.low:CMJ_BAREME[g].m1-6; CMJ_BAREME[g].high=(c.high!=null)?c.high:CMJ_BAREME[g].m3+6; } } } } const saved=await store.load(); if(saved && Array.isArray(saved) && saved.length){ players=saved.map(normRec); } else { players=SEED.map(normRec); persist(); } render(); }
 
 /* ===== Connexion (login) ===== */
+function montrerSplash(){
+  const el=document.getElementById("splash"); if(!el) return;
+  document.getElementById("splashHi").textContent=salutation()+(UNOM?" "+UNOM:"");
+  document.getElementById("splashFn").textContent=UFONC||(isAdmin()?"Préparateur physique":"Staff");
+  el.classList.add("on");
+}
+function cacherSplash(depuis){
+  const el=document.getElementById("splash"); if(!el) return;
+  const reste=Math.max(0,1400-(Date.now()-(depuis||0)));
+  setTimeout(function(){ el.classList.remove("on"); setTimeout(function(){ el.style.display="none"; },420); },reste);
+}
 function showLogin(msg){ $("loginErr").textContent=msg||""; $("loginOverlay").classList.add("open"); }
 function hideLogin(){ $("loginOverlay").classList.remove("open"); }
 async function doLogin(){
@@ -1776,6 +1816,28 @@ async function doLogin(){
 $("loginBtn").addEventListener("click",doLogin);
 $("loginPass").addEventListener("keydown",function(e){ if(e.key==="Enter") doLogin(); });
 $("loginEmail").addEventListener("keydown",function(e){ if(e.key==="Enter") doLogin(); });
+$("loginForgot").addEventListener("click",async function(){
+  const email=($("loginEmail").value||"").trim();
+  if(!email){ $("loginErr").textContent="Saisis ton email au-dessus, puis reclique."; return; }
+  if(!sb){ $("loginErr").textContent="Connexion indisponible."; return; }
+  $("loginErr").textContent="Envoi en cours…";
+  try{
+    const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+    $("loginErr").textContent=error?("Erreur : "+error.message):"Email envoyé. Ouvre le lien reçu pour choisir un nouveau mot de passe.";
+  }catch(e){ $("loginErr").textContent="Erreur d envoi."; }
+});
+$("newPassBtn").addEventListener("click",async function(){
+  const a=$("newPass").value||"", b=$("newPass2").value||"";
+  if(a.length<8){ $("resetErr").textContent="8 caractères minimum."; return; }
+  if(a!==b){ $("resetErr").textContent="Les deux mots de passe diffèrent."; return; }
+  $("resetErr").textContent="Enregistrement…";
+  try{
+    const {error}=await sb.auth.updateUser({password:a});
+    if(error){ $("resetErr").textContent="Erreur : "+error.message; return; }
+    $("resetErr").textContent="Mot de passe enregistré. Reconnecte-toi.";
+    setTimeout(function(){ location.href=location.origin+location.pathname; },1400);
+  }catch(e){ $("resetErr").textContent="Erreur d enregistrement."; }
+});
 $("btnLogout").addEventListener("click",async function(){ try{ if(sb) await sb.auth.signOut(); }catch(e){} location.reload(); });
 function appliquerRole(){
   if(isAdmin()) return;
@@ -1783,14 +1845,26 @@ function appliquerRole(){
   const b=document.getElementById("dataHint"); if(b) b.textContent="Accès consultation — les modifications sont réservées au préparateur physique.";
   document.body.classList.add("role-coach");
 }
+function modeRecuperation(){
+  const h=String(location.hash||"");
+  return h.indexOf("type=recovery")>=0;
+}
 async function initAuth(){
+  if(modeRecuperation()){
+    showLogin("");
+    document.getElementById("resetCard").style.display="";
+    const lc=document.querySelectorAll(".login-card")[0]; if(lc) lc.style.display="none";
+    return;
+  }
   if(!sb){ showLogin("Serveur indisponible. Vérifie ta connexion internet puis recharge la page."); return; }
   try{
     const {data}=await sb.auth.getSession();
     if(data&&data.session){
       const em=((data.session.user&&data.session.user.email)||"");
       const pr=profilDe(em); ROLE=pr.role; UNOM=pr.nom; UFONC=pr.fonction||"";
-      hideLogin(); appliquerRole(); boot();
+      hideLogin(); appliquerRole(); montrerSplash();
+      const t0=Date.now();
+      Promise.resolve(boot()).then(function(){ cacherSplash(t0); },function(){ cacherSplash(t0); });
     } else { showLogin(); }
   }catch(e){ showLogin("Erreur de connexion au serveur."); }
 }
