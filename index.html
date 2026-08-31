@@ -238,7 +238,10 @@
   .rcal-n{flex:1.1;min-width:0}
   .rcal-n span{display:block;font-size:.72rem;color:var(--faint)}
   .rcal-w{flex:0 0 auto;font-weight:700;color:var(--brand)}
-  .rcal-m{flex:1.3;font-size:.75rem;color:var(--faint);text-align:right}
+  .rcal-m{flex:1.4;font-size:.75rem;color:var(--muted);text-align:right;line-height:1.35}
+  .rcal-sub{color:var(--faint)}
+  .rcal-warn{color:#B45309;font-weight:700}
+  .rcal-note{margin-top:7px;padding-top:6px;border-top:1px solid #E1EDF5;font-size:.7rem;font-style:italic;color:var(--faint)}
   .rdisc{margin-top:11px;padding:9px 11px;background:#FFF6EC;border:1px solid #F3DCC2;border-radius:9px;font-size:.78rem;line-height:1.45;color:#6B4E22}
   .eprow input,.eprow select{width:100%;font-family:var(--body);font-size:.9rem;padding:8px 9px;border:1.5px solid var(--line);border-radius:9px;background:#fff;outline:none}
   .eprow input:focus,.eprow select:focus{border-color:var(--brand)}
@@ -484,7 +487,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h31 — réathlé : classement par région du corps</div>
+    <div style="font-size:.7rem;opacity:.5">h32 — réathlé : dates de retour réalistes (plus de match promis)</div>
   </footer>
 </div>
 
@@ -1688,7 +1691,7 @@ function openReathle(){
   const retours=[];
   players.slice().forEach(p=>{
     (Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e.phase!=="clos").forEach(e=>{
-      const f=fenetreRetour(e); if(f) retours.push({n:p.n,zone:e.zone||EPTYPES[e.type]||"",min:f.min,max:f.max,ph:e.phase});
+      const f=fenetreRetour(e); if(f) retours.push({n:p.n,zone:e.zone||EPTYPES[e.type]||"",min:f.min,max:f.max,ph:e.phase,medok:!!e.medok});
     });
   });
   retours.sort((a,b)=>a.min.localeCompare(b.min));
@@ -1699,11 +1702,24 @@ function openReathle(){
     const auj=new Date().toISOString().slice(0,10);
     calh='<div class="rcal"><div class="rcal-t">Calendrier prévisionnel des retours</div>';
     retours.forEach(r=>{
-      const prochain=CALENDRIER.filter(m=>m.d>=r.min)[0];
-      calh+='<div class="rcal-l"><div class="rcal-n"><b>'+esc(r.n)+'</b><span>'+esc(r.zone)+'</span></div>'
+      const mTot=CALENDRIER.filter(m=>m.d>=r.min)[0];
+      const mTard=CALENDRIER.filter(m=>m.d>=r.max)[0];
+      const amont=(r.ph==="attente"||r.ph==="soins");
+      let txt;
+      if(amont){
+        txt='<span class="rcal-warn">Phase '+PHASES[r.ph].label.toLowerCase()+' — trop tôt pour viser un match</span>';
+      } else if(!mTot){
+        txt='<span class="rcal-sub">hors calendrier</span>';
+      } else {
+        txt='<b>Au plus tôt</b> '+labJ(mTot)+' '+esc(mTot.adv)+' ('+frDate(mTot.d)+')';
+        if(mTard&&mTard.d!==mTot.d) txt+='<br><span class="rcal-sub"><b>Réaliste</b> '+labJ(mTard)+' '+esc(mTard.adv)+' ('+frDate(mTard.d)+')</span>';
+        else if(!mTard) txt+='<br><span class="rcal-sub">borne haute hors calendrier</span>';
+      }
+      calh+='<div class="rcal-l"><div class="rcal-n"><b>'+esc(r.n)+'</b><span>'+esc(r.zone)+' · '+esc(PHASES[r.ph].label)+'</span></div>'
         +'<div class="rcal-w">'+frDate(r.min)+' – '+frDate(r.max)+'</div>'
-        +'<div class="rcal-m">'+(prochain?('1er match possible : '+labJ(prochain)+' '+esc(prochain.adv)+' ('+frDate(prochain.d)+')'):'hors calendrier')+'</div></div>';
+        +'<div class="rcal-m">'+txt+'</div></div>';
     });
+    calh+='<div class="rcal-note">Dates théoriques calculées sur la fourchette. Elles ne présument ni de la progression du joueur ni de l accord médical.</div>';
     calh+='</div>';
   }
   $("reathleBody").innerHTML=calh+(rows.length?'<table class="rtable"><thead><tr><th>Joueur</th><th>Zone</th><th>Phase</th><th>Depuis</th>'+(isAdmin()?'<th>Fenêtre estimée</th><th>Positionnement</th><th>Jalons</th><th>Accord méd.</th>':'')+'</tr></thead><tbody>'+rows.map(r=>r.html).join("")+'</tbody></table>':'<p class="hint">Aucune blessure en cours — tout le monde est apte.</p>')
