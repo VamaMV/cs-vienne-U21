@@ -484,7 +484,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h30 — réathlé : référentiel rugby élargi + durée estimée manuelle</div>
+    <div style="font-size:.7rem;opacity:.5">h31 — réathlé : classement par région du corps</div>
   </footer>
 </div>
 
@@ -924,44 +924,52 @@ const PHASES={attente:{label:"En attente de diagnostic",color:"#7C3AED"},soins:{
 const EPTYPES={musc:"Musculaire",arti:"Articulaire",tend:"Tendineux",comm:"Commotion",mal:"Maladie",autre:"Autre"};
 /* Référentiel indicatif : fourchettes de retour au jeu issues de la littérature.
    Repères de pilotage, PAS une autorisation de reprise. */
+const GRPLAB={musc:"Musculaire",epaule:"Épaule / clavicule",genou:"Genou",cheville:"Cheville",os:"Os / fractures",tend:"Tendineux",rachis:"Rachis / cou",tete:"Tête",peau:"Peau / plaie",divers:"Autre"};
 const PATHOS={
- "musc_g1":{fam:"musc",lab:"Lésion musculaire grade 1 (élongation)",min:11,max:21,src:"BAMIC 0-1, RTP 11-25 j"},
- "musc_g2":{fam:"musc",lab:"Lésion musculaire grade 2 (déchirure partielle)",min:21,max:42,src:"BAMIC 2, 3-6 sem"},
- "musc_g2c":{fam:"musc",lab:"Lésion musc. avec atteinte tendineuse (2c)",min:28,max:56,src:"BAMIC 2c, 4-8 sem"},
- "musc_g3":{fam:"musc",lab:"Lésion musculaire grade 3 (étendue)",min:56,max:112,src:"BAMIC 3c, 8-16 sem"},
- "musc_ischio_t":{fam:"musc",lab:"Ischio avec tendon intramusculaire",min:60,max:100,src:"Kerin 2024 rugby pro, ~78 j moyen"},
- "arti_cheville1":{fam:"arti",lab:"Entorse cheville grade 1",min:7,max:21,src:"RTP 1-3 sem"},
- "arti_cheville2":{fam:"arti",lab:"Entorse cheville grade 2",min:21,max:42,src:"jusqu’à 6 sem"},
- "arti_cheville3":{fam:"arti",lab:"Entorse cheville grade 3",min:56,max:90,src:"2-3 mois (4-12 sem selon les études)"},
- "arti_syndesmose":{fam:"arti",lab:"Entorse haute / syndesmose",min:39,max:71,src:"39 j conservateur, 71 j chirurgical"},
- "arti_genou_lat":{fam:"arti",lab:"Entorse genou LLI/LLE (bénin à modéré)",min:21,max:56,src:"repère clinique 3-8 sem"},
- "arti_epaule_lux":{fam:"arti",lab:"Luxation/subluxation épaule (conservateur)",min:42,max:112,src:"6-16 sem, avis chirurgical fréquent"},
- "tend_tendinop":{fam:"tend",lab:"Tendinopathie (charge progressive)",min:42,max:84,src:"6-12 sem, pilotée par la douleur"},
- "comm_grtp":{fam:"comm",lab:"Commotion — protocole GRTP",min:23,max:23,src:"MINIMUM 23 j chez les -20 ans, 6 étapes, accord médical écrit obligatoire"},
- "arti_ac12":{fam:"arti",lab:"Disjonction acromio-claviculaire grade I-II",min:7,max:21,src:"~10 j en moyenne, jusqu à 3 sem"},
- "arti_ac3":{fam:"arti",lab:"Disjonction acromio-claviculaire grade III (conservateur)",min:42,max:70,src:"~64 j pour les hauts grades"},
- "arti_ac_op":{fam:"arti",lab:"Disjonction acromio-claviculaire opérée",min:120,max:180,src:"2-12 mois, médiane 6 mois"},
- "arti_epaule_op":{fam:"arti",lab:"Épaule opérée (Bankart / stabilisation)",min:120,max:180,src:"4-6 mois, avis chirurgien"},
- "arti_menisque":{fam:"arti",lab:"Lésion méniscale (conservateur)",min:21,max:56,src:"3-8 sem selon la lésion"},
- "arti_lca_op":{fam:"arti",lab:"Rupture LCA opérée",min:270,max:365,src:"9-12 mois, protocole chirurgien"},
- "os_cotes":{fam:"arti",lab:"Fracture de côte",min:21,max:42,src:"3-6 sem, contact en dernier"},
- "os_doigt":{fam:"arti",lab:"Fracture de doigt / main",min:21,max:42,src:"3-6 sem selon immobilisation"},
- "os_nez":{fam:"arti",lab:"Fracture du nez",min:7,max:21,src:"1-3 sem, masque de protection possible"},
- "os_clavicule":{fam:"arti",lab:"Fracture de clavicule",min:42,max:84,src:"6-12 sem, consolidation à confirmer"},
- "musc_contusion":{fam:"musc",lab:"Contusion / hématome musculaire",min:7,max:21,src:"1-3 sem selon l étendue"},
- "tend_pubalgie":{fam:"tend",lab:"Pubalgie",min:42,max:84,src:"6-12 sem, reprise pilotée par la douleur"},
- "peau_suture":{fam:"peau",lab:"Plaie suturée",min:0,max:10,src:"retrait des fils 7-10 j, jeu possible protégé"},
- "peau_visage":{fam:"peau",lab:"Plaie du visage (arcade, lèvre, menton)",min:0,max:10,src:"souvent pas d arrêt, protection et surveillance"},
- "peau_abrasion":{fam:"peau",lab:"Brûlure de terrain / abrasion",min:0,max:5,src:"quelques jours, risque infectieux"},
- "nerf_stinger":{fam:"nerf",lab:"Stinger / burner (plexus brachial)",min:0,max:2,src:"résolution en 24 h le plus souvent, sinon avis médical"},
- "nerf_cervical":{fam:"nerf",lab:"Entorse cervicale / cervicalgie post-traumatique",min:7,max:21,src:"1-3 sem, imagerie si symptômes persistants"},
- "autre":{fam:"autre",lab:"Autre / non classé",min:0,max:0,src:"pas de fourchette de référence"}
+ "musc_g1":{fam:"musc",grp:"musc",lab:"Lésion musculaire grade 1 (élongation)",min:11,max:21,src:"BAMIC 0-1, RTP 11-25 j"},
+ "musc_g2":{fam:"musc",grp:"musc",lab:"Lésion musculaire grade 2 (déchirure partielle)",min:21,max:42,src:"BAMIC 2, 3-6 sem"},
+ "musc_g2c":{fam:"musc",grp:"musc",lab:"Lésion musc. avec atteinte tendineuse (2c)",min:28,max:56,src:"BAMIC 2c, 4-8 sem"},
+ "musc_g3":{fam:"musc",grp:"musc",lab:"Lésion musculaire grade 3 (étendue)",min:56,max:112,src:"BAMIC 3c, 8-16 sem"},
+ "musc_ischio_t":{fam:"musc",grp:"musc",lab:"Ischio avec tendon intramusculaire",min:60,max:100,src:"Kerin 2024 rugby pro, ~78 j moyen"},
+ "musc_contusion":{fam:"musc",grp:"musc",lab:"Contusion / hématome musculaire",min:7,max:21,src:"1-3 sem selon l étendue"},
+ "arti_epaule_lux":{fam:"arti",grp:"epaule",lab:"Luxation / subluxation épaule (conservateur)",min:42,max:112,src:"6-16 sem, avis chirurgical fréquent"},
+ "arti_epaule_op":{fam:"arti",grp:"epaule",lab:"Épaule opérée (Bankart / stabilisation)",min:120,max:180,src:"4-6 mois, protocole chirurgien"},
+ "arti_ac12":{fam:"arti",grp:"epaule",lab:"Disjonction acromio-claviculaire grade I-II",min:7,max:21,src:"~10 j en moyenne, jusqu à 3 sem"},
+ "arti_ac3":{fam:"arti",grp:"epaule",lab:"Disjonction acromio-claviculaire grade III (conservateur)",min:42,max:70,src:"~64 j pour les hauts grades"},
+ "arti_ac_op":{fam:"arti",grp:"epaule",lab:"Disjonction acromio-claviculaire opérée",min:120,max:180,src:"2-12 mois, médiane 6 mois"},
+ "os_clavicule":{fam:"os",grp:"epaule",lab:"Fracture de clavicule",min:42,max:84,src:"6-12 sem, consolidation à confirmer"},
+ "arti_genou_lat":{fam:"arti",grp:"genou",lab:"Entorse genou LLI / LLE (bénin à modéré)",min:21,max:56,src:"repère clinique 3-8 sem"},
+ "arti_menisque":{fam:"arti",grp:"genou",lab:"Lésion méniscale (conservateur)",min:21,max:56,src:"3-8 sem selon la lésion"},
+ "arti_lca_cons":{fam:"arti",grp:"genou",lab:"LCA non opéré (traitement conservateur)",min:90,max:180,src:"3-6 mois, reprise du contact sur avis médical"},
+ "arti_lca_op":{fam:"arti",grp:"genou",lab:"Rupture LCA opérée",min:270,max:365,src:"9-12 mois, protocole chirurgien"},
+ "arti_cheville1":{fam:"arti",grp:"cheville",lab:"Entorse cheville grade 1",min:7,max:21,src:"RTP 1-3 sem"},
+ "arti_cheville2":{fam:"arti",grp:"cheville",lab:"Entorse cheville grade 2",min:21,max:42,src:"jusqu à 6 sem"},
+ "arti_cheville3":{fam:"arti",grp:"cheville",lab:"Entorse cheville grade 3",min:56,max:90,src:"2-3 mois (4-12 sem selon les études)"},
+ "arti_syndesmose":{fam:"arti",grp:"cheville",lab:"Entorse haute / syndesmose",min:39,max:71,src:"39 j conservateur, 71 j chirurgical"},
+ "os_cotes":{fam:"os",grp:"os",lab:"Fracture de côte",min:21,max:42,src:"3-6 sem, contact en dernier"},
+ "os_doigt":{fam:"os",grp:"os",lab:"Fracture de doigt / main",min:21,max:42,src:"3-6 sem selon immobilisation"},
+ "os_poignet":{fam:"os",grp:"os",lab:"Fracture du poignet",min:42,max:70,src:"6-10 sem, consolidation à confirmer"},
+ "os_scaphoide":{fam:"os",grp:"os",lab:"Fracture du scaphoïde",min:56,max:112,src:"8-16 sem, consolidation lente"},
+ "os_nez":{fam:"os",grp:"tete",lab:"Fracture du nez",min:7,max:21,src:"1-3 sem, masque de protection possible"},
+ "tend_tendinop":{fam:"tend",grp:"tend",lab:"Tendinopathie (charge progressive)",min:42,max:84,src:"6-12 sem, pilotée par la douleur"},
+ "tend_pubalgie":{fam:"tend",grp:"tend",lab:"Pubalgie",min:42,max:84,src:"6-12 sem, reprise pilotée par la douleur"},
+ "nerf_stinger":{fam:"nerf",grp:"rachis",lab:"Stinger / burner (plexus brachial)",min:0,max:2,src:"résolution en 24 h le plus souvent, sinon avis médical"},
+ "nerf_cervical":{fam:"nerf",grp:"rachis",lab:"Entorse cervicale / cervicalgie post-traumatique",min:7,max:21,src:"1-3 sem, imagerie si symptômes persistants"},
+ "rachis_lombaire":{fam:"rachis",grp:"rachis",lab:"Lombalgie / entorse lombaire",min:7,max:28,src:"1-4 sem, reprise pilotée par la douleur"},
+ "rachis_lombaire_r":{fam:"rachis",grp:"rachis",lab:"Lombalgie récidivante / chronique",min:28,max:84,src:"4-12 sem, gainage et charge progressive"},
+ "comm_grtp":{fam:"comm",grp:"tete",lab:"Commotion — protocole GRTP",min:23,max:23,src:"MINIMUM 23 j chez les -20 ans, 6 étapes, accord médical écrit obligatoire"},
+ "peau_suture":{fam:"peau",grp:"peau",lab:"Plaie suturée",min:0,max:10,src:"retrait des fils 7-10 j, jeu possible protégé"},
+ "peau_visage":{fam:"peau",grp:"peau",lab:"Plaie du visage (arcade, lèvre, menton)",min:0,max:10,src:"souvent pas d arrêt, protection et surveillance"},
+ "peau_abrasion":{fam:"peau",grp:"peau",lab:"Brûlure de terrain / abrasion",min:0,max:5,src:"quelques jours, risque infectieux"},
+ "autre":{fam:"autre",grp:"divers",lab:"Autre / non classé",min:0,max:0,src:"pas de fourchette de référence"}
 };
 const JALONS={
  musc:["Indolence au repos et à la marche","Amplitude complète sans douleur","Force isométrique symétrique (>90 %)","Course en ligne progressive sans douleur","Excentrique toléré (Nordic ou charge)","Sprint progressif jusqu’à 90-100 %","Changements de direction sous fatigue"],
  arti:["Appui complet indolore","Amplitude articulaire complète","Force et gainage péri-articulaire","Proprioception et équilibre unipodal","Course en ligne puis appuis","Pivots, sauts, réception contrôlée","Opposition et gestes spécifiques du poste"],
  tend:["Douleur stable et décroissante","Charge isométrique tolérée","Charge lourde lente tolérée","Reprise pliométrique progressive","Course puis appuis répétés","Volume spécifique au poste sans réveil douloureux"],
  comm:["Étape 1 — repos relatif, symptômes résolus","Étape 2 — aérobie légère sous 55 % FCmax","Étape 3 — course spécifique sans contact","Étape 4 — entraînement sans contact et musculation","Étape 5 — contact complet APRÈS accord médical écrit","Étape 6 — retour au jeu"],
+ os:["Consolidation confirmée par le médecin","Indolence à la palpation du foyer","Amplitude complète des articulations voisines","Charge et port de poids progressifs","Gestes du poste sans douleur","Contact protégé puis contact complet"],
+ rachis:["Douleur lombaire stable et décroissante","Amplitude du tronc récupérée","Gainage et chaîne postérieure sans douleur","Port de charge progressif toléré","Course puis appuis répétés","Mêlée / contact progressif"],
  peau:["Plaie propre, aucun signe d infection","Cicatrisation en cours, pansement qui tient","Fils retirés ou cicatrice fermée","Reprise du contact avec protection"],
  nerf:["Symptômes (fourmillements, brûlure) totalement résolus","Force complète et symétrique au testing","Amplitude cervicale complète et indolore","Contact progressif sans reproduction des symptômes","Avis médical avant contact complet"],
  mal:["Apyrexie et symptômes résolus","Reprise aérobie légère tolérée","Charge normale sans fatigue anormale"],
@@ -1324,8 +1332,8 @@ function epRow(e){
 
   const pa=r.querySelector(".epatho");
   { const o0=document.createElement("option"); o0.value=""; o0.textContent="Pathologie (facultatif)"; pa.appendChild(o0);
-    const fams={}; Object.keys(PATHOS).forEach(k=>{ const f=PATHOS[k].fam; (fams[f]=fams[f]||[]).push(k); });
-    Object.keys(fams).forEach(f=>{ const g=document.createElement("optgroup"); g.label=FAMLAB[f]||f;
+    const fams={}; Object.keys(PATHOS).forEach(k=>{ const f=PATHOS[k].grp||PATHOS[k].fam; (fams[f]=fams[f]||[]).push(k); });
+    Object.keys(fams).forEach(f=>{ const g=document.createElement("optgroup"); g.label=GRPLAB[f]||FAMLAB[f]||f;
       fams[f].forEach(k=>{ const o=document.createElement("option"); o.value=k; o.textContent=PATHOS[k].lab+(PATHOS[k].max?" — "+PATHOS[k].min+"-"+PATHOS[k].max+" j":""); g.appendChild(o); });
       pa.appendChild(g); }); }
 
