@@ -127,6 +127,8 @@
   .wcap b{font-family:var(--display);font-weight:600;color:var(--ink)}
   .pf-chart{margin:4px 0 10px}
   .pf-pese{max-width:100%;margin-top:4px}
+  .pf-tdjnote{font-size:9px;color:#566B7D;margin:3px 0 0}
+  .pf-tdjnote.alerte{color:#A32020;font-weight:700}
   .pf-bilan{font-size:9.5px;color:#41566A;margin:1px 0 4px;padding:3px 6px;background:#F4F9FC;border-radius:5px;display:block;line-height:1.35}
   .pf-force{margin:0 0 4px}
   .pf-force-h{display:block;font-size:9.5px;margin-bottom:2px}
@@ -338,6 +340,19 @@
   .pf-block span{font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8A9BA8}
   .pf-block p{margin:2px 0 0;font-size:10px;line-height:1.32}
   .pf-foot{margin-top:11px;padding-top:6px;border-top:1px solid #D3E2EC;font-size:10px;color:#566B7D;text-align:center}
+  .fm-aide{font-size:10px;color:#566B7D;font-style:italic;margin:2px 0 9px}
+  .fm-cols{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
+  .fm-cols>tbody>tr>td{vertical-align:top;width:48.5%}
+  .fm-cols .fm-gap{width:3%}
+  .fm-t{width:100%;border-collapse:collapse}
+  .fm-t th{font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:#0E5E8E;background:#EAF3FA;border:1px solid #D3E2EC;padding:3px 4px;text-align:left}
+  .fm-t td{border:1px solid #D3E2EC;padding:4px 4px;font-size:10px;height:17px}
+  .fm-t .fm-po{width:16px;text-align:center;font-weight:800;color:#0E5E8E}
+  .fm-t .fm-n{font-weight:600}
+  .fm-t .fm-bl{font-size:7.5px;font-weight:700;color:#EA580C}
+  .fm-t .fm-c{width:16px;background:#FBFDFE}
+  .fm-t .fm-m{width:34px;background:#FBFDFE}
+  .fm-foot{display:flex;justify-content:space-between;margin-top:10px;font-size:10px;color:#41566A}
   .rf-sec{border-left:4px solid #ccc;padding-left:11px;margin:16px 0 0}
   .rf-sech{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-bottom:7px}
   .rf-sech .rf-n{background:#EEF4F8;color:#41566A;border-radius:99px;padding:1px 7px;font-size:10px;margin-left:4px}
@@ -511,7 +526,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h38 — saisie de match : libellés explicites et correction assumée</div>
+    <div style="font-size:.7rem;opacity:.5">h40 — temps de jeu dans la fiche joueur imprimée</div>
   </footer>
 </div>
 
@@ -643,6 +658,7 @@
     <div id="saisieBody" class="saisie-body"></div>
     <div class="frow" style="margin-top:12px;gap:8px">
       <button type="button" id="saisieSave" class="primary">Enregistrer ce match</button>
+      <button type="button" id="saisieFeuille">Feuille à imprimer</button>
       <button type="button" id="saisieClose">Fermer</button>
     </div>
     <div id="saisieMsg" class="saisie-msg"></div>
@@ -1574,6 +1590,20 @@ function ficheHTML(p){
         +'<table class="pf-table pf-pese"><thead><tr><th>Date</th><th>Poids</th></tr></thead><tbody>'+rws+'</tbody></table>';
   } }
 
+  { const tot=totalMin(p), nb=nbMatchs(p);
+    if(nb>0||tot>0){
+      const cells=[];
+      cells.push('<div class="pf-cell"><span>Total</span><b>'+tot+' min</b></div>');
+      cells.push('<div class="pf-cell"><span>Matchs</span><b>'+nb+'</b></div>');
+      cells.push('<div class="pf-cell"><span>Moyenne</span><b>'+moyMin(p)+' min</b></div>');
+      cells.push('<div class="pf-cell"><span>Titulaire</span><b>'+tauxTitu(p)+'%</b></div>');
+      const th=totalMinHors(p);
+      let note="";
+      if(th) note+='<div class="pf-tdjnote">Dont '+th+' min en double licence ('+nbMatchsHors(p)+' match'+(nbMatchsHors(p)>1?'s':'')+')</div>';
+      const sw=serieSemaines(p);
+      if(sw>=3) note+='<div class="pf-tdjnote alerte">'+sw+' week-ends d activite consecutifs</div>';
+      L+='<div class="pf-sec">Temps de jeu</div><div class="pf-grid">'+cells.join("")+'</div>'+note+barresTdj(p,true);
+    } }
   const pf=[]; const pcell=(l,v)=>{ if(v!==""&&v!=null) pf.push('<div class="pf-cell"><span>'+l+'</span><b>'+esc(v)+'</b></div>'); };
   if(p.sprint10!==""&&p.sprint10!=null) pcell("Sprint 10 m",frD(p.sprint10)+" s");
   if(p.sprint30!==""&&p.sprint30!=null) pcell("Sprint 30 m",frD(p.sprint30)+" s");
@@ -1705,6 +1735,35 @@ function tdjFicheHTML(){
   return h;
 }
 function printTdj(){ document.getElementById("printArea").innerHTML=tdjFicheHTML(); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
+function feuilleMatchHTML(d){
+  const m=matchDe(d);
+  const liste=players.slice().sort(ordrePoste);
+  const moitie=Math.ceil(liste.length/2);
+  function ligne(p){
+    const pi=posteInfo(p); const ep=activeEpisode(p);
+    return '<tr><td class="fm-po">'+(pi.num!=null?pi.num:"")+'</td>'
+      +'<td class="fm-n">'+esc(p.n)+(ep?' <span class="fm-bl">'+esc(PHASES[ep.phase].label)+'</span>':'')+'</td>'
+      +'<td class="fm-c"></td><td class="fm-c"></td><td class="fm-m"></td></tr>';
+  }
+  function bloc(arr){
+    return '<table class="fm-t"><thead><tr><th>N°</th><th>Joueur</th><th>T</th><th>R</th><th>Min</th></tr></thead><tbody>'
+      +arr.map(ligne).join("")+'</tbody></table>';
+  }
+  let h='<div class="pf">';
+  h+='<div class="pf-head"><div class="pf-crest"></div><div><div class="pf-club">CS Vienne Rugby · Espoirs Reichel Accession U21</div><div class="pf-title">Feuille de temps de jeu</div></div></div>';
+  h+='<div class="pf-name">'+(m?(labJ(m)+' · '+esc(m.adv)):'Match')+'</div>';
+  h+='<div class="pf-tags"><span class="pf-badge">'+(m?frDate(m.d):frDate(d))+'</span>'+(m?'<span class="pf-badge">'+esc(labLieu(m))+'</span>':'')+'<span class="pf-badge">'+liste.length+' joueurs</span></div>';
+  h+='<div class="fm-aide">T = titulaire · R = remplaçant · Min = minutes jouées. Rappel : environ 1200 min au total (15 x 80).</div>';
+  h+='<table class="fm-cols"><tr><td>'+bloc(liste.slice(0,moitie))+'</td><td class="fm-gap"></td><td>'+bloc(liste.slice(moitie))+'</td></tr></table>';
+  h+='<div class="fm-foot"><span>Total minutes : ______</span><span>Rempli par : ______________</span></div>';
+  h+='<div class="pf-foot">CS Vienne Rugby — à reporter dans le suivi joueurs</div></div>';
+  return h;
+}
+function printFeuilleMatch(){
+  const d=$("saisieMatch").value; if(!d){ toast("Choisis un match"); return; }
+  document.getElementById("printArea").innerHTML=feuilleMatchHTML(d);
+  if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); }
+}
 function printReathle(){ document.getElementById("printArea").innerHTML=reathleFicheHTML(); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
 function printFiches(list){
   const arr=(list||[]).filter(Boolean);
@@ -1947,6 +2006,7 @@ $("saisieBody").addEventListener("click",function(e){
   DIRTY=true; majTotal();
 });
 $("saisieSave").addEventListener("click",enregistrerSaisie);
+$("saisieFeuille").addEventListener("click",function(){ saisieOverlay.classList.remove("open"); setTimeout(printFeuilleMatch,120); });
 function fermerSaisie(){
   if(DIRTY&&!confirm("Des saisies ne sont pas enregistrées. Fermer quand même ?")) return;
   DIRTY=false; saisieOverlay.classList.remove("open");
