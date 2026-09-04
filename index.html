@@ -144,6 +144,7 @@
   .eprow .epl3{display:flex}
   .eprow .epl2b{display:flex;margin-bottom:6px}
   .eprow .epatho{width:100%}
+  .xrow .xd{flex:0 0 128px} .xrow .xc{flex:1.2} .xrow .xm{flex:0 0 64px;text-align:center}
   .tdjrow{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
   .tdjrow:last-child{border-bottom:none}
   .tdj-j{flex:0 0 30px;font-size:.72rem;font-weight:800;color:var(--brand)}
@@ -225,6 +226,8 @@
   .tdjfocus{margin-top:13px;padding:11px;background:#F6FAFD;border:1px solid #E1EDF5;border-radius:10px}
   .tdjfocus select{width:100%;font-family:var(--body);font-size:.88rem;padding:8px 9px;border:1.5px solid var(--line);border-radius:9px;background:#fff}
   .tdjtag{background:#EAF3FA;color:#0E5E8E}
+  .dltag{display:inline-block;font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;background:#F1EAFE;color:#5B3FA8;padding:1px 6px;border-radius:99px}
+  .tb-x{background:#7C3AED}
   .surtag{background:#FBE6E6;color:#A32020;font-weight:800}
   .tdj-sum{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:7px}
   .tdj-sum span{font-size:.78rem;color:var(--faint);background:#F4F9FC;border-radius:8px;padding:4px 9px}
@@ -487,7 +490,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h32 — réathlé : dates de retour réalistes (plus de match promis)</div>
+    <div style="font-size:.7rem;opacity:.5">h35 — lisibilité : une seule alerte de surcharge par carte</div>
   </footer>
 </div>
 
@@ -562,6 +565,9 @@
     <button type="button" class="addrow" id="f_addep">+ Ajouter une blessure</button>
     <div class="fsub">Temps de jeu <span class="fsub-note">minutes par match · calendrier officiel</span></div>
     <div id="f_tdjs"></div>
+    <div class="fsub">Double licence <span class="fsub-note">matchs joués avec un autre club</span></div>
+    <div id="f_tdjx"></div>
+    <button type="button" class="addrow" id="f_addtdjx">+ Ajouter un match hors club</button>
     <div class="frow">
       <label for="f_z">Zone concernée</label>
       <select id="f_z">
@@ -893,27 +899,63 @@ function moyEquipe(){
   return l.length?Math.round(l.reduce((a,b)=>a+b,0)/l.length):0;
 }
 function barresTdj(p,compact){
-  const arr=tdjParMatch(p); if(!arr.length) return "";
+  let arr=tdjParMatch(p).map(a=>({m:a.m,min:a.min,st:a.st,saisi:a.saisi,d:a.m.d,hors:false}));
+  minutesHors(p).forEach(function(x){ arr.push({d:x.d,min:parseInt(x.min,10)||0,st:"",saisi:true,hors:true,club:x.club||""}); });
+  arr.sort((a,b)=>(a.d||"").localeCompare(b.d||""));
+  if(!arr.length) return "";
   if(!arr.some(a=>a.saisi)) return "";
   const maxi=Math.max(80,...arr.map(a=>a.min));
   let h='<div class="tbars'+(compact?" tbars-c":"")+'">';
   arr.forEach(a=>{
     const pc=Math.round(a.min/maxi*100);
-    const cls=a.min>0?(a.st==="t"?"tb-t":"tb-r"):(a.st==="bl"?"tb-bl":(a.st==="nc"?"tb-nc":"tb-0"));
-    const ti=esc(a.m.adv)+" ("+labJ(a.m)+") — "+(a.min>0?a.min+" min":(a.st&&TDJSTAT[a.st]?TDJSTAT[a.st]:"non joué"));
-    h+='<div class="tb" title="'+ti+'"><div class="tb-col"><i class="'+cls+'" style="height:'+Math.max(pc,3)+'%"></i></div><span class="tb-j">'+labJ(a.m)+'</span></div>';
+    const cls=a.hors?"tb-x":(a.min>0?(a.st==="t"?"tb-t":"tb-r"):(a.st==="bl"?"tb-bl":(a.st==="nc"?"tb-nc":"tb-0")));
+    const ti=a.hors?("Double licence"+(a.club?" — "+esc(a.club):"")+" ("+frDate(a.d)+") — "+a.min+" min")
+      :(esc(a.m.adv)+" ("+labJ(a.m)+") — "+(a.min>0?a.min+" min":(a.st&&TDJSTAT[a.st]?TDJSTAT[a.st]:"non joué")));
+    const et=a.hors?"DL":labJ(a.m);
+    h+='<div class="tb" title="'+ti+'"><div class="tb-col"><i class="'+cls+'" style="height:'+Math.max(pc,3)+'%"></i></div><span class="tb-j">'+et+'</span></div>';
   });
   return h+'</div>';
 }
 function matchDe(d){ for(let i=0;i<CALENDRIER.length;i++){ if(CALENDRIER[i].d===d) return CALENDRIER[i]; } return null; }
 function matchsPasses(){ const auj=new Date().toISOString().slice(0,10); return CALENDRIER.filter(m=>m.d<=auj); }
 function minutesDe(p){ return (Array.isArray(p.tdjs)?p.tdjs:[]).filter(x=>x&&x.min!==""&&x.min!=null); }
-function totalMin(p){ return minutesDe(p).reduce((n,x)=>n+(parseInt(x.min,10)||0),0); }
-function nbMatchs(p){ return minutesDe(p).filter(x=>(parseInt(x.min,10)||0)>0).length; }
+function minutesHors(p){ return (Array.isArray(p.tdjx)?p.tdjx:[]).filter(x=>x&&x.d&&x.min!==""&&x.min!=null); }
+function totalMinHors(p){ return minutesHors(p).reduce((n,x)=>n+(parseInt(x.min,10)||0),0); }
+function nbMatchsHors(p){ return minutesHors(p).filter(x=>(parseInt(x.min,10)||0)>0).length; }
+function toutesMinutes(p){
+  const a=minutesDe(p).map(x=>({d:x.d,min:parseInt(x.min,10)||0,st:x.st||"",hors:false}));
+  const b=minutesHors(p).map(x=>({d:x.d,min:parseInt(x.min,10)||0,st:"",hors:true,club:x.club||""}));
+  return a.concat(b).sort((x,y)=>(x.d||"").localeCompare(y.d||""));
+}
+function totalMin(p){ return minutesDe(p).reduce((n,x)=>n+(parseInt(x.min,10)||0),0)+totalMinHors(p); }
+function nbMatchs(p){ return minutesDe(p).filter(x=>(parseInt(x.min,10)||0)>0).length+nbMatchsHors(p); }
 function moyMin(p){ const n=nbMatchs(p); return n?Math.round(totalMin(p)/n):0; }
 function minSurJours(p,nj){
   const lim=new Date(); lim.setDate(lim.getDate()-nj); const li=lim.toISOString().slice(0,10);
-  return minutesDe(p).filter(x=>x.d>=li).reduce((n,x)=>n+(parseInt(x.min,10)||0),0);
+  return toutesMinutes(p).filter(x=>x.d>=li).reduce((n,x)=>n+x.min,0);
+}
+function cleSemaine(iso){
+  const d=new Date(iso+"T00:00:00"); if(isNaN(d.getTime())) return null;
+  const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  const j=t.getUTCDay()||7; t.setUTCDate(t.getUTCDate()+4-j);
+  const a=new Date(Date.UTC(t.getUTCFullYear(),0,1));
+  const sem=Math.ceil(((t-a)/86400000+1)/7);
+  return t.getUTCFullYear()*100+sem;
+}
+function semPrecedente(cle){
+  const an=Math.floor(cle/100), sem=cle%100;
+  if(sem>1) return an*100+(sem-1);
+  return (an-1)*100+52;
+}
+function serieSemaines(p){
+  /* nombre de semaines consecutives avec au moins un match joue, toutes competitions */
+  const sem={};
+  toutesMinutes(p).forEach(function(x){ if(x.min>0){ const k=cleSemaine(x.d); if(k) sem[k]=1; } });
+  const cles=Object.keys(sem).map(Number).sort(function(a,b){ return b-a; });
+  if(!cles.length) return 0;
+  let n=1, cur=cles[0];
+  for(;;){ const prev=semPrecedente(cur); if(sem[prev]){ n++; cur=prev; } else break; }
+  return n;
 }
 function serieConsecutive(p){
   /* nombre de matchs joues d affilee en remontant depuis le dernier match dispute par l equipe */
@@ -1031,7 +1073,7 @@ function normRec(p){
   sprints.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const _lsp2=sprints.length?sprints[sprints.length-1]:null;
   let episodes=(Array.isArray(p.episodes)?p.episodes.map(e=>({deb:(e&&e.deb)?String(e.deb):"",zone:(e&&e.zone)?String(e.zone):"",type:(e&&e.type&&EPTYPES[e.type])?e.type:"autre",patho:(e&&e.patho&&PATHOS[e.patho])?e.patho:"",diag:(e&&e.diag&&DIAGSTAT[e.diag])?e.diag:"",rdv:(e&&e.rdv)?String(e.rdv):"",dmin:(e&&e.dmin!=null)?String(e.dmin):"",dmax:(e&&e.dmax!=null)?String(e.dmax):"",phase:(e&&e.phase&&PHASES[e.phase])?e.phase:"soins",ret:(e&&e.ret)?String(e.ret):"",retr:(e&&e.retr)?String(e.retr):"",note:(e&&e.note)?String(e.note):"",jal:(e&&Array.isArray(e.jal))?e.jal.map(x=>!!x):[],medok:!!(e&&e.medok)})).filter(e=>e.deb!==""||e.zone!==""||e.note!==""):[]);
   episodes.sort((a,b)=>(a.deb||"").localeCompare(b.deb||""));
-  return {id:p.id||("n"+Date.now()+Math.floor(Math.random()*1000)),n:p.n||"",cat:(p.cat!=null&&p.cat!=="")?p.cat:"ESP",poste:(p.poste!=null&&p.poste!=="")?p.poste:"none",s:STATUT[p.s]?p.s:"apte",z:(p.z!=null&&p.z!=="")?p.z:"none",poids:poids,poidsCible:(p.poidsCible!=null?p.poidsCible:""),pesees:pesees,taille:(p.taille!=null?p.taille:""),tdj:(p.tdj!=null?p.tdj:""),bronco:bronco,broncos:broncos,cmjs:cmjs,cmj:cmj,sprint10:(_lsp2?_lsp2.t10:""),sprint30:(_lsp2?_lsp2.t30:""),sprints:sprints,tests:(Array.isArray(p.tests)?p.tests.map(t=>({d:(t&&t.d)?String(t.d):"",ex:(t&&t.ex)?String(t.ex):"",load:(t&&t.load!=null)?t.load:""})):[]),episodes:episodes,tdjs:(Array.isArray(p.tdjs)?p.tdjs.map(x=>({d:(x&&x.d)?String(x.d):"",min:(x&&x.min!=null)?String(x.min):"",st:(x&&x.st&&TDJSTAT[x.st])?x.st:""})).filter(x=>x.d):[]).sort((a,b)=>(a.d||"").localeCompare(b.d||"")),ant:p.ant||"",acc:p.acc||""};
+  return {id:p.id||("n"+Date.now()+Math.floor(Math.random()*1000)),n:p.n||"",cat:(p.cat!=null&&p.cat!=="")?p.cat:"ESP",poste:(p.poste!=null&&p.poste!=="")?p.poste:"none",s:STATUT[p.s]?p.s:"apte",z:(p.z!=null&&p.z!=="")?p.z:"none",poids:poids,poidsCible:(p.poidsCible!=null?p.poidsCible:""),pesees:pesees,taille:(p.taille!=null?p.taille:""),tdj:(p.tdj!=null?p.tdj:""),bronco:bronco,broncos:broncos,cmjs:cmjs,cmj:cmj,sprint10:(_lsp2?_lsp2.t10:""),sprint30:(_lsp2?_lsp2.t30:""),sprints:sprints,tests:(Array.isArray(p.tests)?p.tests.map(t=>({d:(t&&t.d)?String(t.d):"",ex:(t&&t.ex)?String(t.ex):"",load:(t&&t.load!=null)?t.load:""})):[]),episodes:episodes,tdjx:(Array.isArray(p.tdjx)?p.tdjx.map(x=>({d:(x&&x.d)?String(x.d):"",club:(x&&x.club)?String(x.club):"",min:(x&&x.min!=null)?String(x.min):""})).filter(x=>x.d):[]).sort((a,b)=>(a.d||"").localeCompare(b.d||"")),tdjs:(Array.isArray(p.tdjs)?p.tdjs.map(x=>({d:(x&&x.d)?String(x.d):"",min:(x&&x.min!=null)?String(x.min):"",st:(x&&x.st&&TDJSTAT[x.st])?x.st:""})).filter(x=>x.d):[]).sort((a,b)=>(a.d||"").localeCompare(b.d||"")),ant:p.ant||"",acc:p.acc||""};
 }
 
 let players=[]; let activeFilter="all"; let query=""; let editingId=null; let viewMode="poste";
@@ -1058,8 +1100,8 @@ function metaHTML(p){
   { const _ep=activeEpisode(p); if(_ep){ const ph=PHASES[_ep.phase]; meta+='<span class="tag" style="background:'+hexRgba(ph.color,.14)+';color:'+darker(ph.color)+'">'+esc(ph.label)+(_ep.zone?' · '+esc(_ep.zone):'')+'</span>'; } }
   { const _tot=totalMin(p), _nb=nbMatchs(p);
     if(_nb>0) meta+='<span class="tag tdjtag">'+_tot+' min · '+_nb+' match'+(_nb>1?'s':'')+'</span>';
-    const _se=serieConsecutive(p);
-    if(_se>=3) meta+='<span class="tag surtag">'+_se+' matchs d\'affilée</span>'; }
+    const _sw=Math.max(serieSemaines(p),serieConsecutive(p));
+    if(_sw>=3) meta+='<span class="tag surtag" title="Week-ends consécutifs avec un match, toutes compétitions">'+_sw+' week-ends d\'affilée</span>'; }
   meta+='<span class="pill" style="background:'+hexRgba(st.color,.12)+';color:'+darker(st.color)+'"><span class="pdot" style="background:'+st.color+'"></span>'+esc(st.label)+'</span>';
   return meta;
 }
@@ -1067,11 +1109,13 @@ function richParts(p){
   const parts=[];
   { const mj=minutesDe(p); if(mj.length){
     const tot=totalMin(p), nb=nbMatchs(p), moy=moyMin(p), m21=minSurJours(p,21), serie=serieConsecutive(p);
-    let th='<div class="tdj-sum"><span><b>'+tot+'</b> min</span><span><b>'+nb+'</b> match'+(nb>1?'s':'')+'</span><span><b>'+moy+'</b> min/match</span><span><b>'+m21+'</b> min / 21 j</span>'+(serie>1?'<span><b>'+serie+'</b> matchs d\'affilée</span>':'')+'</div>';
-    const lignes=mj.slice().sort((a,b)=>b.d.localeCompare(a.d)).slice(0,8).map(x=>{
+    let th='<div class="tdj-sum"><span><b>'+tot+'</b> min</span><span><b>'+nb+'</b> match'+(nb>1?'s':'')+'</span><span><b>'+moy+'</b> min/match</span><span><b>'+m21+'</b> min / 21 j</span>'+(serie>1?'<span title="Matchs CS Vienne consécutifs"><b>'+serie+'</b> matchs CSV d\'affilée</span>':'')
+      +(function(){ const w=serieSemaines(p); return w>1?'<span title="Week-ends avec un match, toutes compétitions"><b>'+w+'</b> week-ends d\'affilée</span>':''; })()+'</div>';
+    const lignes=toutesMinutes(p).slice().sort((a,b)=>b.d.localeCompare(a.d)).slice(0,8).map(x=>{
+      if(x.hors) return '<div class="tline"><span class="dltag">Double licence</span> '+(x.club?esc(x.club)+' ':'')+'<span class="e">'+frDate(x.d)+'</span> — <b>'+x.min+' min</b></div>';
       const m=matchDe(x.d); const lab=m?(pastilleClub(m.adv)+labJ(m)+' · '+esc(m.adv)+' ('+labLieu(m,1)+')'):frDate(x.d);
       const st=x.st&&TDJSTAT[x.st]?' <span class="e">'+TDJSTAT[x.st]+'</span>':'';
-      return '<div class="tline">'+lab+' — <b>'+(parseInt(x.min,10)||0)+' min</b>'+st+'</div>';
+      return '<div class="tline">'+lab+' — <b>'+x.min+' min</b>'+st+'</div>';
     });
     const titu=tauxTitu(p), me=moyEquipe();
     let extra='<div class="tdj-sum2">';
@@ -1079,6 +1123,7 @@ function richParts(p){
     if(me) extra+='<span>Moyenne équipe <b>'+me+'</b> min '+(tot>me?'<i class="up">+'+(tot-me)+'</i>':(tot<me?'<i class="dn">'+(tot-me)+'</i>':''))+'</span>';
     const manq=tdjParMatch(p).filter(a=>a.min===0);
     if(manq.length) extra+='<span>Matchs sans jeu <b>'+manq.length+'</b></span>';
+    { const th=totalMinHors(p); if(th) extra+='<span>Dont double licence <b>'+th+'</b> min ('+nbMatchsHors(p)+')</span>'; }
     extra+='</div>';
     parts.push('<div class="field"><div class="label">Temps de jeu</div>'+th+extra+barresTdj(p,true)+'<div class="tests-list">'+lignes.join("")+'</div></div>');
   } }
@@ -1211,7 +1256,8 @@ function openEdit(id){
   $("f_tdjs").innerHTML=""; { const par={}; (Array.isArray(p.tdjs)?p.tdjs:[]).forEach(x=>{ if(x&&x.d) par[x.d]=x; });
     const auj=new Date().toISOString().slice(0,10);
     CALENDRIER.filter(m=>m.d<=auj||par[m.d]).forEach(m=>$("f_tdjs").appendChild(tdjRow(m,par[m.d])));
-    if(!$("f_tdjs").children.length) $("f_tdjs").innerHTML='<div class="hint">Aucun match joué pour l\'instant — la saison démarre le 05/09/2026.</div>'; }
+    if(!$("f_tdjs").children.length) $("f_tdjs").innerHTML='<div class="hint">Aucun match joué pour l\'instant.</div>'; }
+  $("f_tdjx").innerHTML=""; (Array.isArray(p.tdjx)?p.tdjx:[]).forEach(x=>$("f_tdjx").appendChild(tdjxRow(x)));
   $("f_poidsc").value=p.poidsCible!=null?p.poidsCible:"";
   $("f_taille").value=p.taille!=null?p.taille:""; $("f_tdj").value=p.tdj!=null?p.tdj:"";
   $("f_sprints").innerHTML=""; let _sp=(Array.isArray(p.sprints)?p.sprints.slice():[]); if(!_sp.length&&((p.sprint10!==""&&p.sprint10!=null)||(p.sprint30!==""&&p.sprint30!=null))) _sp=[{d:todayISO(),t10:p.sprint10||"",t30:p.sprint30||""}]; _sp.forEach(x=>$("f_sprints").appendChild(sprintRow(x.d,x.t10,x.t30)));
@@ -1237,6 +1283,7 @@ $("f_save").addEventListener("click",()=>{
   sprints.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const _lsp=sprints.length?sprints[sprints.length-1]:null;
   const tests=[...$("f_tests").querySelectorAll(".trow")].map(r=>({d:(r.querySelector(".td")?r.querySelector(".td").value:""),ex:r.querySelector(".ex").value.trim(),load:r.querySelector(".ld").value.trim()})).filter(t=>t.ex);
   tests.sort((a,b)=>(a.d||"").localeCompare(b.d||""));
+  const tdjx=[...$("f_tdjx").querySelectorAll(".xrow")].map(r=>({d:r.querySelector(".xd").value,club:r.querySelector(".xc").value.trim(),min:r.querySelector(".xm").value.trim()})).filter(x=>x.d&&x.min!=="");
   const tdjs=[...$("f_tdjs").querySelectorAll(".tdjrow")].map(r=>({d:r.dataset.d,min:r.querySelector(".tdjmin").value.trim(),st:r.querySelector(".tdjst").value})).filter(x=>x.min!==""||x.st!=="");
   const episodes=[...$("f_eps").querySelectorAll(".eprow")].map(r=>{ const pv=r.querySelector(".epatho").value; return {deb:r.querySelector(".edeb").value,zone:r.querySelector(".ezone").value.trim(),type:(pv&&PATHOS[pv])?PATHOS[pv].fam:"autre",patho:pv,diag:r.querySelector(".ediag").value,rdv:r.querySelector(".erdv").value,dmin:r.querySelector(".edmin").value.trim(),dmax:r.querySelector(".edmax").value.trim(),phase:r.querySelector(".ephase").value,ret:r.querySelector(".eret").value,retr:r.querySelector(".eretr").value,note:r.querySelector(".enote").value.trim(),jal:[...r.querySelectorAll(".epjal input")].map(i=>i.checked),medok:r.querySelector(".emedok").checked}; }).filter(e=>e.deb!==""||e.zone!==""||e.note!=="");
   episodes.sort((a,b)=>(a.deb||"").localeCompare(b.deb||""));
@@ -1245,7 +1292,7 @@ $("f_save").addEventListener("click",()=>{
   const broncos=[...$("f_broncos").querySelectorAll(".brow")].map(r=>({d:r.querySelector(".bd").value,t:r.querySelector(".bt").value.trim()})).filter(x=>x.t!=="");
   broncos.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const curBronco=broncos.length?broncos[broncos.length-1].t:"";
   const cmjs=[...$("f_cmjs").querySelectorAll(".brow")].map(r=>({d:r.querySelector(".cd").value,v:r.querySelector(".cv").value.trim()})).filter(x=>x.v!==""); cmjs.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const curCmj=cmjs.length?cmjs[cmjs.length-1].v:"";
-  const data={n:name,cat:readSelectCustom($("f_cat"),$("f_cat_custom")),s:$("f_s").value,poste:readSelectCustom($("f_poste"),$("f_poste_custom")),z:readSelectCustom($("f_z"),$("f_z_custom")),poids:curPoids,poidsCible:$("f_poidsc").value.trim(),pesees:pesees,taille:$("f_taille").value.trim(),tdj:$("f_tdj").value.trim(),bronco:curBronco,broncos:broncos,cmj:curCmj,cmjs:cmjs,sprint10:(_lsp?_lsp.t10:""),sprint30:(_lsp?_lsp.t30:""),sprints:sprints,tests:tests,episodes:episodes,tdjs:tdjs,ant:$("f_ant").value.trim(),acc:$("f_acc").value.trim()};
+  const data={n:name,cat:readSelectCustom($("f_cat"),$("f_cat_custom")),s:$("f_s").value,poste:readSelectCustom($("f_poste"),$("f_poste_custom")),z:readSelectCustom($("f_z"),$("f_z_custom")),poids:curPoids,poidsCible:$("f_poidsc").value.trim(),pesees:pesees,taille:$("f_taille").value.trim(),tdj:$("f_tdj").value.trim(),bronco:curBronco,broncos:broncos,cmj:curCmj,cmjs:cmjs,sprint10:(_lsp?_lsp.t10:""),sprint30:(_lsp?_lsp.t30:""),sprints:sprints,tests:tests,episodes:episodes,tdjs:tdjs,tdjx:tdjx,ant:$("f_ant").value.trim(),acc:$("f_acc").value.trim()};
   if(editingId){ Object.assign(players.find(x=>x.id===editingId),data); } else { players.push(Object.assign({id:"n"+Date.now()+Math.floor(Math.random()*1000)},data)); }
   persist(); render(); const wasEdit=!!editingId; closeEdit(); toast(wasEdit?"Modifié et enregistré":"Joueur ajouté");
 });
@@ -1304,6 +1351,14 @@ function broncoRow(d,t){
 function formBroncos(){ return [...$("f_broncos").querySelectorAll(".brow")].map(r=>({d:r.querySelector(".bd").value,t:r.querySelector(".bt").value.trim()})).filter(x=>x.t!==""); }
 function updBroncoGauge(){ const bs=formBroncos(); const box=$("f_bronco_gauge"); if(!box) return; const pv=readSelectCustom($("f_poste"),$("f_poste_custom")); const _n=(POSTES[pv]&&POSTES[pv].num)?POSTES[pv].num:0; const grp=(_n>=1&&_n<=5)?"av12":((_n>=6&&_n<=8)?"av3":"arr"); if(bs.length>=1){ const g=broncoGaugeHTML(bs,grp); box.innerHTML=(g||"")+'<div class="wcap">'+broncoEvol(bs,grp)+'</div>'; box.style.display="block"; } else { box.innerHTML=""; box.style.display="none"; } }
 function onBroncoChange(){ updBroncoGauge(); }
+function tdjxRow(x){
+  x=x||{};
+  const r=document.createElement("div"); r.className="brow xrow";
+  r.innerHTML='<input class="xd" type="date" /><input class="xc" type="text" placeholder="Club / équipe" /><input class="xm" type="number" inputmode="numeric" min="0" max="120" step="1" placeholder="min" /><button type="button" class="rm" aria-label="Retirer">×</button>';
+  r.querySelector(".xd").value=x.d||""; r.querySelector(".xc").value=x.club||""; r.querySelector(".xm").value=(x.min!=null?x.min:"");
+  r.querySelector(".rm").addEventListener("click",()=>r.remove());
+  return r;
+}
 function tdjRow(m,val){
   const r=document.createElement("div"); r.className="tdjrow";
   const dd=new Date(m.d); const jj=("0"+dd.getDate()).slice(-2)+"/"+("0"+(dd.getMonth()+1)).slice(-2);
@@ -1407,6 +1462,7 @@ $("f_addbronco").addEventListener("click",()=>{ $("f_broncos").appendChild(bronc
 $("f_addcmj").addEventListener("click",()=>{ $("f_cmjs").appendChild(cmjRow(todayISO(),"")); onCmjChange(); });
 $("f_addsprint").addEventListener("click",()=>{ $("f_sprints").appendChild(sprintRow(todayISO(),"","")); });
 $("f_addep").addEventListener("click",()=>{ $("f_eps").appendChild(epRow({deb:todayISO()})); });
+$("f_addtdjx").addEventListener("click",()=>{ $("f_tdjx").appendChild(tdjxRow({d:todayISO()})); });
 $("f_addtest").addEventListener("click",()=>{ $("f_tests").appendChild(testRow(todayISO(),"","")); });
 $("f_addpesee").addEventListener("click",()=>{ $("f_pesees").appendChild(peseeRow(todayISO(),"")); onPeseeChange(); });
 $("f_poidsc").addEventListener("input",updPeseeChart);
@@ -1730,15 +1786,17 @@ const tdjOverlay=$("tdjOverlay");
 function openTdj(){
   const auj=new Date().toISOString().slice(0,10);
   const joues=CALENDRIER.filter(m=>m.d<=auj).length;
-  const rows=players.slice().map(p=>({p:p,tot:totalMin(p),nb:nbMatchs(p),moy:moyMin(p),m21:minSurJours(p,21),serie:serieConsecutive(p)}))
+  const rows=players.slice().map(p=>({p:p,tot:totalMin(p),nb:nbMatchs(p),moy:moyMin(p),m21:minSurJours(p,21),serie:serieConsecutive(p),sw:serieSemaines(p)}))
     .filter(r=>r.nb>0||r.tot>0).sort((a,b)=>b.tot-a.tot);
   if(!rows.length){ $("tdjBody").innerHTML='<p class="hint">Aucune minute saisie pour l\'instant. '+(joues?joues+' match'+(joues>1?'s':'')+' déjà joué'+(joues>1?'s':'')+' — renseigne les minutes sur les fiches joueurs.':'La saison démarre le 05/09/2026.')+'</p>'; tdjOverlay.classList.add("open"); return; }
   const maxi=rows[0].tot||1;
   let h='<div class="hint" style="margin-bottom:9px">'+joues+' match'+(joues>1?'s':'')+' disputé'+(joues>1?'s':'')+' · '+rows.length+' joueur'+(rows.length>1?'s':'')+' avec du temps de jeu</div>';
-  h+='<table class="rtable"><thead><tr><th>Joueur</th><th>Total</th><th>Matchs</th><th>Moy.</th><th>21 j</th><th>Série</th></tr></thead><tbody>';
+  h+='<table class="rtable"><thead><tr><th>Joueur</th><th>Total</th><th>Matchs</th><th>Moy.</th><th>21 j</th><th title="Matchs CS Vienne consécutifs">Série CSV</th><th title="Week-ends consécutifs avec un match, toutes compétitions">W-E d\'affilée</th></tr></thead><tbody>';
   rows.forEach(r=>{
     const pc=Math.round(r.tot/maxi*100);
-    h+='<tr><td><b>'+esc(r.p.n)+'</b><div class="tdjbar"><i style="width:'+pc+'%"></i></div></td><td><b>'+r.tot+'</b> min</td><td>'+r.nb+'</td><td>'+r.moy+'</td><td>'+r.m21+'</td><td>'+(r.serie>2?'<span style="color:#C32A2A;font-weight:700">'+r.serie+'</span>':r.serie)+'</td></tr>';
+    const th=totalMinHors(r.p);
+    h+='<tr><td><b>'+esc(r.p.n)+'</b>'+(th?' <span class="dltag">DL '+th+'</span>':'')+'<div class="tdjbar"><i style="width:'+pc+'%"></i></div></td><td><b>'+r.tot+'</b> min</td><td>'+r.nb+'</td><td>'+r.moy+'</td><td>'+r.m21+'</td><td>'+(r.serie>2?'<span style="color:#C32A2A;font-weight:700">'+r.serie+'</span>':r.serie)+'</td>'
+      +'<td>'+(r.sw>2?'<span style="color:#C32A2A;font-weight:700">'+r.sw+'</span>':r.sw)+'</td></tr>';
   });
   h+='</tbody></table>';
   { const mp=matchsPasses().filter(function(m){ return statsMatch(m.d).nb>0; });
@@ -1790,7 +1848,8 @@ function openTdj(){
     const box=document.getElementById("tdjFocusBody");
     if(!p){ box.innerHTML=""; return; }
     const tot=totalMin(p), nb=nbMatchs(p), moy=moyMin(p), m21=minSurJours(p,21), serie=serieConsecutive(p), titu=tauxTitu(p), me=moyEquipe();
-    let b='<div class="tdj-sum"><span><b>'+tot+'</b> min</span><span><b>'+nb+'</b> match'+(nb>1?'s':'')+'</span><span><b>'+moy+'</b> min/match</span><span><b>'+m21+'</b> min / 21 j</span><span><b>'+titu+'%</b> titulaire</span>'+(serie>=3?'<span class="surtag"><b>'+serie+'</b> matchs d\'affilée</span>':'')+'</div>';
+    let b='<div class="tdj-sum"><span><b>'+tot+'</b> min</span><span><b>'+nb+'</b> match'+(nb>1?'s':'')+'</span><span><b>'+moy+'</b> min/match</span><span><b>'+m21+'</b> min / 21 j</span><span><b>'+titu+'%</b> titulaire</span>'+(serie>=3?'<span class="surtag" title="Matchs CS Vienne consécutifs"><b>'+serie+'</b> matchs CSV d\'affilée</span>':'')
+      +(function(){ const w=serieSemaines(p); return w>=3?'<span class="surtag" title="Toutes compétitions"><b>'+w+'</b> week-ends d\'affilée</span>':''; })()+'</div>';
     if(me) b+='<div class="hint" style="margin:4px 0 8px">Moyenne équipe : '+me+' min — '+(tot>me?'<b style="color:#C32A2A">+'+(tot-me)+' min</b>':(tot<me?'<b style="color:#0E5E8E">'+(tot-me)+' min</b>':'au niveau'))+'</div>';
     b+=barresTdj(p,false);
     const det=tdjParMatch(p).slice().reverse().map(a=>{
