@@ -223,6 +223,27 @@
   .mcomp-t{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);font-weight:800;margin-bottom:7px}
   .mbloc{margin-top:9px}
   .mbloc-t{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--brand);font-weight:800;margin-bottom:3px}
+  .saisie-body{max-height:52vh;overflow-y:auto;border:1px solid var(--line);border-radius:10px;padding:4px 8px}
+  .saisie-bar{display:flex;gap:7px;margin-bottom:7px;flex-wrap:wrap}
+  .saisie-bar #saisieQ{flex:1;min-width:130px;font-family:var(--body);font-size:.85rem;padding:7px 9px;border:1.5px solid var(--line);border-radius:9px}
+  .mini-btn{font-family:var(--body);font-size:.74rem;font-weight:700;padding:6px 10px;border:1.5px solid var(--line);border-radius:9px;background:#F6FAFD;color:var(--brand);cursor:pointer}
+  .saisie-etat{font-size:.78rem;margin-bottom:6px;padding:5px 9px;border-radius:8px}
+  .saisie-etat.deja{color:#0E5E8E;background:#EAF3FA;font-weight:600}
+  .saisie-etat.vierge{color:var(--faint);background:#F4F7FA}
+  .saisie-tot{font-size:.8rem;font-weight:700;margin-bottom:7px;padding:5px 9px;border-radius:8px}
+  .saisie-tot.neutre{color:var(--faint);background:#F4F7FA}
+  .saisie-tot.ok{color:#1C6B45;background:#E4F4EB}
+  .saisie-tot.alerte{color:#8A5200;background:#FFF6EC}
+  .srow .s-80{flex:0 0 auto;font-family:var(--body);font-size:.72rem;font-weight:800;padding:5px 8px;border:1.5px solid var(--line);border-radius:8px;background:#EAF3FA;color:#0E5E8E;cursor:pointer}
+  .saisie-msg{margin-top:7px;font-size:.8rem;color:#1C8C5A;font-weight:700}
+  .srow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #F0F5F9}
+  .srow:last-child{border-bottom:none}
+  .s-po{flex:0 0 22px;font-size:.72rem;font-weight:800;color:var(--brand);text-align:center}
+  .s-n{flex:1;min-width:0;font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .s-bl{font-size:.66rem;font-weight:700;color:#EA580C}
+  .srow .s-st{flex:0 0 118px;font-family:var(--body);font-size:.8rem;padding:5px 6px;border:1.5px solid var(--line);border-radius:8px;background:#fff}
+  .srow .s-min{flex:0 0 58px;font-family:var(--body);font-size:.86rem;padding:5px 6px;border:1.5px solid var(--line);border-radius:8px;text-align:center}
+  #saisieMatch{width:100%;font-family:var(--body);font-size:.9rem;padding:8px 9px;border:1.5px solid var(--line);border-radius:9px;background:#fff}
   .tdjfocus{margin-top:13px;padding:11px;background:#F6FAFD;border:1px solid #E1EDF5;border-radius:10px}
   .tdjfocus select{width:100%;font-family:var(--body);font-size:.88rem;padding:8px 9px;border:1.5px solid var(--line);border-radius:9px;background:#fff}
   .tdjtag{background:#EAF3FA;color:#0E5E8E}
@@ -490,7 +511,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h35 — lisibilité : une seule alerte de surcharge par carte</div>
+    <div style="font-size:.7rem;opacity:.5">h38 — saisie de match : libellés explicites et correction assumée</div>
   </footer>
 </div>
 
@@ -608,11 +629,31 @@
     </div>
   </div>
 </div>
+<div class="overlay" id="saisieOverlay">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="saisieTitle">
+    <h2 id="saisieTitle">Saisie du temps de jeu</h2>
+    <div class="frow" style="margin-bottom:9px"><select id="saisieMatch"></select></div>
+    <div class="saisie-bar">
+      <input id="saisieQ" type="search" placeholder="Filtrer un joueur…" />
+      <button type="button" id="saisieReste" class="mini-btn">Reste = non convoqué</button>
+      <button type="button" id="saisieVide" class="mini-btn">Tout effacer</button>
+    </div>
+    <div id="saisieEtat" class="saisie-etat"></div>
+    <div id="saisieTot" class="saisie-tot"></div>
+    <div id="saisieBody" class="saisie-body"></div>
+    <div class="frow" style="margin-top:12px;gap:8px">
+      <button type="button" id="saisieSave" class="primary">Enregistrer ce match</button>
+      <button type="button" id="saisieClose">Fermer</button>
+    </div>
+    <div id="saisieMsg" class="saisie-msg"></div>
+  </div>
+</div>
 <div class="overlay" id="tdjOverlay">
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="tdjTitle">
     <h2 id="tdjTitle">Temps de jeu — cumul équipe</h2>
     <div id="tdjBody"></div>
     <div class="frow" style="margin-top:12px;gap:8px">
+      <button type="button" id="tdjSaisie">Saisir un match</button>
       <button type="button" id="tdjCopy">Copier</button>
       <button type="button" id="tdjFiche">Fiche PDF</button>
       <button type="button" id="tdjClose">Fermer</button>
@@ -1782,6 +1823,136 @@ function openReathle(){
     ;
   reathleOverlay.classList.add("open");
 }
+const saisieOverlay=$("saisieOverlay");
+function ordrePoste(a,b){
+  const pa=posteInfo(a), pb=posteInfo(b);
+  const oa=(pa.num!=null?pa.num:99), ob=(pb.num!=null?pb.num:99);
+  if(oa!==ob) return oa-ob;
+  return a.n.localeCompare(b.n);
+}
+function remplirSaisie(){
+  const d=$("saisieMatch").value; const box=$("saisieBody");
+  if(!d){ box.innerHTML='<p class="hint">Aucun match disponible.</p>'; return; }
+  const liste=players.slice().sort(ordrePoste);
+  let h="";
+  liste.forEach(function(p){
+    const ex=(Array.isArray(p.tdjs)?p.tdjs:[]).filter(function(x){ return x&&x.d===d; })[0]||null;
+    const pi=posteInfo(p);
+    const ep=activeEpisode(p);
+    h+='<div class="srow" data-id="'+esc(p.id)+'">'
+      +'<span class="s-po">'+(pi.num!=null?pi.num:"—")+'</span>'
+      +'<span class="s-n">'+esc(p.n)+(ep?' <span class="s-bl">'+esc(PHASES[ep.phase].label)+'</span>':'')+'</span>'
+      +'<select class="s-st"><option value="">—</option>'
+      +Object.keys(TDJSTAT).map(function(k){ return '<option value="'+k+'"'+((ex&&ex.st===k)?" selected":"")+'>'+TDJSTAT[k]+'</option>'; }).join("")
+      +'</select>'
+      +'<input class="s-min" type="number" inputmode="numeric" min="0" max="120" step="1" placeholder="min" value="'+((ex&&ex.min!=null)?esc(ex.min):"")+'" />'
+      +'<button type="button" class="s-80" title="80 minutes, titulaire">80</button>'
+      +'</div>';
+  });
+  box.innerHTML=h;
+  { const dejaN=players.reduce(function(a,p){
+      const x=(Array.isArray(p.tdjs)?p.tdjs:[]).filter(function(y){ return y&&y.d===d&&(y.min!==""||y.st!==""); })[0];
+      return a+(x?1:0); },0);
+    const eb=$("saisieEtat");
+    if(dejaN){ eb.className="saisie-etat deja"; eb.textContent="Match déjà saisi pour "+dejaN+" joueur"+(dejaN>1?"s":"")+" — tu peux corriger et réenregistrer."; }
+    else { eb.className="saisie-etat vierge"; eb.textContent="Aucune saisie pour ce match pour l instant."; }
+  }
+  majTotal();
+}
+function majTotal(){
+  const rows=[...$("saisieBody").querySelectorAll(".srow")];
+  let n=0,tot=0;
+  rows.forEach(function(r){
+    const v=r.querySelector(".s-min").value.trim();
+    if(v!==""){ const x=parseInt(v,10)||0; if(x>0){ n++; tot+=x; } }
+  });
+  const cible=1200;
+  const el=$("saisieTot");
+  if(tot===0){
+    el.className="saisie-tot neutre";
+    el.textContent="Aucune minute saisie pour ce match.";
+    return;
+  }
+  const ecart=cible-tot;
+  let cl="ok", txt=n+" joueur"+(n>1?"s":"")+" · "+tot+" min au total";
+  if(ecart>160){ cl="alerte"; txt+=" — il manque environ "+ecart+" min sur les "+cible+" attendues"; }
+  else if(ecart<-160){ cl="alerte"; txt+=" — "+Math.abs(ecart)+" min de trop par rapport aux "+cible+" attendues"; }
+  else { txt+=" — cohérent avec les "+cible+" min d un match (15 joueurs sur le terrain x 80 min)"; }
+  el.className="saisie-tot "+cl;
+  el.textContent=txt;
+}
+function filtrerSaisie(){
+  const q=($("saisieQ").value||"").trim().toLowerCase();
+  [...$("saisieBody").querySelectorAll(".srow")].forEach(function(r){
+    const nom=(r.querySelector(".s-n").textContent||"").toLowerCase();
+    r.style.display=(!q||nom.indexOf(q)>=0)?"flex":"none";
+  });
+}
+function marquerReste(){
+  [...$("saisieBody").querySelectorAll(".srow")].forEach(function(r){
+    const mn=r.querySelector(".s-min"), st=r.querySelector(".s-st");
+    if(mn.value.trim()===""&&st.value===""){ st.value="nc"; mn.value="0"; }
+  });
+  DIRTY=true; majTotal();
+}
+function viderSaisie(){
+  [...$("saisieBody").querySelectorAll(".srow")].forEach(function(r){
+    r.querySelector(".s-min").value=""; r.querySelector(".s-st").value="";
+  });
+  DIRTY=true; majTotal();
+}
+let DIRTY=false;
+function openSaisie(){
+  if(!isAdmin()){ toast("Accès en consultation seule"); return; }
+  const joues=matchsPasses().slice().reverse();
+  const src=joues.length?joues:CALENDRIER.slice(0,1);
+  $("saisieMatch").innerHTML=src.map(function(m){ return '<option value="'+m.d+'">'+labJ(m)+' · '+esc(m.adv)+' ('+frDate(m.d)+')</option>'; }).join("");
+  $("saisieMsg").textContent=""; $("saisieQ").value=""; DIRTY=false;
+  remplirSaisie();
+  saisieOverlay.classList.add("open");
+}
+function enregistrerSaisie(){
+  const d=$("saisieMatch").value; if(!d) return;
+  let n=0;
+  [...$("saisieBody").querySelectorAll(".srow")].forEach(function(r){
+    const id=r.dataset.id; const p=players.find(function(x){ return x.id===id; }); if(!p) return;
+    const mn=r.querySelector(".s-min").value.trim(), st=r.querySelector(".s-st").value;
+    if(!Array.isArray(p.tdjs)) p.tdjs=[];
+    const i=p.tdjs.findIndex(function(x){ return x&&x.d===d; });
+    if(mn===""&&st===""){ if(i>=0){ p.tdjs.splice(i,1); n++; } return; }
+    if(i>=0){ p.tdjs[i].min=mn; p.tdjs[i].st=st; }
+    else p.tdjs.push({d:d,min:mn,st:st});
+    n++;
+  });
+  players.forEach(function(p){ if(Array.isArray(p.tdjs)) p.tdjs.sort(function(a,b){ return (a.d||"").localeCompare(b.d||""); }); });
+  persist(); render();
+  DIRTY=false; majTotal();
+  $("saisieMsg").textContent=n+" joueur"+(n>1?"s":"")+" enregistré"+(n>1?"s":"")+".";
+}
+$("tdjSaisie").addEventListener("click",function(){ tdjOverlay.classList.remove("open"); setTimeout(openSaisie,120); });
+$("saisieMatch").addEventListener("change",function(){
+  if(DIRTY&&!confirm("Des saisies ne sont pas enregistrées. Changer de match ?")){ return; }
+  DIRTY=false; remplirSaisie();
+});
+$("saisieQ").addEventListener("input",filtrerSaisie);
+$("saisieReste").addEventListener("click",marquerReste);
+$("saisieVide").addEventListener("click",function(){ if(confirm("Effacer toute la saisie de ce match ?")) viderSaisie(); });
+$("saisieBody").addEventListener("input",function(){ DIRTY=true; majTotal(); });
+$("saisieBody").addEventListener("change",function(){ DIRTY=true; majTotal(); });
+$("saisieBody").addEventListener("click",function(e){
+  const b=e.target.closest?e.target.closest(".s-80"):null; if(!b) return;
+  const r=b.parentNode;
+  r.querySelector(".s-min").value="80";
+  if(!r.querySelector(".s-st").value) r.querySelector(".s-st").value="t";
+  DIRTY=true; majTotal();
+});
+$("saisieSave").addEventListener("click",enregistrerSaisie);
+function fermerSaisie(){
+  if(DIRTY&&!confirm("Des saisies ne sont pas enregistrées. Fermer quand même ?")) return;
+  DIRTY=false; saisieOverlay.classList.remove("open");
+}
+$("saisieClose").addEventListener("click",fermerSaisie);
+saisieOverlay.addEventListener("click",function(e){ if(e.target===saisieOverlay) fermerSaisie(); });
 const tdjOverlay=$("tdjOverlay");
 function openTdj(){
   const auj=new Date().toISOString().slice(0,10);
@@ -1826,7 +1997,7 @@ function openTdj(){
     const mp=matchsPasses().filter(function(x){ return statsMatch(x.d).nb>0; });
     const idx=mp.findIndex(function(x){ return x.d===d; });
     const to=(idx>0)?turnover(mp[idx-1].d,d):null;
-    let b='<div class="tdj-sum"><span><b>'+st.nb+'</b> joueurs</span><span><b>'+st.titus+'</b> titulaires</span><span><b>'+st.remps+'</b> remplaçants</span><span><b>'+st.minutes+'</b> min distribuées</span></div>';
+    let b='<div class="tdj-sum"><span><b>'+st.nb+'</b> joueurs</span><span><b>'+st.titus+'</b> titulaires</span><span><b>'+st.remps+'</b> remplaçants</span><span><b>'+st.minutes+'</b> min au total</span></div>';
     if(to) b+='<div class="hint" style="margin:2px 0 8px">Vs '+labJ(mp[idx-1])+' '+esc(mp[idx-1].adv)+' : <b>'+to.communs+'</b> joueurs reconduits, <b>'+to.entrants+'</b> entrant'+(to.entrants>1?'s':'')+', <b>'+to.sortants+'</b> sortant'+(to.sortants>1?'s':'')+'</div>';
     function bloc(titre,arr){
       if(!arr.length) return "";
@@ -1963,7 +2134,7 @@ $("newPassBtn").addEventListener("click",async function(){
 $("btnLogout").addEventListener("click",async function(){ try{ if(sb) await sb.auth.signOut(); }catch(e){} location.reload(); });
 function appliquerRole(){
   if(isAdmin()) return;
-  ["fab","btnImport","btnReset","detailEdit","btnBareme"].forEach(function(id){ const el=document.getElementById(id); if(el) el.style.display="none"; });
+  ["fab","btnImport","btnReset","detailEdit","btnBareme","tdjSaisie"].forEach(function(id){ const el=document.getElementById(id); if(el) el.style.display="none"; });
   const b=document.getElementById("dataHint"); if(b) b.textContent="Accès consultation — les modifications sont réservées au préparateur physique.";
   document.body.classList.add("role-coach");
 }
