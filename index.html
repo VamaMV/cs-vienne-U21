@@ -503,6 +503,134 @@
   .login-err{color:var(--danger);font-size:13px;margin-top:12px;min-height:16px;text-align:center}
   @keyframes loginUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
   @media (prefers-reduced-motion:reduce){.login-inner{animation:none}}
+
+/* ---- séquenceur BIP ---- */
+.bqsheet{max-width:1180px}
+.bqwrap{font-family:var(--body)}
+
+:root{
+  --navy:#13283b; --sky:#8fc1ea; --blue:#3d7fbf;
+  --ink:#13283b; --mut:#6b8098; --line:#d3dee8; --pale:#eef4f9; --bg:#f7fafc;
+  --warn:#c2571f; --ok:#2e7d5b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:14px; line-height:1.45;
+  font-variant-numeric:tabular-nums; -webkit-font-smoothing:antialiased;
+}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ---------- shell ---------- */
+.bqwrap .bq-top{
+  background:var(--navy); color:#fff;
+  padding:14px 22px; display:flex; align-items:baseline; gap:18px; flex-wrap:wrap;
+}
+.bqwrap .bq-top h1{margin:0;font-size:17px;font-weight:700;letter-spacing:-.2px}
+.bqwrap .bq-top .bq-who{font-size:12.5px;color:var(--sky)}
+.bqwrap .bq-top .bq-sp{flex:1}
+.bqwrap .bq-top .bq-acts{display:flex;gap:8px}
+.bqwrap .bq-top button{
+  background:transparent;border:1px solid rgba(255,255,255,.45);color:#fff;
+  padding:6px 12px;border-radius:3px;font-size:12.5px
+}
+.bqwrap .bq-top button:hover{background:rgba(255,255,255,.12)}
+.bqwrap .bq-top button.pri{background:var(--sky);border-color:var(--sky);color:var(--navy);font-weight:600}
+
+.bqwrap .bq-shell{display:grid;grid-template-columns:296px 1fr;gap:0;min-height:calc(100vh - 52px)}
+.bqwrap .bq-rail{background:#fff;border-right:1px solid var(--line);overflow:auto}
+.bqwrap .bq-main{padding:20px 22px 60px;overflow:auto}
+
+/* ---------- rail ---------- */
+.bqwrap .bq-railhead{
+  padding:10px 14px;border-bottom:1px solid var(--line);
+  font-size:11.5px;color:var(--mut);display:flex;justify-content:space-between
+}
+.bqwrap .bq-wk{
+  display:grid;grid-template-columns:44px 1fr 62px;gap:8px;align-items:center;
+  padding:8px 14px;border-bottom:1px solid #eaf0f5;cursor:pointer;background:none;border-left:3px solid transparent;width:100%;text-align:left
+}
+.bqwrap .bq-wk:hover{background:var(--pale)}
+.bqwrap .bq-wk.on{background:var(--pale);border-left-color:var(--blue)}
+.bqwrap .bq-wk .s{font-weight:700;font-size:13px}
+.bqwrap .bq-wk .o{font-size:12.5px;line-height:1.25}
+.bqwrap .bq-wk .d{font-size:11px;color:var(--mut)}
+.bqwrap .bq-wk .n{text-align:right;font-size:12.5px;font-weight:600}
+.bqwrap .bq-wk .n em{font-style:normal;color:var(--mut);font-weight:400}
+.bqwrap .bq-wk.rest .o,.bqwrap .bq-wk.rest .n{color:var(--mut);font-style:italic}
+.bqwrap .tagE{color:var(--warn);font-weight:700}
+
+/* ---------- blocks ---------- */
+.bqwrap .bq-card{background:#fff;border:1px solid var(--line);border-radius:4px;padding:16px 18px;margin-bottom:18px}
+.bqwrap .bq-card > h2{margin:0 0 2px;font-size:15px;font-weight:700}
+.bqwrap .bq-card > .bq-sub{margin:0 0 14px;font-size:12.5px;color:var(--mut)}
+
+/* chart */
+.bqwrap .bq-chartwrap{overflow-x:auto}
+svg.chart{display:block;min-width:640px;width:100%;height:230px}
+.bqwrap .bq-legend{display:flex;gap:16px;font-size:12px;color:var(--mut);margin-top:6px}
+.bqwrap .bq-legend i{display:inline-block;width:11px;height:11px;margin-right:5px;vertical-align:-1px;border-radius:1px}
+
+/* session panel */
+.bqwrap .bq-sessions{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:1080px){.bq-sessions{grid-template-columns:1fr}.bq-shell{grid-template-columns:1fr}.bq-rail{max-height:220px}}
+.bqwrap .sess h3{margin:0 0 10px;font-size:14px;font-weight:700;display:flex;align-items:baseline;gap:8px}
+.bqwrap .sess h3 span{font-size:12px;font-weight:400;color:var(--mut)}
+.bqwrap .params{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.bqwrap .p{display:flex;flex-direction:column;gap:3px}
+.bqwrap .p label{font-size:11px;color:var(--mut)}
+.bqwrap .p input{width:74px;padding:5px 7px;border:1px solid var(--line);border-radius:3px;background:#fff}
+
+.bqwrap .balls{border-top:1px solid var(--line)}
+.bqwrap .blk{padding:8px 0}
+.bqwrap .blk .bh{font-size:11.5px;color:var(--mut);margin-bottom:6px}
+.bqwrap .ball{display:grid;grid-template-columns:20px 1fr 66px 26px;gap:8px;align-items:center;padding:3px 0}
+.bqwrap .ball .i{font-size:11.5px;color:var(--mut)}
+.bqwrap .ball .bq-bar{height:14px;background:var(--pale);border-radius:2px;position:relative;overflow:hidden}
+.bqwrap .ball .bq-bar i{display:block;height:100%;background:var(--sky)}
+.bqwrap .ball.long .bq-bar i{background:var(--blue)}
+.bqwrap .ball input{width:100%;padding:4px 6px;border:1px solid var(--line);border-radius:3px;text-align:right}
+.bqwrap .ball button{border:none;background:none;color:var(--mut);font-size:15px;line-height:1;padding:2px 5px}
+.bqwrap .ball button:hover{color:var(--warn)}
+.bqwrap .addrow{margin-top:6px}
+.bqwrap .addrow button{background:var(--pale);border:1px solid var(--line);border-radius:3px;padding:4px 10px;font-size:12px}
+
+.bqwrap .read{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.bqwrap .read div{display:flex;flex-direction:column}
+.bqwrap .read b{font-size:18px;font-weight:700;letter-spacing:-.3px}
+.bqwrap .read small{font-size:11px;color:var(--mut)}
+.bqwrap .read .off b{color:var(--warn)}
+.bqwrap .read .good b{color:var(--ok)}
+
+.bqwrap .dist{margin-top:12px;font-size:12px}
+.bqwrap .dist table{width:100%;border-collapse:collapse}
+.bqwrap .dist td,.bqwrap .dist th{padding:3px 4px;border-bottom:1px solid #eaf0f5;text-align:right;font-size:11.5px}
+.bqwrap .dist th:first-child,.bqwrap .dist td:first-child{text-align:left;color:var(--mut)}
+.bqwrap .dist .m{color:var(--mut)}
+
+.bqwrap .bq-note{font-size:12px;color:var(--mut);margin-top:10px;line-height:1.5}
+.bqwrap .warnbox{background:#fdf3ec;border:1px solid #f0d3bd;color:#7a3a12;padding:9px 12px;border-radius:3px;font-size:12.5px;margin-top:10px}
+
+/* print */
+@media print{
+  @page{size:A4 landscape;margin:10mm}
+  body{background:#fff;font-size:9.5pt}
+.bqwrap .bq-top .bq-acts,.bqwrap .bq-rail,.bqwrap .addrow,.bqwrap .ball button{display:none!important}
+.bqwrap .bq-shell{display:block}
+.bqwrap .bq-main{padding:0}
+.bqwrap .bq-card{border:none;padding:0;margin:0 0 8mm;break-inside:avoid}
+.bqwrap .ball input{border:none;padding:0;text-align:right}
+.bqwrap .p input{border:none;padding:0}
+.bqwrap .bq-sessions{break-inside:avoid}
+.bqwrap .bq-top{background:#fff;color:var(--navy);padding:0 0 4mm;border-bottom:2pt solid var(--navy);margin-bottom:6mm}
+.bqwrap .bq-top .bq-who{color:var(--blue)}
+}
+
+
 </style>
 </head>
 <body>
@@ -600,7 +728,7 @@
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h45 — onglet séquençage &amp; gestion du BIP</div>
+    <div style="font-size:.7rem;opacity:.5">h48 — correctif chargement (async orphelin)</div>
   </footer>
 </div>
 
@@ -719,32 +847,57 @@
   </div>
 </div>
 <div class="overlay" id="bipOverlay">
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="bipTitle">
-    <h2 id="bipTitle">Séquençage &amp; gestion du BIP</h2>
-    <div id="bipChart"></div>
-    <div id="bipList"></div>
-    <div id="bipForm" class="bipform">
-      <div class="fsub">Nouvelle séance <span class="fsub-note">un bloc par ligne, durées des ballons en secondes séparées par des espaces</span></div>
-      <div class="frow two">
-        <div><label for="bp_d">Date</label><input id="bp_d" type="date" /></div>
-        <div><label for="bp_lib">Libellé</label><input id="bp_lib" type="text" placeholder="ex. Mercredi plaqué 2x5" /></div>
+  <div class="sheet bqsheet" role="dialog" aria-modal="true" aria-labelledby="bipTitle">
+    <h2 id="bipTitle">Jeu séquencé — suivi du BIP</h2>
+    <div class="bqwrap">
+
+<div class="bq-top">
+  <h1>Jeu séquencé — suivi du BIP</h1>
+  <span class="bq-who">CS Vienne · Espoirs Reichel Accession U21 · saison 2026-27</span>
+  <span class="bq-sp"></span>
+  <div class="bq-acts">
+    <button id="bq_btnGen">Proposer une séquence</button>
+    <button id="bq_btnImp">Ouvrir un fichier</button>
+    <button id="bq_btnExp">Enregistrer</button>
+    <button id="bq_btnXls">Export Excel</button>
+    <button class="bq-pri" id="bq_btnPrint">Imprimer</button>
+  </div>
+</div>
+
+<div class="bq-shell">
+  <nav class="bq-rail">
+    <div class="bq-railhead"><span>Semaine</span><span>Mardi / 2ᵉ</span></div>
+    <div id="bq_rail"></div>
+  </nav>
+
+  <main class="bq-main">
+    <section class="bq-card">
+      <h2>Évolution sur la saison</h2>
+      <p class="bq-sub">Temps de ballon en jeu par séance. La bande claire marque le plafond que tu t'es fixé.</p>
+      <div class="bq-chartwrap"><svg class="chart" id="bq_chart" viewBox="0 0 980 230" preserveAspectRatio="none"></svg></div>
+      <div class="bq-legend">
+        <span><i style="background:#8fc1ea"></i>Mardi</span>
+        <span><i style="background:#13283b"></i>2ᵉ séance</span>
+        <span><i style="background:#e5edf4"></i>Plafond 18-20′</span>
       </div>
-      <div class="frow two">
-        <div><label for="bp_rec">Récup entre ballons (s)</label><input id="bp_rec" type="number" min="0" max="600" step="5" placeholder="45" /></div>
-        <div><label for="bp_cou">Coupure entre blocs (s)</label><input id="bp_cou" type="number" min="0" max="900" step="10" placeholder="180" /></div>
+    </section>
+
+    <section class="bq-card">
+      <h2 id="bq_wkTitle">Semaine</h2>
+      <p class="bq-sub" id="bq_wkSub"></p>
+      <div class="bq-sessions" id="bq_sessions"></div>
+      <div class="bq-note">
+        Repères de match (Coupe du monde 2025) : 73 séquences pour 36′15 de jeu effectif, dont 44 % sous 15 s,
+        10 % entre 61 et 90 s, 1 % entre 2 et 3 min, aucune au-delà de 3 min. En Reichel, compte 28 à 32′ de BIP par match.
       </div>
-      <label for="bp_blocs">Blocs</label>
-      <textarea id="bp_blocs" rows="4" placeholder="25 80 160 35 90&#10;35 95 140 25 95"></textarea>
-      <div id="bipCalc" class="bipcalc"></div>
-      <div class="frow" style="gap:8px;margin-top:9px">
-        <button type="button" id="bipAdd" class="primary">Enregistrer la séance</button>
-        <button type="button" id="bipReset">Vider</button>
-      </div>
-    </div>
-    <div class="frow" style="margin-top:12px;gap:8px">
-      <button type="button" id="bipFiche">Fiche staff</button>
-      <button type="button" id="bipClose">Fermer</button>
-    </div>
+    </section>
+  </main>
+</div>
+
+<input type="file" id="bq_file" accept="application/json" hidden>
+
+</div>
+    <div class="frow" style="margin-top:12px"><button type="button" id="bipClose">Fermer</button></div>
   </div>
 </div>
 <div class="overlay" id="saisieOverlay">
@@ -926,28 +1079,26 @@ const SUPA_URL="https://lhbosovcordgzalxkgjx.supabase.co";
 const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxoYm9zb3Zjb3JkZ3phbHhrZ2p4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NzA2OTEsImV4cCI6MjA5NzQ0NjY5MX0.6N9HwIKRdc1JT36yDaRVRWP04tFG0bwvzZvW0wWSEC4";
 const sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SUPA_URL,SUPA_KEY):null;
 async function loadBareme(){ try{ const {data,error}=await sb.from("app_data").select("data").eq("id","bareme").maybeSingle(); if(!error&&data&&data.data) return data.data; }catch(e){} return null; }
-let SEQ=[];
-async function loadBip(){ try{ const {data,error}=await sb.from("app_data").select("data").eq("id","bip").maybeSingle(); if(!error&&data&&data.data&&Array.isArray(data.data)) return data.data; }catch(e){} return []; }
-async function saveBip(){ if(!isAdmin()){ toast("Accès en consultation seule"); return; } try{ const {error}=await sb.from("app_data").upsert({id:"bip",data:SEQ,updated_at:new Date().toISOString()}); if(error) toast("BIP : sauvegarde cloud échouée"); }catch(e){ toast("BIP : sauvegarde cloud échouée"); } }
-function normSeq(x){
-  const blocs=(Array.isArray(x&&x.blocs)?x.blocs:[]).map(function(b){
-    return (Array.isArray(b)?b:[]).map(function(v){ const n=parseInt(v,10); return isNaN(n)?0:Math.max(0,n); }).filter(function(v){ return v>0; });
-  }).filter(function(b){ return b.length; });
-  return {d:(x&&x.d)?String(x.d):"", lib:(x&&x.lib)?String(x.lib):"", blocs:blocs,
-    recup:Math.max(0,parseInt((x&&x.recup)||0,10)||0), coupure:Math.max(0,parseInt((x&&x.coupure)||0,10)||0)};
+
+
+function bqParse(txt){
+  const t=String(txt||"").trim().replace(/\s/g,"").replace(/[’′]/g,"'").replace(/[”″]/g,'"');
+  if(!t) return null;
+  let m=t.match(/^(\d+)'(\d{1,2})"?$/);            /* 1'30 */
+  if(m) return parseInt(m[1],10)*60+parseInt(m[2],10);
+  m=t.match(/^(\d+)'$/);                            /* 2'   */
+  if(m) return parseInt(m[1],10)*60;
+  m=t.match(/^(\d+)"$/);                            /* 45"  */
+  if(m) return parseInt(m[1],10);
+  m=t.match(/^(\d+)[:.](\d{1,2})$/);               /* 1:30 */
+  if(m) return parseInt(m[1],10)*60+parseInt(m[2],10);
+  m=t.match(/^\d+$/);                               /* 90   */
+  if(m) return parseInt(t,10);
+  return null;
 }
-function calcSeq(x){
-  const nb=x.blocs.reduce(function(a,b){ return a+b.length; },0);
-  const bip=x.blocs.reduce(function(a,b){ return a+b.reduce(function(u,v){ return u+v; },0); },0);
-  const intra=x.blocs.reduce(function(a,b){ return a+Math.max(0,b.length-1); },0)*x.recup;
-  const inter=Math.max(0,x.blocs.length-1)*x.coupure;
-  const tot=bip+intra+inter;
-  const rec=intra+inter;
-  return {nb:nb,bip:bip,tot:tot,rec:rec,
-    dens:tot>0?Math.round(bip/tot*1000)/10:0,
-    moy:nb?Math.round(bip/nb):0,
-    ratio:bip>0?Math.round(rec/bip*100)/100:0,
-    longs:x.blocs.reduce(function(a,b){ return a+b.filter(function(v){ return v>=60; }).length; },0)};
+function bqShow(v){
+  v=Math.max(0,Math.round(v||0));
+  return v<60 ? v+'"' : (Math.floor(v/60)+"'"+(v%60?String(v%60).padStart(2,"0"):""));
 }
 function mmss(sec){ const m=Math.floor(sec/60), r=sec%60; return m+"\u2032"+(r<10?"0":"")+r+"\u2033"; }
 async function saveBareme(){ const payload={bronco:BAREME,force:FORCE_BAREME,cmj:CMJ_BAREME}; try{ const {error}=await sb.from("app_data").upsert({id:"bareme",data:payload,updated_at:new Date().toISOString()}); if(error) toast("Barème : sauvegarde cloud échouée"); }catch(e){ toast("Barème : sauvegarde cloud échouée"); } }
@@ -1991,41 +2142,8 @@ function telechargerCSV(){
     toast("CSV téléchargé");
   }catch(e){ toast("Téléchargement indisponible ici"); }
 }
-function bipChartSVG(w,h){
-  const arr=SEQ.slice().sort(function(a,b){ return (a.d||"").localeCompare(b.d||""); });
-  if(arr.length<2) return "";
-  const vals=arr.map(function(x){ return calcSeq(x).bip; });
-  const mn=Math.min.apply(null,vals), mx=Math.max.apply(null,vals);
-  const lo=Math.max(0,Math.floor(mn/60)*60-60), hi=Math.ceil(mx/60)*60+60;
-  const pad=26, iw=w-pad*2, ih=h-pad*2;
-  const px=function(i){ return pad+(arr.length<2?iw/2:i/(arr.length-1)*iw); };
-  const py=function(v){ return pad+ih-((v-lo)/Math.max(1,hi-lo))*ih; };
-  let pts=arr.map(function(x,i){ return px(i)+","+py(calcSeq(x).bip); }).join(" ");
-  let g='<svg viewBox="0 0 '+w+' '+h+'" width="100%" height="'+h+'" xmlns="http://www.w3.org/2000/svg">';
-  for(let t=lo;t<=hi;t+=120){ const y=py(t); g+='<line x1="'+pad+'" y1="'+y+'" x2="'+(w-pad)+'" y2="'+y+'" stroke="#E4EDF3" stroke-width="1"/>'
-    +'<text x="4" y="'+(y+3)+'" font-size="9" fill="#8A9BA8">'+Math.round(t/60)+"\u2032"+'</text>'; }
-  g+='<polyline points="'+pts+'" fill="none" stroke="#0F80C4" stroke-width="2.5" stroke-linejoin="round"/>';
-  arr.forEach(function(x,i){ const c=calcSeq(x);
-    g+='<circle cx="'+px(i)+'" cy="'+py(c.bip)+'" r="4" fill="#0F80C4" stroke="#fff" stroke-width="1.5"/>';
-    g+='<text x="'+px(i)+'" y="'+(h-8)+'" font-size="8.5" fill="#8A9BA8" text-anchor="middle">'+esc((x.d||"").slice(8,10)+"/"+(x.d||"").slice(5,7))+'</text>';
-  });
-  return g+'</svg>';
-}
-function renderBip(){
-  const ch=document.getElementById("bipChart");
-  const sv=bipChartSVG(560,150);
-  ch.innerHTML=sv?'<div class="bipchart"><div class="bipct">Évolution du BIP par séance</div>'+sv+'</div>':'';
-  const arr=SEQ.slice().sort(function(a,b){ return (b.d||"").localeCompare(a.d||""); });
-  const box=document.getElementById("bipList");
-  if(!arr.length){ box.innerHTML='<p class="hint">Aucune séance enregistrée pour l\'instant.</p>'; return; }
-  box.innerHTML='<table class="rtable"><thead><tr><th>Séance</th><th>BIP</th><th>Ballons</th><th>Moy.</th><th>Densité</th><th>Ratio</th>'+(isAdmin()?'<th></th>':'')+'</tr></thead><tbody>'
-    +arr.map(function(x,i){ const c=calcSeq(x);
-      return '<tr><td><b>'+esc(x.lib||"Séance")+'</b><br><span class="sub">'+frDate(x.d)+' · '+x.blocs.length+' bloc'+(x.blocs.length>1?'s':'')+'</span></td>'
-        +'<td><b>'+mmss(c.bip)+'</b></td><td>'+c.nb+'</td><td>'+c.moy+' s</td>'
-        +'<td>'+c.dens+' %</td><td>1:'+frD(c.ratio)+'</td>'
-        +(isAdmin()?'<td><button type="button" class="bipdel" data-d="'+esc(x.d)+'" title="Supprimer">×</button></td>':'')+'</tr>';
-    }).join("")+'</tbody></table>';
-}
+
+
 function lireForm(){
   const blocs=($("bp_blocs").value||"").split(/\n+/).map(function(l){
     return l.split(/[^0-9]+/).filter(function(t){ return t!==""; }).map(function(t){ return parseInt(t,10); });
@@ -2033,34 +2151,9 @@ function lireForm(){
   return normSeq({d:$("bp_d").value, lib:$("bp_lib").value.trim(), blocs:blocs,
     recup:$("bp_rec").value, coupure:$("bp_cou").value});
 }
-function majCalcBip(){
-  const x=lireForm(), c=calcSeq(x), el=$("bipCalc");
-  if(!c.nb){ el.className="bipcalc"; el.textContent="Saisis au moins un bloc pour voir le calcul."; return; }
-  el.className="bipcalc on";
-  el.innerHTML='<span><b>'+mmss(c.bip)+'</b> de BIP</span><span><b>'+c.nb+'</b> ballons</span><span>moy. <b>'+c.moy+' s</b></span>'
-    +'<span>densité <b>'+c.dens+' %</b></span><span>ratio <b>1:'+frD(c.ratio)+'</b></span>'
-    +'<span>séance <b>'+mmss(c.tot)+'</b></span>'+(c.longs?'<span><b>'+c.longs+'</b> ballon'+(c.longs>1?'s':'')+' ≥ 60 s</span>':'');
-}
-function bipFicheHTML(){
-  const arr=SEQ.slice().sort(function(a,b){ return (b.d||"").localeCompare(a.d||""); });
-  let h='<div class="pf"><div class="pf-head"><div class="pf-crest"></div><div><div class="pf-club">CS Vienne Rugby · Espoirs Reichel Accession U21</div><div class="pf-title">Séquençage BIP</div></div></div>';
-  h+='<div class="pf-name">Jeu séquencé — suivi du temps de balle en jeu</div>';
-  if(!arr.length){ return h+'<div class="rf-empty">Aucune séance enregistrée.</div><div class="pf-foot">CS Vienne Rugby</div></div>'; }
-  const sv=bipChartSVG(680,150);
-  if(sv) h+='<div class="pf-chart">'+sv+'</div>';
-  arr.forEach(function(x){ const c=calcSeq(x);
-    h+='<div class="pf-sec">'+esc(x.lib||"Séance")+' — '+frDate(x.d)+'</div>';
-    h+='<div class="bip-k"><span>BIP <b>'+mmss(c.bip)+'</b></span><span>Ballons <b>'+c.nb+'</b></span><span>Moyenne <b>'+c.moy+' s</b></span>'
-      +'<span>Densité <b>'+c.dens+' %</b></span><span>Ratio <b>1:'+frD(c.ratio)+'</b></span><span>Durée <b>'+mmss(c.tot)+'</b></span></div>';
-    h+=x.blocs.map(function(b,k){
-      return '<div class="bip-b"><span class="bl">Bloc '+(k+1)+'</span>'+b.map(function(v){ return '<span class="bv'+(v>=60?" lg":"")+'">'+v+'\u2033</span>'; }).join("")+'</div>';
-    }).join("");
-    h+='<div class="bip-r">Récup entre ballons '+x.recup+'\u2033 · coupure entre blocs '+mmss(x.coupure)+'</div>';
-  });
-  h+='<div class="pf-foot">CS Vienne Rugby · préparation physique — document interne staff</div></div>';
-  return h;
-}
-function printBip(){ document.getElementById("printArea").innerHTML=bipFicheHTML(); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
+
+
+
 function printReathle(){ document.getElementById("printArea").innerHTML=reathleFicheHTML(); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
 function printFiches(list){
   const arr=(list||[]).filter(Boolean);
@@ -2097,30 +2190,370 @@ function openBareme(){
 }
 function closeBareme(){ baremeOverlay.classList.remove("open"); }
 const bipOverlay=$("bipOverlay");
-$("btnBip").addEventListener("click",async function(){
-  if(!SEQ.length){ SEQ=(await loadBip()).map(normSeq); }
-  if(!isAdmin()) $("bipForm").style.display="none";
-  renderBip(); majCalcBip(); bipOverlay.classList.add("open");
-});
 $("bipClose").addEventListener("click",function(){ bipOverlay.classList.remove("open"); });
 bipOverlay.addEventListener("click",function(e){ if(e.target===bipOverlay) bipOverlay.classList.remove("open"); });
-["bp_blocs","bp_rec","bp_cou"].forEach(function(id){ $(id).addEventListener("input",majCalcBip); });
-$("bipAdd").addEventListener("click",async function(){
-  const x=lireForm();
-  if(!x.d){ toast("Choisis une date"); return; }
-  if(!x.blocs.length){ toast("Saisis au moins un bloc"); return; }
-  SEQ=SEQ.filter(function(y){ return y.d!==x.d; }); SEQ.push(x);
-  SEQ.sort(function(a,b){ return (a.d||"").localeCompare(b.d||""); });
-  await saveBip(); renderBip(); toast("Séance enregistrée");
+(function(){
+let BQREADY=false;
+
+"use strict";
+
+/* ---------------- données saison ---------------- */
+const SEED = [
+  {s:"S36", d:"05/09", adv:"Nissa Rugby",       lieu:"D",  serie:"3/4", a:{day:"Mardi",  t:0,  done:true}, b:{day:"Mercredi", t:16*60, done:true}},
+  {s:"S37", d:"12/09", adv:"Narbonne",          lieu:"E+", serie:"4/4", a:{day:"Mardi",  t:4*60},  b:{day:"Mercredi", t:13*60}},
+  {s:"S38", d:"—",     adv:"Sans match",        lieu:"",   serie:"",    a:{day:"Mardi",  pool:true}, b:{day:"Jeudi",   t:12*60}},
+  {s:"S39", d:"26/09", adv:"Carcassonne",       lieu:"D",  serie:"1/3", a:{day:"Mardi",  t:5*60},  b:{day:"Mercredi", t:16*60}},
+  {s:"S40", d:"03/10", adv:"Béziers",           lieu:"E+", serie:"2/3", a:{day:"Mardi",  t:4*60},  b:{day:"Mercredi", t:14*60}},
+  {s:"S41", d:"10/10", adv:"Albi",              lieu:"D",  serie:"3/3", a:{day:"Mardi",  t:4*60},  b:{day:"Mercredi", t:12*60}},
+  {s:"S42", d:"—",     adv:"Vacances",          lieu:"",   serie:"",    rest:true},
+  {s:"S43", d:"24/10", adv:"Provence Rugby",    lieu:"E+", serie:"1/2", a:{day:"Mardi",  t:4*60},  b:{day:"Mercredi", t:13*60}},
+  {s:"S44", d:"31/10", adv:"Chambéry",          lieu:"D",  serie:"2/2", a:{day:"Mardi",  t:4*60},  b:{day:"Mercredi", t:12*60}},
+  {s:"S45", d:"—",     adv:"Sans match",        lieu:"",   serie:"",    a:{day:"Mardi",  pool:true}, b:{day:"Vendredi", t:16*60}},
+  {s:"S46", d:"—",     adv:"Sans match",        lieu:"",   serie:"",    a:{day:"Mardi",  t:6*60},  b:{day:"Vendredi", t:19*60}},
+  {s:"S47", d:"21/11", adv:"Bressane",          lieu:"D",  serie:"1/2", a:{day:"Mardi",  t:5*60},  b:{day:"Mercredi", t:16*60}},
+  {s:"S48", d:"28/11", adv:"Bourgoin-Jallieu",  lieu:"E",  serie:"2/2", a:{day:"Mardi",  t:4*60},  b:{day:"Mercredi", t:12*60}},
+  {s:"S49", d:"—",     adv:"Sans match",        lieu:"",   serie:"",    a:{day:"Mardi",  pool:true}, b:{day:"Vendredi", t:17*60}},
+  {s:"S50", d:"12/12", adv:"Nissa Rugby",       lieu:"E+", serie:"1/2", a:{day:"Mardi",  t:5*60},  b:{day:"Mercredi", t:15*60}},
+  {s:"S51", d:"19/12", adv:"Narbonne",          lieu:"D",  serie:"2/2", a:{day:"Mardi",  t:4*60},  b:{day:"Mercredi", t:12*60}}
+];
+
+const DEF_A = {blocks:2, perBlock:4, rec:90, cut:180, contact:"Attrapé"};
+const DEF_B = {blocks:2, perBlock:5, rec:45, cut:180, contact:"Plaqué"};
+
+/* proportions par nombre de ballons — court/moyen/long, jamais le plus long en dernier */
+const SHAPES = {
+  3:[0.22,0.45,0.33],
+  4:[0.15,0.30,0.40,0.15],
+  5:[0.13,0.22,0.35,0.11,0.19],
+  6:[0.12,0.18,0.28,0.10,0.20,0.12],
+  7:[0.10,0.16,0.25,0.09,0.17,0.11,0.12]
+};
+
+let state = null, sel = 1;
+
+/* ---------------- utils ---------------- */
+const mmss = s => Math.floor(s/60) + "′" + String(Math.round(s%60)).padStart(2,"0");
+const min1 = s => (s/60).toFixed(1).replace(".",",") + "′";
+
+function shape(n){
+  if (SHAPES[n]) return SHAPES[n].slice();
+  const a = Array.from({length:n}, (_,i)=> i===Math.floor(n/2) ? 2.4 : (i%2 ? 1.5 : 0.9));
+  const t = a.reduce((x,y)=>x+y,0);
+  return a.map(v=>v/t);
+}
+
+/* répartit un objectif de BIP sur nb blocs × nb ballons, arrondi à 5 s, bornes 15-175 s */
+function build(target, blocks, perBlock, jitter){
+  const per = target / blocks, out = [];
+  for (let b=0;b<blocks;b++){
+    const w = shape(perBlock).map((v,i)=>{
+      const j = jitter ? 1 + ((Math.sin((b*97+i*31+7)) * 0.5 + 0.5) - 0.5) * 0.18 : 1;
+      return v * j;
+    });
+    const sw = w.reduce((x,y)=>x+y,0);
+    let vals = w.map(v => Math.max(15, Math.min(175, Math.round(per*v/sw/5)*5)));
+    let diff = Math.round(per) - vals.reduce((x,y)=>x+y,0);
+    // reporte l'écart sur les ballons moyens, en pas de 5 s
+    const order = vals.map((v,i)=>i).sort((x,y)=>vals[y]-vals[x]).slice(1);
+    let g = 0;
+    while (Math.abs(diff) >= 5 && g < 400){
+      const i = order[g % order.length];
+      const step = diff > 0 ? 5 : -5;
+      const nv = vals[i] + step;
+      if (nv >= 15 && nv <= 175){ vals[i] = nv; diff -= step; }
+      g++;
+    }
+    out.push(vals);
+  }
+  return out;
+}
+
+function blankSession(def, target){
+  return Object.assign({}, def, {target, balls: build(target, def.blocks, def.perBlock, true)});
+}
+
+function fresh(){
+  return SEED.map(w=>{
+    const o = {s:w.s, d:w.d, adv:w.adv, lieu:w.lieu, serie:w.serie, rest:!!w.rest};
+    if (w.rest) return o;
+    o.a = w.a.pool ? {pool:true, day:w.a.day}
+                   : Object.assign(blankSession(DEF_A, w.a.t), {day:w.a.day, done:!!w.a.done});
+    o.b = Object.assign(blankSession(DEF_B, w.b.t), {day:w.b.day, done:!!w.b.done});
+    if (w.a.t === 0 && !w.a.pool) o.a.balls = [];
+    return o;
+  });
+}
+
+/* ---------------- calculs ---------------- */
+function bip(sess){ return sess.balls.reduce((t,b)=>t + b.reduce((x,y)=>x+y,0), 0); }
+function slot(sess){
+  const nb = sess.balls.length;
+  if (!nb) return 0;
+  const rec = sess.balls.reduce((t,b)=> t + Math.max(0, b.length-1) * sess.rec, 0);
+  return bip(sess) + rec + Math.max(0, nb-1) * sess.cut;
+}
+function density(sess){ const s = slot(sess); return s ? bip(sess)/s : 0; }
+
+const BANDS = [
+  {k:"0-15 s",   lo:0,   hi:15,  ref:44},
+  {k:"16-30 s",  lo:16,  hi:30,  ref:19},
+  {k:"31-45 s",  lo:31,  hi:45,  ref:12},
+  {k:"46-60 s",  lo:46,  hi:60,  ref:10},
+  {k:"61-90 s",  lo:61,  hi:90,  ref:10},
+  {k:"91-120 s", lo:91,  hi:120, ref:4},
+  {k:"+120 s",   lo:121, hi:1e9, ref:1}
+];
+function bands(sess){
+  const all = sess.balls.flat(), n = all.length || 1;
+  return BANDS.map(b => Object.assign({}, b, {
+    pct: Math.round(all.filter(v=>v>=b.lo && v<=b.hi).length / n * 100)
+  }));
+}
+
+/* ---------------- rendu : rail ---------------- */
+function drawRail(){
+  const el = document.getElementById("bq_rail");
+  el.innerHTML = "";
+  state.forEach((w,i)=>{
+    const btn = document.createElement("button");
+    btn.className="bq-wk" + (i===sel ? " on" : "") + (w.rest ? " rest" : "");
+    btn.type = "button";
+    const opp = w.lieu === "E+" ? `${w.adv} <span class="tagE">ext.</span>`
+              : w.lieu === "E"  ? `${w.adv} <span class="tagE">ext.</span>`
+              : w.adv;
+    let right;
+    if (w.rest) right = "—";
+    else {
+      const A = w.a.pool ? "piscine" : min1(bip(w.a));
+      right = `${A}<br><em>${min1(bip(w.b))}</em>`;
+    }
+    btn.innerHTML = `<span class="s">${w.s}</span>
+      <span><span class="o">${opp}</span><br><span class="d">${w.d}${w.serie?" · série "+w.serie:""}</span></span>
+      <span class="n">${right}</span>`;
+    btn.addEventListener("click", ()=>{ sel = i; render(); });
+    el.appendChild(btn);
+  });
+}
+
+/* ---------------- rendu : graphique ---------------- */
+function drawChart(){
+  const svg = document.getElementById("bq_chart");
+  const W = 980, H = 230, L = 34, R = 8, T = 12, B = 30;
+  const iw = W - L - R, ih = H - T - B;
+  const max = 22 * 60;
+  const y = v => T + ih - (v/max)*ih;
+  const step = iw / state.length;
+  let g = "";
+
+  // bande plafond 18-20
+  g += `<rect x="${L}" y="${y(20*60)}" width="${iw}" height="${y(18*60)-y(20*60)}" fill="#e5edf4"/>`;
+
+  // grille
+  [5,10,15,20].forEach(m=>{
+    g += `<line x1="${L}" y1="${y(m*60)}" x2="${L+iw}" y2="${y(m*60)}" stroke="#e3ebf2"/>`;
+    g += `<text x="${L-6}" y="${y(m*60)+3.5}" font-size="10" fill="#6b8098" text-anchor="end">${m}′</text>`;
+  });
+
+  state.forEach((w,i)=>{
+    const x0 = L + i*step, cx = x0 + step/2;
+    if (w.rest){
+      g += `<text x="${cx}" y="${T+ih-6}" font-size="9" fill="#9fb2c4" text-anchor="middle">vac.</text>`;
+    } else {
+      const A = w.a.pool ? 0 : bip(w.a), Bv = bip(w.b);
+      const bw = Math.min(15, step*0.30);
+      g += `<rect x="${cx-bw-2}" y="${y(A)}" width="${bw}" height="${T+ih-y(A)}" fill="#8fc1ea"/>`;
+      g += `<rect x="${cx+2}"    y="${y(Bv)}" width="${bw}" height="${T+ih-y(Bv)}" fill="#13283b"/>`;
+      if (w.a.pool) g += `<text x="${cx-bw/2-2}" y="${T+ih-4}" font-size="8.5" fill="#6b8098" text-anchor="middle">🌊</text>`;
+    }
+    g += `<text x="${cx}" y="${H-16}" font-size="9.5" fill="${i===sel?'#13283b':'#6b8098'}" font-weight="${i===sel?700:400}" text-anchor="middle">${w.s}</text>`;
+    if (i===sel) g += `<rect x="${x0}" y="${T}" width="${step}" height="${ih}" fill="#3d7fbf" opacity="0.06"/>`;
+  });
+
+  g += `<line x1="${L}" y1="${T+ih}" x2="${L+iw}" y2="${T+ih}" stroke="#c6d4e0"/>`;
+  svg.innerHTML = g;
+}
+
+/* ---------------- rendu : séances ---------------- */
+function sessionHTML(w, key){
+  const sess = w[key];
+  if (sess.pool) {
+    return `<div class="sess"><h3>${sess.day} <span>Aqualone</span></h3>
+      <p class="note">Séance piscine. Pas de jeu séquencé, le BIP de la semaine passe entièrement sur la seconde séance.</p></div>`;
+  }
+  const B = bip(sess), S = slot(sess), D = density(sess);
+  const gap = B - sess.target;
+  const cls = Math.abs(gap) <= 20 ? "good" : "off";
+
+  let ballsHTML = "";
+  const maxv = Math.max(...sess.balls.flat(), 1);
+  sess.balls.forEach((blk, bi)=>{
+    ballsHTML += `<div class="blk"><div class="bh">Bloc ${bi+1} — ${mmss(blk.reduce((x,y)=>x+y,0))}</div>`;
+    blk.forEach((v, i)=>{
+      ballsHTML += `<div class="ball ${v>90?'long':''}">
+        <span class="i">${i+1}</span>
+        <span class="bar"><i style="width:${Math.round(v/maxv*100)}%"></i></span>
+        <input type="text" inputmode="text" class="bqdur" value="${bqShow(v)}" title="Écris 90, 90&quot; ou 1'30" data-k="${key}" data-b="${bi}" data-i="${i}">
+        <button type="button" data-del="${key}:${bi}:${i}" title="Retirer">×</button>
+      </div>`;
+    });
+    ballsHTML += `<div class="addrow"><button type="button" data-add="${key}:${bi}">Ajouter un ballon</button></div></div>`;
+  });
+
+  const bd = bands(sess).map(b=>`<tr><td>${b.k}</td><td>${b.pct}%</td><td class="m">${b.ref}%</td></tr>`).join("");
+
+  return `<div class="sess">
+    <h3>${sess.day} <span>${sess.contact} · ${sess.balls.length}×${sess.balls[0]?sess.balls[0].length:0} ballons</span></h3>
+    <div class="params">
+      <span class="p"><label>Cible BIP (min)</label><input type="text" inputmode="text" class="bqdur" value="${bqShow(sess.target)}" title="Écris 13, 13' ou 13'30" data-p="target" data-k="${key}"></span>
+      <span class="p"><label>Récup ballon (s)</label><input type="number" step="5" min="0" value="${sess.rec}" data-p="rec" data-k="${key}"></span>
+      <span class="p"><label>Coupure (s)</label><input type="number" step="15" min="0" value="${sess.cut}" data-p="cut" data-k="${key}"></span>
+      <span class="p"><label>Blocs</label><input type="number" min="1" max="4" value="${sess.balls.length}" data-p="blocks" data-k="${key}"></span>
+    </div>
+    <div class="balls">${ballsHTML}</div>
+    <div class="read">
+      <div class="${cls}"><b>${mmss(B)}</b><small>BIP réel</small></div>
+      <div><b>${(sess.target/60).toFixed(1).replace(".",",")}′</b><small>cible</small></div>
+      <div><b>${mmss(S)}</b><small>créneau total</small></div>
+      <div><b>${Math.round(D*100)} %</b><small>densité</small></div>
+    </div>
+    ${D>0.62 ? `<div class="warnbox">Densité au-dessus de 62 %. Ton format de référence tourne à 58 % : allonge les récupérations ou baisse la cible plutôt que de serrer le créneau.</div>` : ""}
+    ${sess.balls.flat().some(v=>v>180) ? `<div class="warnbox">Un ballon dépasse 3 minutes. Aucune séquence de match n'atteint cette durée.</div>` : ""}
+    <div class="dist">
+      <table><tr><th>Durée</th><th>Ta séance</th><th>Match</th></tr>${bd}</table>
+    </div>
+  </div>`;
+}
+
+function render(){
+  const w = state[sel];
+  document.getElementById("bq_wkTitle").textContent =
+    w.rest ? `${w.s} — vacances` : `${w.s} — ${w.adv}${w.d!=="—" ? " · "+w.d : ""}`;
+  document.getElementById("bq_wkSub").textContent = w.rest
+    ? "Pas d'entraînement cette semaine."
+    : (w.lieu==="E+" ? "Déplacement long. " : w.lieu==="E" ? "Déplacement. " : w.lieu==="D" ? "À domicile. " : "")
+      + (w.serie ? `Semaine ${w.serie} de la série.` : "Semaine sans match.");
+
+  document.getElementById("bq_sessions").innerHTML = w.rest ? "" : sessionHTML(w,"a") + sessionHTML(w,"b");
+  drawRail(); drawChart(); save();
+}
+
+
+/* ---------------- export Excel (SpreadsheetML, sans dependance) ---------------- */
+function bqXmlEsc(t){ return String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function bqCellT(v){ return '<Cell><Data ss:Type="String">'+bqXmlEsc(v)+'</Data></Cell>'; }
+function bqCellN(v){ return '<Cell><Data ss:Type="Number">'+(v==null||isNaN(v)?0:v)+'</Data></Cell>'; }
+function bqCellH(v){ return '<Cell ss:StyleID="h"><Data ss:Type="String">'+bqXmlEsc(v)+'</Data></Cell>'; }
+function bqXls(){
+  var rows="";
+  rows+='<Row>'+["Semaine","Date","Adversaire","Lieu","Serie","Seance","Jour","Contact","Cible BIP","BIP realise","Ecart","Duree creneau","Densite %","Blocs","Ballons","Recup ballon (s)","Coupure (s)","Detail des ballons"].map(bqCellH).join("")+'</Row>';
+  state.forEach(function(w){
+    if(w.rest){ rows+='<Row>'+bqCellH(w.s)+bqCellT(w.d)+bqCellT("Vacances")+new Array(15).fill(bqCellT("")).join("")+'</Row>'; return; }
+    ["a","b"].forEach(function(k){
+      var se=w[k];
+      if(se.pool){ rows+='<Row>'+bqCellH(w.s)+bqCellT(w.d)+bqCellT(w.adv)+bqCellT(w.lieu)+bqCellT(w.serie)+bqCellT(k==="a"?"1re":"2e")+bqCellT(se.day)+bqCellT("Aqualone")+new Array(10).fill(bqCellT("")).join("")+'</Row>'; return; }
+      var B=bip(se), S=slot(se), det=se.balls.map(function(b){ return b.map(function(v){ return bqShow(v); }).join(" \u00b7 "); }).join("  ||  ");
+      rows+='<Row>'+bqCellH(w.s)+bqCellT(w.d)+bqCellT(w.adv)+bqCellT(w.lieu)+bqCellT(w.serie)
+        +bqCellT(k==="a"?"1re":"2e")+bqCellT(se.day)+bqCellT(se.contact)
+        +bqCellT(mmss(se.target))+bqCellT(mmss(B))+bqCellT((B-se.target>=0?"+":"-")+mmss(Math.abs(B-se.target)))
+        +bqCellT(mmss(S))+bqCellN(Math.round(density(se)*1000)/10)
+        +bqCellN(se.balls.length)+bqCellN(se.balls.reduce(function(a,b){return a+b.length;},0))
+        +bqCellN(se.rec)+bqCellN(se.cut)+bqCellT(det)+'</Row>';
+    });
+  });
+  var xml='<?xml version="1.0"?>\n<?mso-application progid="Excel.Sheet"?>\n'
+   +'<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">'
+   +'<Styles><Style ss:ID="h"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#0F80C4" ss:Pattern="Solid"/></Style></Styles>'
+   +'<Worksheet ss:Name="Jeu sequence"><Table>'+rows+'</Table></Worksheet></Workbook>';
+  try{
+    var b=new Blob(["\ufeff"+xml],{type:"application/vnd.ms-excel"});
+    var u=URL.createObjectURL(b); var a=document.createElement("a");
+    a.href=u; a.download="jeu-sequence-u21.xls"; a.click(); URL.revokeObjectURL(u);
+    toast("Fichier Excel t\u00e9l\u00e9charg\u00e9");
+  }catch(e){ toast("T\u00e9l\u00e9chargement indisponible ici"); }
+}
+
+/* ---------------- interactions ---------------- */
+document.getElementById("bq_btnXls").addEventListener("click", bqXls);
+document.getElementById("bq_sessions").addEventListener("input", e=>{
+  const t = e.target, w = state[sel];
+  if (t.dataset.p){
+    const s = w[t.dataset.k];
+    if (t.dataset.p === "target"){
+      const d = bqParse(t.value);
+      if (d===null) return;
+      s.target = Math.max(0, d < 60 ? d*60 : d);
+      render(); return;
+    }
+    let v = parseFloat(t.value);
+    if (isNaN(v)) return;
+    else if (t.dataset.p === "blocks"){
+      v = Math.max(1, Math.min(4, Math.round(v)));
+      const per = s.balls[0] ? s.balls[0].length : 5;
+      s.balls = build(s.target, v, per, true);
+    }
+    else s[t.dataset.p] = Math.max(0, Math.round(v));
+    render();
+  } else if (t.dataset.b !== undefined){
+    const v = bqParse(t.value);
+    if (v!==null) { w[t.dataset.k].balls[+t.dataset.b][+t.dataset.i] = Math.max(5, Math.min(180, v)); render(); }
+  }
 });
-$("bipReset").addEventListener("click",function(){ $("bp_lib").value=""; $("bp_blocs").value=""; majCalcBip(); });
-$("bipFiche").addEventListener("click",function(){ bipOverlay.classList.remove("open"); setTimeout(printBip,120); });
-$("bipList").addEventListener("click",async function(e){
-  const b=e.target.closest?e.target.closest(".bipdel"):null; if(!b) return;
-  if(!confirm("Supprimer cette séance ?")) return;
-  SEQ=SEQ.filter(function(y){ return y.d!==b.dataset.d; });
-  await saveBip(); renderBip();
+
+document.getElementById("bq_sessions").addEventListener("click", e=>{
+  const w = state[sel];
+  const add = e.target.dataset.add, del = e.target.dataset.del;
+  if (add){ const [k,bi] = add.split(":"); w[k].balls[+bi].push(30); render(); }
+  if (del){ const [k,bi,i] = del.split(":"); const a = w[k].balls[+bi]; if (a.length>1){ a.splice(+i,1); render(); } }
 });
+
+document.getElementById("bq_btnGen").addEventListener("click", ()=>{
+  const w = state[sel];
+  if (w.rest) return;
+  ["a","b"].forEach(k=>{
+    const s = w[k];
+    if (!s || s.pool || !s.target) return;
+    const per = s.balls[0] ? s.balls[0].length : 5;
+    s.balls = build(s.target, s.balls.length || 2, per, true);
+  });
+  render();
+});
+
+document.getElementById("bq_btnPrint").addEventListener("click", ()=>window.print());
+
+document.getElementById("bq_btnExp").addEventListener("click", ()=>{
+  const blob = new Blob([JSON.stringify(state,null,1)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "bip-csvienne-2026-27.json";
+  a.click(); URL.revokeObjectURL(a.href);
+});
+
+document.getElementById("bq_btnImp").addEventListener("click", ()=>document.getElementById("bq_file").click());
+document.getElementById("bq_file").addEventListener("change", ev=>{
+  const f = ev.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => { try { const d = JSON.parse(r.result); if (Array.isArray(d)) { state = d; sel = 0; render(); } } catch(_){} };
+  r.readAsText(f);
+});
+
+/* ---------------- persistance douce ---------------- */
+async function save(){
+  try { const r = await sb.from("app_data").upsert({id:"bip",data:state,updated_at:new Date().toISOString()}); toast(r&&r.error?"Séquençage : sauvegarde impossible":"Séquençage enregistré"); } catch(_){ toast("Séquençage : sauvegarde impossible"); }
+}
+async function boot(){
+  let loaded = null;
+  try { const r = await sb.from("app_data").select("data").eq("id","bip").maybeSingle(); if (r && !r.error && r.data && r.data.data) loaded = r.data.data; } catch(_){}
+  state = Array.isArray(loaded) && loaded.length === SEED.length ? loaded : fresh();
+  render();
+}
+window.bqBoot=boot;
+
+$("btnBip").addEventListener("click",async function(){
+  if(!BQREADY){ BQREADY=true; await window.bqBoot(); }
+  bipOverlay.classList.add("open");
+});
+})();
+
 $("btnFiches").addEventListener("click",()=>{ printFiches(filteredBase()); });
 $("btnBareme").addEventListener("click",openBareme);
 const reathleOverlay=$("reathleOverlay");
