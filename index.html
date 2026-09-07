@@ -637,6 +637,7 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
 .bqf-crest{width:40px;height:40px;flex:0 0 auto;background:#fff var(--logo) center/78% no-repeat;border-radius:8px}
 .bqf-club{font-size:7.4px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#BFE0F4}
 .bqf-ti{font-size:15px;font-weight:800;color:#fff;font-family:var(--display);margin-top:2px}
+.bqf-sem{font-size:9px;font-weight:700;opacity:.7;margin-left:6px}
 .bqf-tag{margin-left:auto;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;background:rgba(255,255,255,.2);color:#fff;padding:3px 9px;border-radius:99px}
 .bqf-kpi{display:flex;gap:7px;margin:10px 0 8px}
 .bqf-kpi div{flex:1;background:#EAF3FA;border-radius:8px;padding:6px 8px;text-align:center}
@@ -731,7 +732,10 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
         🩹 Réathlé
       </button>
       <button id="btnReload" type="button">Recharger</button>
-      <button id="btnBip" type="button">Séquençage BIP</button>
+      <button id="btnBip" type="button"
+         style="display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:9px;background:linear-gradient(180deg,#8B5CF6,#6D28D9);color:#fff;font-family:var(--body);font-size:.82rem;font-weight:700;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(109,40,217,.30)">
+        ⏱ Séquençage
+      </button>
       <button id="btnFiches" type="button">Fiches PDF</button>
       <button id="btnBareme" type="button">Barème</button>
       <button id="btnExport" type="button">Exporter</button>
@@ -764,7 +768,7 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h49 — feuille de séquençage chrono imprimable</div>
+    <div style="font-size:.7rem;opacity:.5">h50 — séquençage : saisie corrigée, notation et dates</div>
   </footer>
 </div>
 
@@ -2511,6 +2515,18 @@ function bqXls(){
 
 
 /* ---------------- feuille de séquençage (chrono terrain) ---------------- */
+function bqDateSeance(w, se){
+  var OFF={"Lundi":5,"Mardi":4,"Mercredi":3,"Jeudi":2,"Vendredi":1,"Samedi":0};
+  var o=OFF[se.day];
+  if(o==null||!w.d||w.d==="\u2014") return se.day;
+  var p=String(w.d).split("/");
+  if(p.length<2) return se.day;
+  var mo=parseInt(p[1],10);
+  var d=new Date((mo>=8)?2026:2027, mo-1, parseInt(p[0],10));
+  if(isNaN(d.getTime())) return se.day;
+  d.setDate(d.getDate()-o);
+  return se.day+" "+("0"+d.getDate()).slice(-2)+"/"+("0"+(d.getMonth()+1)).slice(-2);
+}
 function bqFeuilleHTML(wi, key){
   var w = state[wi], se = w[key];
   if(!se || se.pool || w.rest) return "";
@@ -2522,8 +2538,8 @@ function bqFeuilleHTML(wi, key){
   var lignes = "";
   se.balls.forEach(function(blk, bi){
     var totBloc = blk.reduce(function(x,y){ return x+y; },0);
-    lignes += '<tr class="bqf-bloc"><td colspan="4">BLOC '+(bi+1)+' — équipe '+(bi+1)+' en attaque'
-      + ' <span>'+blk.length+' ballons · '+mmss(totBloc)+'</span></td></tr>';
+    lignes += '<tr class="bqf-bloc"><td colspan="4">BLOC '+(bi+1)+' — équipe '+((bi%2)+1)+' en attaque'
+      + ' <span>'+blk.length+' ballons · '+bqShow(totBloc)+'</span></td></tr>';
     blk.forEach(function(v, i){
       var lg = v>=90 ? " bqf-long" : (v<=45 ? " bqf-court" : "");
       var pc = Math.round(v/maxv*100);
@@ -2546,13 +2562,13 @@ function bqFeuilleHTML(wi, key){
     .map(function(x){ var e=activeEpisode(x); return esc(x.n)+' <span class="bqf-ph">'+esc(PHASES[e.phase].label)+'</span>'; });
   var h = '<div class="pf bqf">';
   h += '<div class="bqf-hd"><div class="bqf-crest"></div><div><div class="bqf-club">CS Vienne Rugby · Espoirs Reichel Accession U21</div>'
-    + '<div class="bqf-ti">Séquençage collectif — '+esc(se.day)+' '+esc(w.d!=="—"?w.d:w.s)+'</div></div>'
+    + '<div class="bqf-ti">Séquençage collectif — '+esc(bqDateSeance(w,se))+' <span class="bqf-sem">'+esc(w.s)+'</span></div></div>'
     + '<div class="bqf-tag">'+esc(se.contact)+'</div></div>';
   h += '<div class="bqf-kpi">'
-    + '<div><b>'+mmss(B)+'</b><span>Temps de travail</span></div>'
-    + '<div><b>'+mmss(S-B)+'</b><span>Récupération</span></div>'
-    + '<div><b>'+mmss(S)+'</b><span>Durée totale</span></div>'
-    + '<div><b>'+D+'%</b><span>Densité</span></div>'
+    + '<div><b>'+bqShow(B)+'</b><span>Temps de travail</span></div>'
+    + '<div><b>'+bqShow(S-B)+'</b><span>Récupération</span></div>'
+    + '<div><b>'+bqShow(S)+'</b><span>Durée totale</span></div>'
+    + '<div><b>'+String(D).replace(".",",")+' %</b><span>Densité</span></div>'
     + '<div><b>'+nbSeq+'</b><span>Séquences</span></div></div>';
   h += '<table class="bqf-t2"><thead><tr><th>#</th><th>Durée</th><th>Intensité relative</th><th></th></tr></thead><tbody>'+lignes+'</tbody></table>';
   h += '<div class="bqf-sec">Effectif par poste</div><table class="bqf-eff"><tr>'+cols+'</tr></table>';
@@ -2572,11 +2588,28 @@ function bqPrintFeuille(key){
 
 /* ---------------- interactions ---------------- */
 document.getElementById("bq_btnXls").addEventListener("click", bqXls);
+/* les durees se valident quand on quitte le champ ou avec Entree */
+document.getElementById("bq_sessions").addEventListener("change", function(e){
+  const t=e.target; if(!t.classList||!t.classList.contains("bqdur")) return;
+  const w=state[sel];
+  if(t.dataset.p==="target"){
+    const d=bqParse(t.value); if(d===null){ render(); return; }
+    w[t.dataset.k].target = Math.max(60, d<60 ? d*60 : d);
+  } else if(t.dataset.b!==undefined){
+    const v=bqParse(t.value); if(v===null){ render(); return; }
+    w[t.dataset.k].balls[+t.dataset.b][+t.dataset.i] = Math.max(5, Math.min(180, v));
+  } else return;
+  render();
+});
+document.getElementById("bq_sessions").addEventListener("keydown", function(e){
+  if(e.key==="Enter" && e.target.classList && e.target.classList.contains("bqdur")){ e.preventDefault(); e.target.blur(); }
+});
 document.getElementById("bq_sessions").addEventListener("click", function(e){
   var b = e.target.closest ? e.target.closest("[data-feuille]") : null;
   if(b) bqPrintFeuille(b.dataset.feuille);
 });
 document.getElementById("bq_sessions").addEventListener("input", e=>{
+  if (e.target.classList && e.target.classList.contains("bqdur")) return;  /* saisie libre, validee au blur */
   const t = e.target, w = state[sel];
   if (t.dataset.p){
     const s = w[t.dataset.k];
