@@ -631,6 +631,42 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
 }
 
 
+
+/* ---- feuille de séquençage ---- */
+.bqf-hd{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#0F80C4,#13283B);border-radius:10px;padding:10px 14px}
+.bqf-crest{width:40px;height:40px;flex:0 0 auto;background:#fff var(--logo) center/78% no-repeat;border-radius:8px}
+.bqf-club{font-size:7.4px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#BFE0F4}
+.bqf-ti{font-size:15px;font-weight:800;color:#fff;font-family:var(--display);margin-top:2px}
+.bqf-tag{margin-left:auto;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;background:rgba(255,255,255,.2);color:#fff;padding:3px 9px;border-radius:99px}
+.bqf-kpi{display:flex;gap:7px;margin:10px 0 8px}
+.bqf-kpi div{flex:1;background:#EAF3FA;border-radius:8px;padding:6px 8px;text-align:center}
+.bqf-kpi b{display:block;font-size:14px;font-weight:800;color:#0E5E8E;font-family:var(--display);line-height:1.1}
+.bqf-kpi span{font-size:7px;text-transform:uppercase;letter-spacing:.05em;color:#566B7D;font-weight:700}
+.bqf-t2{width:100%;border-collapse:collapse}
+.bqf-t2 th{font-size:7.4px;text-transform:uppercase;letter-spacing:.05em;color:#8A9BA8;text-align:left;padding:3px 6px;border-bottom:1.2px solid #D3E2EC}
+.bqf-t2 td{padding:3px 6px;font-size:10.5px;border-bottom:1px solid #F2F7FA}
+.bqf-bloc td{background:#13283B;color:#fff;font-weight:800;font-size:9px;text-transform:uppercase;letter-spacing:.06em;padding:4px 8px}
+.bqf-bloc span{font-weight:600;opacity:.75;text-transform:none;letter-spacing:0;margin-left:6px}
+.bqf-n{width:20px;color:#8A9BA8;font-size:8.5px;text-align:center}
+.bqf-d{width:46px;font-weight:800;font-size:12px;color:#13283B}
+.bqf-b{padding-right:10px}
+.bqf-b i{display:block;height:9px;border-radius:99px;background:#3FA9DC}
+.bqf-long .bqf-d{color:#C32A2A;font-size:13.5px}
+.bqf-long .bqf-b i{background:#C32A2A}
+.bqf-court .bqf-b i{background:#9CC7E4}
+.bqf-l{width:82px;font-size:7.8px;text-transform:uppercase;letter-spacing:.05em;color:#C32A2A;font-weight:800}
+.bqf-r td{background:#FBFDFE;color:#8A9BA8;font-size:9px;font-style:italic;padding:2px 6px}
+.bqf-rot td{background:#FFF6EC;color:#8A5200;font-size:9px;font-weight:700;padding:3px 6px}
+.bqf-sec{font-size:8.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#0F80C4;border-bottom:1.2px solid #0F80C4;padding-bottom:2px;margin:11px 0 5px}
+.bqf-eff{width:100%;border-collapse:collapse;table-layout:fixed}
+.bqf-eff td{border:1px solid #D8E5EE;padding:3px 3px;font-size:8.2px;vertical-align:top;text-align:center;line-height:1.35}
+.bqf-po{font-size:8px;font-weight:800;color:#fff;background:#0F80C4;border-radius:4px;margin:-3px -3px 3px;padding:1px 0}
+.bqf-vide{color:#C7D4DD}
+.bqf-out{margin-top:7px;padding:5px 9px;background:#FDF3F3;border:1px solid #F0D6D6;border-radius:7px;font-size:9px;color:#A32020}
+.bqf-ph{font-size:7.5px;font-weight:700;color:#EA580C}
+.bqf-note{margin-top:8px;font-size:8.5px;color:#8A9BA8;font-style:italic}
+.bqf-btn{margin-left:auto;font-family:var(--body);font-size:.72rem;font-weight:700;padding:4px 9px;border:1.5px solid var(--line);border-radius:8px;background:#F6FAFD;color:var(--brand);cursor:pointer}
+
 </style>
 </head>
 <body>
@@ -728,7 +764,7 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h48 — correctif chargement (async orphelin)</div>
+    <div style="font-size:.7rem;opacity:.5">h49 — feuille de séquençage chrono imprimable</div>
   </footer>
 </div>
 
@@ -2402,7 +2438,8 @@ function sessionHTML(w, key){
   const bd = bands(sess).map(b=>`<tr><td>${b.k}</td><td>${b.pct}%</td><td class="m">${b.ref}%</td></tr>`).join("");
 
   return `<div class="sess">
-    <h3>${sess.day} <span>${sess.contact} · ${sess.balls.length}×${sess.balls[0]?sess.balls[0].length:0} ballons</span></h3>
+    <h3>${sess.day} <span>${sess.contact} · ${sess.balls.length}×${sess.balls[0]?sess.balls[0].length:0} ballons</span>
+      <button type="button" class="bqf-btn" data-feuille="${key}">Feuille chrono</button></h3>
     <div class="params">
       <span class="p"><label>Cible BIP (min)</label><input type="text" inputmode="text" class="bqdur" value="${bqShow(sess.target)}" title="Écris 13, 13' ou 13'30" data-p="target" data-k="${key}"></span>
       <span class="p"><label>Récup ballon (s)</label><input type="number" step="5" min="0" value="${sess.rec}" data-p="rec" data-k="${key}"></span>
@@ -2472,8 +2509,73 @@ function bqXls(){
   }catch(e){ toast("T\u00e9l\u00e9chargement indisponible ici"); }
 }
 
+
+/* ---------------- feuille de séquençage (chrono terrain) ---------------- */
+function bqFeuilleHTML(wi, key){
+  var w = state[wi], se = w[key];
+  if(!se || se.pool || w.rest) return "";
+  var B = bip(se), S = slot(se), D = Math.round(density(se)*1000)/10;
+  var nbSeq = se.balls.reduce(function(a,b){ return a+b.length; },0);
+  var nbRec = se.balls.reduce(function(a,b){ return a+Math.max(0,b.length-1); },0);
+  var nbRot = Math.max(0, se.balls.length-1);
+  var maxv = Math.max.apply(null, se.balls.flat());
+  var lignes = "";
+  se.balls.forEach(function(blk, bi){
+    var totBloc = blk.reduce(function(x,y){ return x+y; },0);
+    lignes += '<tr class="bqf-bloc"><td colspan="4">BLOC '+(bi+1)+' — équipe '+(bi+1)+' en attaque'
+      + ' <span>'+blk.length+' ballons · '+mmss(totBloc)+'</span></td></tr>';
+    blk.forEach(function(v, i){
+      var lg = v>=90 ? " bqf-long" : (v<=45 ? " bqf-court" : "");
+      var pc = Math.round(v/maxv*100);
+      lignes += '<tr class="bqf-t'+lg+'"><td class="bqf-n">'+(i+1)+'</td>'
+        + '<td class="bqf-d">'+bqShow(v)+'</td>'
+        + '<td class="bqf-b"><i style="width:'+pc+'%"></i></td>'
+        + '<td class="bqf-l">'+(v>=90?'séquence longue':'')+'</td></tr>';
+      if(i < blk.length-1) lignes += '<tr class="bqf-r"><td></td><td>'+bqShow(se.rec)+'</td><td colspan="2">récupération</td></tr>';
+    });
+    if(bi < se.balls.length-1) lignes += '<tr class="bqf-rot"><td></td><td>'+bqShow(se.cut)+'</td><td colspan="2">rotation / bulle</td></tr>';
+  });
+  /* effectif par poste */
+  var ORD=["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"];
+  var cols = ORD.map(function(p){
+    var l = players.filter(function(x){ return String(x.poste)===p && !activeEpisode(x); })
+                   .map(function(x){ return esc(x.n.split(" ")[0]); });
+    return '<td><div class="bqf-po">'+p+'</div>'+(l.length?l.join("<br>"):"<span class=\"bqf-vide\">—</span>")+'</td>';
+  }).join("");
+  var bl = players.filter(function(x){ return activeEpisode(x); })
+    .map(function(x){ var e=activeEpisode(x); return esc(x.n)+' <span class="bqf-ph">'+esc(PHASES[e.phase].label)+'</span>'; });
+  var h = '<div class="pf bqf">';
+  h += '<div class="bqf-hd"><div class="bqf-crest"></div><div><div class="bqf-club">CS Vienne Rugby · Espoirs Reichel Accession U21</div>'
+    + '<div class="bqf-ti">Séquençage collectif — '+esc(se.day)+' '+esc(w.d!=="—"?w.d:w.s)+'</div></div>'
+    + '<div class="bqf-tag">'+esc(se.contact)+'</div></div>';
+  h += '<div class="bqf-kpi">'
+    + '<div><b>'+mmss(B)+'</b><span>Temps de travail</span></div>'
+    + '<div><b>'+mmss(S-B)+'</b><span>Récupération</span></div>'
+    + '<div><b>'+mmss(S)+'</b><span>Durée totale</span></div>'
+    + '<div><b>'+D+'%</b><span>Densité</span></div>'
+    + '<div><b>'+nbSeq+'</b><span>Séquences</span></div></div>';
+  h += '<table class="bqf-t2"><thead><tr><th>#</th><th>Durée</th><th>Intensité relative</th><th></th></tr></thead><tbody>'+lignes+'</tbody></table>';
+  h += '<div class="bqf-sec">Effectif par poste</div><table class="bqf-eff"><tr>'+cols+'</tr></table>';
+  if(bl.length) h += '<div class="bqf-out"><b>Aménagé / indisponible :</b> '+bl.join(" · ")+'</div>';
+  h += '<div class="bqf-note">Récupération de '+bqShow(se.rec)+' entre ballons, '+bqShow(se.cut)+' de rotation entre blocs. '
+    + 'Chrono strict : la reprise part à la seconde près.</div>';
+  h += '<div class="pf-foot">CS Vienne Rugby · préparation physique</div></div>';
+  return h;
+}
+function bqPrintFeuille(key){
+  var h = bqFeuilleHTML(sel, key);
+  if(!h){ toast("Séance sans séquençage"); return; }
+  document.getElementById("printArea").innerHTML = h;
+  bipOverlay.classList.remove("open");
+  setTimeout(function(){ if(window.print) window.print(); }, 140);
+}
+
 /* ---------------- interactions ---------------- */
 document.getElementById("bq_btnXls").addEventListener("click", bqXls);
+document.getElementById("bq_sessions").addEventListener("click", function(e){
+  var b = e.target.closest ? e.target.closest("[data-feuille]") : null;
+  if(b) bqPrintFeuille(b.dataset.feuille);
+});
 document.getElementById("bq_sessions").addEventListener("input", e=>{
   const t = e.target, w = state[sel];
   if (t.dataset.p){
