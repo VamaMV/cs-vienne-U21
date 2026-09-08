@@ -738,7 +738,7 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
 .muwrap .mu-hdr img{width:34px;height:34px;object-fit:contain;background:#fff;border-radius:7px;padding:3px}
 .muwrap .mu-hdr h1{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.15}
 header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
-.muwrap .mu-pick{background:#fff;border-bottom:1px solid var(--rule);position:relative;top:62px;z-index:19}
+.muwrap .mu-pick{background:#fff;border:1px solid #E4EDF3;border-radius:12px;padding:4px 0 0;margin-bottom:12px}
 .muwrap .mu-scroll{display:flex;gap:6px;overflow-x:auto;padding:9px 12px;scrollbar-width:none}
 .muwrap .mu-scroll::-webkit-scrollbar{display:none}
 .muwrap .chip{flex:0 0 auto;padding:7px 13px;border-radius:999px;border:1.5px solid var(--rule);background:#fff;font-size:12.5px;font-weight:700;color:var(--mut);white-space:nowrap;cursor:pointer}
@@ -803,6 +803,35 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
 .catbadge.eq1{background:#DDF2E7;color:#186B45}
 .catbadge.dl{background:#FFE7D4;color:#B4460C}
 
+
+/* mise en page revue */
+.muwrap .mu-scroll{display:flex;gap:6px;overflow-x:auto;padding:7px 11px;scrollbar-width:none}
+.muwrap .mu-scroll::-webkit-scrollbar{display:none}
+.muwrap .mu-search{padding:2px 11px 10px}
+.muwrap .mu-search input{width:100%;font-family:var(--body);font-size:.9rem;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:#F8FBFD}
+.muwrap .mu-search input:focus{outline:none;border-color:#0EA5A5;background:#fff;box-shadow:0 0 0 3px rgba(14,165,165,.12)}
+.muwrap .mu-wrap{padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;align-items:start}
+.muwrap .mu-card{background:#fff;border:1px solid #E4EDF3;border-radius:12px;margin:0;overflow:hidden;cursor:pointer;transition:box-shadow .14s,border-color .14s,transform .14s}
+.muwrap .mu-card:hover{border-color:#0EA5A5;box-shadow:0 4px 14px rgba(11,124,124,.13);transform:translateY(-1px)}
+.muwrap .mu-row{display:flex;align-items:center;gap:10px;padding:11px 12px 8px}
+.muwrap .mu-pos{flex:0 0 28px;height:28px;border-radius:8px;background:#13283b;color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:12px;font-weight:800}
+.muwrap .mu-nm b{display:block;font-size:.92rem;font-weight:700;color:#13283b;line-height:1.2}
+.muwrap .mu-nm span{display:block;font-size:.72rem;color:#8A9BA8;margin-top:1px}
+.muwrap .mu-tag{flex:0 0 auto;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:99px;background:#EEF3F7;color:#5B7386}
+.muwrap .mu-force{background:#FBDCD9;color:#A32020}
+.muwrap .mu-masse{background:#FFE7D4;color:#B4460C}
+.muwrap .mu-vitesse{background:#E0EDFA;color:#0E5E8E}
+.muwrap .mu-kgs{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:0;border-top:1px solid #F0F5F9;background:#FBFDFE}
+.muwrap .mu-kg{padding:8px 6px;text-align:center;border-right:1px solid #F0F5F9}
+.muwrap .mu-kg:last-child{border-right:none}
+.muwrap .mu-kg b{display:block;font-family:var(--display);font-size:1.05rem;font-weight:800;color:#13283b;line-height:1.1}
+.muwrap .mu-kg span{display:block;font-size:.58rem;text-transform:uppercase;letter-spacing:.05em;color:#8A9BA8;font-weight:700;margin-top:2px}
+.muwrap .mu-kg.mu-pct b{color:#0EA5A5}
+
+.muwrap .mu-grp{grid-column:1/-1;font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#0B7C7C;padding:8px 2px 2px;border-bottom:1.5px solid #D9EDED;margin-bottom:2px}
+.muwrap .mu-grp span{color:#8A9BA8;font-weight:700}
+.muwrap .mu-row{padding:10px 12px 9px}
+.muwrap .mu-card{display:flex;flex-direction:column}
 </style>
 </head>
 <body>
@@ -907,7 +936,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h56 — muscu : navigation réparée, styles isolés</div>
+    <div style="font-size:.7rem;opacity:.5">h57 — muscu : grille et mise en page revues</div>
   </footer>
 </div>
 
@@ -2549,11 +2578,11 @@ function render(){
 }
 function card(p){
   const ex=sess(p,ci,di,wi).filter(e=>e[3]&&e[3].v&&e[3].v!=="—").slice(0,3);
-  const tg=p.prof!=="socle"?`<span class="tag ${p.prof}">${p.prof}</span>`:"";
+  const tg=p.prof!=="socle"?`<span class="mu-tag mu-${p.prof}">${p.prof}</span>`:"";
   return `<div class="mu-card" onclick='open_(${JSON.stringify(p.n)})'>
     <div class="mu-row"><div class="mu-pos">${p.poste}</div>
       <div class="mu-nm"><b>${p.n}</b><span>${p.pl}${p.w?" · "+p.w+" kg":""}</span></div>${tg}</div>
-    <div class="mu-kgs">${ex.map(e=>`<div class="kg ${e[3].pct?"pct":""}"><b>${e[3].v}</b><span>${e[1].split(" —")[0].slice(0,15)}</span></div>`).join("")}</div></div>`;
+    <div class="mu-kgs">${ex.map(e=>`<div class="mu-kg ${e[3].pct?"mu-pct":""}"><b>${e[3].v}</b><span>${e[1].split(" —")[0].slice(0,15)}</span></div>`).join("")}</div></div>`;
 }
 function open_(n){
   const p=P.find(x=>x.n===n); const S=document.getElementById("mu_sheet");
