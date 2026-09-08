@@ -692,6 +692,36 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
 .bqf-btn2{margin-left:5px;background:#EEF7F1;color:#1C6B45;border-color:#CFE7DA}
 .bqf-btn{margin-left:auto;font-family:var(--body);font-size:.72rem;font-weight:700;padding:4px 9px;border:1.5px solid var(--line);border-radius:8px;background:#F6FAFD;color:var(--brand);cursor:pointer}
 
+
+/* ---- séquenceur : reprise de l interface ---- */
+.bqwrap .bq-wk{display:grid;grid-template-columns:34px 26px 1fr auto;gap:9px;align-items:center;
+  padding:9px 11px;border:none;border-bottom:1px solid #EEF3F7;background:#fff;width:100%;text-align:left;cursor:pointer;transition:background .12s}
+.bqwrap .bq-wk:hover{background:#F6FAFD}
+.bqwrap .bq-wk.on{background:#EAF3FA;box-shadow:inset 3px 0 0 #0F80C4}
+.bqwrap .bq-wk.rest{opacity:.55}
+.bqwrap .bq-wk .s{font-family:var(--display);font-size:.82rem;font-weight:800;color:#0E5E8E;letter-spacing:-.01em}
+.bqwrap .wklogo{width:24px;height:24px;object-fit:contain;border-radius:5px;background:#fff}
+.bqwrap .wklogo.ph{background:#EEF3F7;border-radius:5px;display:inline-block}
+.bqwrap .bq-wk .o{font-weight:700;font-size:.86rem;color:#13283b}
+.bqwrap .bq-wk .d{font-size:.72rem;color:#8A9BA8}
+.bqwrap .bq-wk .n{font-family:var(--display);font-size:.8rem;font-weight:800;color:#13283b;text-align:right;line-height:1.35}
+.bqwrap .bq-wk .n em{font-style:normal;color:#0F80C4}
+.bqwrap .tagE{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#B4460C;background:#FFE7D4;padding:1px 5px;border-radius:99px;margin-left:4px}
+.bqwrap .params{display:flex;flex-wrap:wrap;gap:9px;margin:9px 0}
+.bqwrap .params .p{display:flex;flex-direction:column;gap:3px}
+.bqwrap .params label{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#8A9BA8}
+.bqwrap .params input{width:92px;font-family:var(--body);font-size:.88rem;font-weight:600;padding:6px 8px;border:1.5px solid var(--line);border-radius:8px;background:#fff;text-align:center}
+.bqwrap .params input:focus{outline:none;border-color:#0F80C4;box-shadow:0 0 0 3px rgba(15,128,196,.12)}
+.bqwrap .bqdur{color:#0E5E8E;font-weight:700}
+.bqwrap .read{display:flex;gap:8px;margin-top:10px}
+.bqwrap .read div{flex:1;background:#F4F9FC;border-radius:9px;padding:7px 9px;text-align:center}
+.bqwrap .read b{display:block;font-family:var(--display);font-size:1.05rem;font-weight:800;color:#13283b;line-height:1.15}
+.bqwrap .read small{font-size:.64rem;text-transform:uppercase;letter-spacing:.05em;color:#8A9BA8;font-weight:700}
+.bqwrap .bq-card h3{display:flex;align-items:center;gap:9px;font-family:var(--display);font-size:1rem;font-weight:800;color:#13283b;margin-bottom:2px}
+.bqwrap .bq-card h3 span{font-family:var(--body);font-size:.76rem;font-weight:600;color:#8A9BA8}
+.bqwrap .bq-bal input{transition:border-color .12s}
+.bqwrap .bq-bal input:focus{outline:none;border-color:#0F80C4;box-shadow:0 0 0 3px rgba(15,128,196,.12)}
+
 </style>
 </head>
 <body>
@@ -792,7 +822,7 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h51 — séquençage : logo adverse, tient sur une page, export Excel</div>
+    <div style="font-size:.7rem;opacity:.5">h52 — séquenceur : tout modifiable, logos au rail, interface revue</div>
   </footer>
 </div>
 
@@ -2388,10 +2418,12 @@ function drawRail(){
     let right;
     if (w.rest) right = "—";
     else {
-      const A = w.a.pool ? "piscine" : min1(bip(w.a));
-      right = `${A}<br><em>${min1(bip(w.b))}</em>`;
+      const A = w.a.pool ? "piscine" : bqShow(bip(w.a));
+      right = `${A}<br><em>${w.b.pool ? "piscine" : bqShow(bip(w.b))}</em>`;
     }
+    const lg = (typeof bqLogo==="function") ? bqLogo(w.adv) : "";
     btn.innerHTML = `<span class="s">${w.s}</span>
+      ${lg?`<img class="wklogo" src="${lg}" alt="">`:`<span class="wklogo ph"></span>`}
       <span><span class="o">${opp}</span><br><span class="d">${w.d}${w.serie?" · série "+w.serie:""}</span></span>
       <span class="n">${right}</span>`;
     btn.addEventListener("click", ()=>{ sel = i; render(); });
@@ -2471,15 +2503,16 @@ function sessionHTML(w, key){
       <button type="button" class="bqf-btn bqf-btn2" data-xls="${key}">Excel</button></h3>
     <div class="params">
       <span class="p"><label>Cible BIP (min)</label><input type="text" inputmode="text" class="bqdur" value="${bqShow(sess.target)}" title="Écris 13, 13' ou 13'30" data-p="target" data-k="${key}"></span>
-      <span class="p"><label>Récup ballon (s)</label><input type="number" step="5" min="0" value="${sess.rec}" data-p="rec" data-k="${key}"></span>
-      <span class="p"><label>Coupure (s)</label><input type="number" step="15" min="0" value="${sess.cut}" data-p="cut" data-k="${key}"></span>
+      <span class="p"><label>Récup ballon</label><input type="text" inputmode="text" class="bqdur" value="${bqShow(sess.rec)}" title="Écris 45, 45&quot; ou 1'00" data-p="rec" data-k="${key}"></span>
+      <span class="p"><label>Rotation</label><input type="text" inputmode="text" class="bqdur" value="${bqShow(sess.cut)}" title="Écris 120, 2' ou 1'30" data-p="cut" data-k="${key}"></span>
       <span class="p"><label>Blocs</label><input type="number" min="1" max="4" value="${sess.balls.length}" data-p="blocks" data-k="${key}"></span>
+      <span class="p"><label>Ballons / bloc</label><input type="number" min="2" max="12" value="${sess.balls[0]?sess.balls[0].length:5}" data-p="perblock" data-k="${key}"></span>
     </div>
     <div class="balls">${ballsHTML}</div>
     <div class="read">
-      <div class="${cls}"><b>${mmss(B)}</b><small>BIP réel</small></div>
-      <div><b>${(sess.target/60).toFixed(1).replace(".",",")}′</b><small>cible</small></div>
-      <div><b>${mmss(S)}</b><small>créneau total</small></div>
+      <div class="${cls}"><b>${bqShow(B)}</b><small>BIP réel</small></div>
+      <div><b>${bqShow(sess.target)}</b><small>cible</small></div>
+      <div><b>${bqShow(S)}</b><small>créneau total</small></div>
       <div><b>${Math.round(D*100)} %</b><small>densité</small></div>
     </div>
     ${D>0.62 ? `<div class="warnbox">Densité au-dessus de 62 %. Ton format de référence tourne à 58 % : allonge les récupérations ou baisse la cible plutôt que de serrer le créneau.</div>` : ""}
@@ -2693,6 +2726,9 @@ document.getElementById("bq_sessions").addEventListener("change", function(e){
   if(t.dataset.p==="target"){
     const d=bqParse(t.value); if(d===null){ render(); return; }
     w[t.dataset.k].target = Math.max(60, d<60 ? d*60 : d);
+  } else if(t.dataset.p==="rec"||t.dataset.p==="cut"){
+    const d=bqParse(t.value); if(d===null){ render(); return; }
+    w[t.dataset.k][t.dataset.p] = Math.max(0, Math.min(600, d));
   } else if(t.dataset.b!==undefined){
     const v=bqParse(t.value); if(v===null){ render(); return; }
     w[t.dataset.k].balls[+t.dataset.b][+t.dataset.i] = Math.max(5, Math.min(180, v));
@@ -2721,6 +2757,10 @@ document.getElementById("bq_sessions").addEventListener("input", e=>{
     }
     let v = parseFloat(t.value);
     if (isNaN(v)) return;
+    else if (t.dataset.p === "perblock"){
+      v = Math.max(2, Math.min(12, Math.round(v)));
+      s.balls = build(s.target, s.balls.length, v, true);
+    }
     else if (t.dataset.p === "blocks"){
       v = Math.max(1, Math.min(4, Math.round(v)));
       const per = s.balls[0] ? s.balls[0].length : 5;
