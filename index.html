@@ -726,6 +726,83 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
 .flag{margin-top:6px;padding:4px 9px;background:#F6F8FA;border-left:3px solid #C7D4DD;border-radius:0 6px 6px 0;font-size:.72rem;color:#5B7386;line-height:1.4}
 .flag span{display:block;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#8A9BA8;margin-bottom:1px}
 
+
+/* ---- onglet muscu ---- */
+.musheet{max-width:1180px}
+.muwrap{font-family:var(--body)}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--ink:#14181F;--navy:#1B3A5C;--mut:#77808C;--rule:#E4E8ED;--amb:#B45309;--bg:#F7F8FA}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:80px}
+header{background:var(--ink);color:#fff;padding:14px 16px calc(14px + env(safe-area-inset-top)) 16px;display:flex;align-items:center;gap:11px;position:sticky;top:0;z-index:20}
+header img{width:34px;height:34px;object-fit:contain;background:#fff;border-radius:7px;padding:3px}
+header h1{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.15}
+header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.muwrap .mu-pick{background:#fff;border-bottom:1px solid var(--rule);position:sticky;top:62px;z-index:19}
+.muwrap .mu-scroll{display:flex;gap:6px;overflow-x:auto;padding:9px 12px;scrollbar-width:none}
+.muwrap .mu-scroll::-webkit-scrollbar{display:none}
+.muwrap .chip{flex:0 0 auto;padding:7px 13px;border-radius:999px;border:1.5px solid var(--rule);background:#fff;font-size:12.5px;font-weight:700;color:var(--mut);white-space:nowrap;cursor:pointer}
+.muwrap .chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.muwrap .chip.wk.on{background:var(--navy);border-color:var(--navy)}
+.muwrap .chip.dech.on{background:var(--amb);border-color:var(--amb)}
+.muwrap .chip.cyc.on{background:#3F6B4D;border-color:#3F6B4D}
+.muwrap .mu-wrap{padding:12px}
+.muwrap .mu-grp{font-size:10.5px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--mut);margin:14px 4px 7px}
+.muwrap .mu-card{background:#fff;border:1px solid var(--rule);border-radius:12px;margin-bottom:8px;overflow:hidden;cursor:pointer}
+.muwrap .mu-row{display:flex;align-items:center;gap:11px;padding:12px 13px}
+.muwrap .mu-pos{flex:0 0 30px;height:30px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--navy)}
+.muwrap .mu-nm{flex:1;min-width:0}
+.muwrap .mu-nm b{font-size:14.5px;font-weight:700;display:block;letter-spacing:-.2px}
+.muwrap .mu-nm span{font-size:11px;color:var(--mut)}
+.muwrap .tag{font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase}
+.muwrap .tag.force{background:#FDECEA;color:#B3261E}
+.muwrap .tag.masse{background:#FDF1E3;color:var(--amb)}
+.muwrap .mu-kgs{display:flex;gap:14px;padding:0 13px 12px;flex-wrap:wrap}
+.muwrap .kg{min-width:64px}
+.muwrap .kg b{font-size:19px;font-weight:800;letter-spacing:-.7px;display:block;line-height:1}
+.muwrap .kg span{font-size:9.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+.muwrap .kg.pct b{color:var(--amb)}
+.muwrap .mu-sheet{position:fixed;inset:0;background:#fff;z-index:50;overflow-y:auto;display:none;padding-bottom:40px}
+.muwrap .mu-sheet.on{display:block}
+.muwrap .mu-sh{background:var(--ink);color:#fff;padding:16px 16px calc(16px + env(safe-area-inset-top));position:sticky;top:0}
+.muwrap .mu-sh h2{font-size:21px;font-weight:800;letter-spacing:-.5px}
+.muwrap .mu-sh p{font-size:11.5px;opacity:.66;margin-top:3px}
+.muwrap .mu-close{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;border:0;font-size:19px;cursor:pointer;line-height:1}
+.muwrap .mu-stats{display:flex;flex-wrap:wrap;gap:1px;background:var(--rule)}
+.muwrap .mu-stats>div{flex:1;min-width:88px;background:#fff;padding:11px 13px}
+.muwrap .mu-stats b{font-size:18px;font-weight:800;letter-spacing:-.6px;display:block;line-height:1}
+.muwrap .mu-stats span{font-size:9.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+.muwrap .mu-sec{padding:15px 15px 4px;font-size:10.5px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;color:var(--mut)}
+.muwrap .mu-ex{display:flex;align-items:center;gap:11px;padding:11px 15px;border-bottom:1px solid var(--rule)}
+.muwrap .mu-bl{flex:0 0 26px;font-size:9.5px;font-weight:800;color:var(--navy)}
+.muwrap .mu-ex .mu-t{flex:1;min-width:0}
+.muwrap .mu-ex .mu-t b{font-size:13.5px;font-weight:700;display:block;letter-spacing:-.1px}
+.muwrap .mu-ex .mu-t span{font-size:10.5px;color:var(--mut)}
+.muwrap .mu-ex .mu-v{text-align:right;flex:0 0 auto}
+.muwrap .mu-ex .mu-v b{font-size:17px;font-weight:800;letter-spacing:-.5px;display:block;line-height:1.1}
+.muwrap .mu-ex .mu-v span{font-size:9.5px;color:var(--mut);font-weight:600}
+.muwrap .mu-ex.ss{border-left:3px solid var(--navy)} .mu-ex.ct{border-left:3px solid var(--amb)}
+.muwrap .mu-pre{background:#FBF9F5;margin:6px 12px 0;border-radius:10px;padding:4px 0}
+.muwrap .mu-pre .mu-ex{border-bottom:1px dashed #E6DFD2;padding:10px 13px}
+.muwrap .mu-pre .mu-ex:last-child{border-bottom:0}
+.muwrap .mu-ant{font-size:10px;font-weight:700;color:var(--amb);text-transform:uppercase;letter-spacing:.5px;padding:9px 13px 2px}
+.muwrap .mu-note{margin:12px;padding:11px 13px;background:var(--bg);border-radius:10px;font-size:12px;line-height:1.5;color:#41474F}
+.muwrap .mu-search{padding:0 12px 10px;background:#fff}
+.muwrap .mu-search input{width:100%;padding:10px 13px;border:1.5px solid var(--rule);border-radius:10px;font-size:14px;font-family:inherit}
+.muwrap .mu-empty{text-align:center;color:var(--mut);font-size:13px;padding:40px}
+
+
+
+.card-eq1{background:linear-gradient(180deg,#F3FAF6,#fff);box-shadow:0 1px 2px rgba(28,140,90,.10),0 0 0 1px rgba(28,140,90,.18)}
+.card-eq1 .jersey{background:#1C8C5A}
+.card-eq1::after{content:"";position:absolute;top:0;right:0;width:0;height:0;border-style:solid;border-width:0 26px 26px 0;border-color:transparent #1C8C5A transparent transparent}
+.card{position:relative}
+.card-dl{background:linear-gradient(180deg,#FFF8F3,#fff);box-shadow:0 1px 2px rgba(249,115,22,.10),0 0 0 1px rgba(249,115,22,.20)}
+.card-dl .jersey{background:#B4460C}
+.catbadge{display:inline-block;font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:1px 7px;border-radius:99px}
+.catbadge.eq1{background:#DDF2E7;color:#186B45}
+.catbadge.dl{background:#FFE7D4;color:#B4460C}
+
 </style>
 </head>
 <body>
@@ -790,6 +867,10 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
         🩹 Réathlé
       </button>
       <button id="btnReload" type="button">Recharger</button>
+      <button id="btnMuscu" type="button"
+         style="display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:9px;background:linear-gradient(180deg,#0EA5A5,#0B7C7C);color:#fff;font-family:var(--body);font-size:.82rem;font-weight:700;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(11,124,124,.30)">
+        🏋 Muscu
+      </button>
       <button id="btnBip" type="button"
          style="display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:9px;background:linear-gradient(180deg,#8B5CF6,#6D28D9);color:#fff;font-family:var(--body);font-size:.82rem;font-weight:700;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(109,40,217,.30)">
         ⏱ Séquençage
@@ -826,7 +907,7 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h54 — cartes joueurs : état unique appliqué partout</div>
+    <div style="font-size:.7rem;opacity:.5">h55 — onglet musculation + cartes Équipe 1 distinctes</div>
   </footer>
 </div>
 
@@ -942,6 +1023,23 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
       <button class="btn ghost" id="detailShare" type="button">Partager sa fiche</button>
       <button class="btn ghost" id="detailClose" type="button">Fermer</button>
     </div>
+  </div>
+</div>
+<div class="overlay" id="muscuOverlay">
+  <div class="sheet musheet" role="dialog" aria-modal="true" aria-labelledby="muscuTitle">
+    <h2 id="muscuTitle">Musculation — Espoirs U21</h2>
+    <div class="muwrap">
+
+<div class="mu-pick">
+  <div class="mu-scroll" id="mu_cycles"></div>
+  <div class="mu-scroll" id="mu_weeks"></div>
+  <div class="mu-scroll" id="mu_days"></div>
+  <div class="mu-search"><input id="mu_q" placeholder="Chercher un joueur…" autocomplete="off"></div>
+</div>
+<div class="mu-wrap" id="mu_list"></div>
+<div class="mu-sheet" id="mu_sheet"></div>
+</div>
+    <div class="frow" style="margin-top:12px"><button type="button" id="muscuClose">Fermer</button></div>
   </div>
 </div>
 <div class="overlay" id="bipOverlay">
@@ -1612,11 +1710,17 @@ function richParts(p){
 }
 function card(p){
   const e=etatDe(p), pi=posteInfo(p);
-  const el=document.createElement("article"); el.className="card"; el.style.borderLeftColor=e.color; el.tabIndex=0;
+  const el=document.createElement("article");
+  el.className="card"+(p.cat==="EQ1"?" card-eq1":"")+(p.cat==="DL"?" card-dl":"");
+  el.style.borderLeftColor=e.color; el.tabIndex=0;
   const jersey=(pi.num!=null)?'<span class="jersey">'+esc(String(pi.num))+'</span>':'<span class="jersey jersey-none">·</span>';
   const sub=[];
   if(pi.key!=="none") sub.push(esc(pi.label));
-  if(catLabel(p)) sub.push(esc(catLabel(p)));
+  if(catLabel(p)){
+    if(p.cat==="EQ1") sub.push('<span class="catbadge eq1">Équipe 1</span>');
+    else if(p.cat==="DL") sub.push('<span class="catbadge dl">Double licence</span>');
+    else sub.push(esc(catLabel(p)));
+  }
   const subLine=sub.length?'<div class="cmeta">'+sub.join('<span class="sep">·</span>')+'</div>':'';
   const pill='<span class="pill" style="background:'+hexRgba(e.color,.13)+';color:'+darker(e.color)+'"><span class="pdot" style="background:'+e.color+'"></span>'+esc(e.label)+(e.zone?' · '+esc(e.zone):'')+'</span>';
   const flag=(p.ant&&p.ant.trim()&&isAdmin())?'<div class="flag"><span>Antécédent</span>'+esc(p.ant)+'</div>':'';
@@ -2305,6 +2409,185 @@ function openBareme(){
   baremeOverlay.classList.add("open");
 }
 function closeBareme(){ baremeOverlay.classList.remove("open"); }
+const muscuOverlay=$("muscuOverlay");
+$("muscuClose").addEventListener("click",function(){ muscuOverlay.classList.remove("open"); });
+muscuOverlay.addEventListener("click",function(e){ if(e.target===muscuOverlay) muscuOverlay.classList.remove("open"); });
+(function(){
+  let MUREADY=false;
+
+const P = [{"n": "AVAEORU Ariihei", "poste": 1, "pl": "Pilier G", "av": true, "prof": "force", "w": 118.0, "esq": 194, "edc": 97, "etb": 224, "ant": "", "z": "none", "bron": "5:50", "cmj": "37.8", "pes": [["2026-07-06", 113.2], ["2026-07-13", 113.5], ["2026-07-21", 116.0], ["2026-07-28", 115.9], ["2026-08-11", 117.4], ["2026-08-18", 117.0], ["2026-08-25", 118.0]]}, {"n": "LAURENT Pacôme", "poste": 1, "pl": "Pilier G", "av": true, "prof": "socle", "w": 107.2, "esq": 216, "edc": 140, "etb": 248, "ant": "", "z": "none", "bron": "5:55", "cmj": "38.4", "pes": [["2026-06-30", 107.0], ["2026-07-06", 106.8], ["2026-07-13", 106.2], ["2026-07-21", 106.3], ["2026-07-28", 105.9], ["2026-08-11", 105.0], ["2026-08-25", 107.2]]}, {"n": "ORSINI Joris", "poste": 1, "pl": "Pilier G", "av": true, "prof": "force", "w": 117.8, "esq": 194, "edc": 92, "etb": 224, "ant": "", "z": "none", "bron": "5:31", "cmj": null, "pes": [["2026-06-30", 119.0], ["2026-07-06", 118.9], ["2026-07-21", 119.7], ["2026-07-28", 117.6], ["2026-08-11", 117.9], ["2026-08-18", 117.2], ["2026-08-25", 117.8]]}, {"n": "PUISSANT Jules", "poste": 1, "pl": "Pilier G", "av": true, "prof": "masse", "w": 96.7, "esq": 184, "edc": 130, "etb": 211, "ant": "1 commotion", "z": "none", "bron": "5:18", "cmj": "37.3", "pes": [["2026-07-06", 99.1], ["2026-07-21", 97.7], ["2026-07-28", 97.5], ["2026-08-11", 97.4], ["2026-08-18", 96.5], ["2026-08-25", 96.7]]}, {"n": "BOURACHOT Mathis", "poste": 2, "pl": "Talonneur", "av": true, "prof": "force", "w": 92.7, "esq": 184, "edc": 108, "etb": 211, "ant": "", "z": "none", "bron": "5:47", "cmj": "41.9", "pes": [["2026-07-06", 89.3], ["2026-07-13", 90.2], ["2026-07-21", 90.9], ["2026-07-28", 90.1], ["2026-08-25", 92.7]]}, {"n": "BUISSON Lyes", "poste": 2, "pl": "Talonneur", "av": true, "prof": "masse", "w": 85.1, "esq": 205, "edc": 119, "etb": 236, "ant": "Déchirure partielle du ligament du coude", "z": "coude", "bron": "5:07", "cmj": "35", "pes": [["2026-07-06", 86.3], ["2026-07-13", 84.4], ["2026-07-21", 84.0], ["2026-07-28", 82.8], ["2026-08-11", 84.8], ["2026-08-18", 85.1]]}, {"n": "DUMUSOIS Mathis", "poste": 2, "pl": "Talonneur", "av": true, "prof": "masse", "w": 76.5, "esq": 173, "edc": 103, "etb": 184, "ant": "", "z": "cheville", "bron": "5:14", "cmj": null, "pes": [["2026-07-06", 76.5], ["2026-07-28", 76.8], ["2026-08-11", 75.6], ["2026-08-18", 76.3], ["2026-08-25", 76.5]]}, {"n": "LENTIN Yanis", "poste": 2, "pl": "Talonneur", "av": true, "prof": "socle", "w": 99.3, "esq": 173, "edc": 113, "etb": 199, "ant": "", "z": "none", "bron": "5:18", "cmj": "37.9", "pes": [["2026-07-06", 98.6], ["2026-07-13", 97.8], ["2026-07-21", 98.4], ["2026-07-28", 98.3], ["2026-08-11", 99.5], ["2026-08-18", 98.4], ["2026-08-25", 99.3]]}, {"n": "CARVALHO Calvin", "poste": 3, "pl": "Pilier D", "av": true, "prof": "force", "w": 117.0, "esq": 167, "edc": 130, "etb": 216, "ant": "Fracture du plateau tibial", "z": "Lumbago", "bron": "6:00", "cmj": null, "pes": [["2026-06-30", 115.4], ["2026-07-13", 116.4], ["2026-07-21", 116.2], ["2026-07-28", 116.2], ["2026-08-18", 115.5], ["2026-08-25", 117.0]]}, {"n": "FAYON Noa", "poste": 3, "pl": "Pilier D", "av": true, "prof": "force", "w": 158.6, "esq": 162, "edc": 100, "etb": 184, "ant": "Osgood-Schlatter + surpoids", "z": "cheville", "bron": null, "cmj": "20.9", "pes": [["2026-06-30", 163.4], ["2026-07-06", 161.8], ["2026-07-19", 160.3], ["2026-07-27", 160.7], ["2026-08-10", 158.6]]}, {"n": "LAURENT Aurélien", "poste": 3, "pl": "Pilier D", "av": true, "prof": "socle", "w": 131.6, "esq": 140, "edc": 86, "etb": 161, "ant": "Déchirure du mollet + lésion au pouce", "z": "mollet", "bron": "6:11", "cmj": "29", "pes": [["2026-06-30", 129.6], ["2026-07-06", 128.4], ["2026-07-13", 130.6], ["2026-07-21", 132.0], ["2026-07-28", 132.5], ["2026-08-11", 131.9], ["2026-08-25", 131.6]]}, {"n": "BIMANGO Angelo", "poste": 4, "pl": "2e ligne", "av": true, "prof": "masse", "w": 96.6, "esq": 140, "edc": 76, "etb": 161, "ant": "Cheville (sans récidive)", "z": "cheville", "bron": "5:02", "cmj": "49.4", "pes": [["2026-07-06", 92.5], ["2026-07-14", 94.4], ["2026-07-22", 94.5], ["2026-07-28", 93.8], ["2026-08-11", 97.0], ["2026-08-18", 96.1], ["2026-08-25", 96.6]]}, {"n": "BUFFLER Léandre", "poste": 4, "pl": "2e ligne", "av": true, "prof": "force", "w": 98.0, "esq": 162, "edc": 97, "etb": 186, "ant": "Disjonction AC stade 3, épaule D (sans récidive)", "z": "epaule", "bron": "5:18", "cmj": "45.6", "pes": [["2026-07-06", 97.3], ["2026-07-13", 97.4], ["2026-07-21", 97.2], ["2026-08-11", 98.0], ["2026-08-18", 97.9], ["2026-08-25", 98.0]]}, {"n": "LABRUYERE Baptiste", "poste": 4, "pl": "2e ligne", "av": true, "prof": "force", "w": 107.2, "esq": 173, "edc": 119, "etb": 199, "ant": "Antécédent ligaments croisés + alerte ischios", "z": "genou", "bron": "5:29", "cmj": "36.7", "pes": [["2026-07-06", 106.2], ["2026-07-13", 107.6], ["2026-07-28", 108.0], ["2026-08-11", 106.3], ["2026-08-18", 104.3], ["2026-08-25", 107.2]]}, {"n": "DJEBALI Ilyes", "poste": 5, "pl": "2e ligne", "av": true, "prof": "force", "w": 125.9, "esq": 151, "edc": 119, "etb": 174, "ant": "", "z": "none", "bron": "5:43", "cmj": "34", "pes": [["2026-07-06", 125.4], ["2026-07-13", 126.3], ["2026-07-21", 125.9], ["2026-07-28", 124.6], ["2026-08-18", 125.0], ["2026-08-25", 125.9]]}, {"n": "ROUX Arthur", "poste": 6, "pl": "3e ligne", "av": true, "prof": "socle", "w": 93.9, "esq": 162, "edc": 100, "etb": 186, "ant": "Disj. AC", "z": "none", "bron": "5:24", "cmj": null, "pes": [["2026-06-30", 93.6], ["2026-07-06", 93.1], ["2026-07-21", 93.3], ["2026-07-28", 93.6], ["2026-08-18", 93.5], ["2026-08-25", 93.9]]}, {"n": "VAN OOST Valentin", "poste": 6, "pl": "3e ligne", "av": true, "prof": "socle", "w": null, "esq": null, "edc": null, "etb": null, "ant": "", "z": "none", "bron": null, "cmj": null, "pes": []}, {"n": "CHOREL Victor", "poste": 7, "pl": "3e ligne", "av": true, "prof": "socle", "w": 95.1, "esq": 227, "edc": 140, "etb": 261, "ant": "", "z": "none", "bron": "5:10", "cmj": "50", "pes": [["2026-07-06", 94.5], ["2026-07-13", 95.0], ["2026-07-21", 95.1], ["2026-07-28", 93.9], ["2026-08-18", 95.1]]}, {"n": "DRAY Melvin", "poste": 8, "pl": "N°8", "av": true, "prof": "socle", "w": 99.5, "esq": 173, "edc": 107, "etb": 199, "ant": "Fracture de la tête radiale — IRM de contrôle en attente", "z": "coude", "bron": "4:50", "cmj": "42", "pes": [["2026-07-06", 99.3], ["2026-07-13", 100.0], ["2026-08-18", 99.4], ["2026-08-25", 99.5]]}, {"n": "LUCAS HATTERER Titouan", "poste": 8, "pl": "N°8", "av": true, "prof": "socle", "w": 90.9, "esq": 162, "edc": 119, "etb": 186, "ant": "Syndesmose", "z": "none", "bron": "4:33", "cmj": null, "pes": [["2026-07-28", 90.6], ["2026-08-11", 89.1], ["2026-08-18", 91.1], ["2026-08-25", 90.9]]}, {"n": "COCHET Dylan", "poste": 9, "pl": "Demi mêlée", "av": false, "prof": "socle", "w": 71.5, "esq": 140, "edc": 86, "etb": 161, "ant": "Disjonction AC stade 2 (même épaule qu'en N-1, sans récidive)", "z": "epaule", "bron": "4:48", "cmj": null, "pes": [["2026-07-21", 71.5], ["2026-07-28", 70.9], ["2026-08-18", 71.5]]}, {"n": "ESPITALIER Mathias", "poste": 9, "pl": "Demi mêlée", "av": false, "prof": "masse", "w": 69.8, "esq": 162, "edc": 97, "etb": 186, "ant": "", "z": "none", "bron": "4:21", "cmj": "57.5", "pes": [["2026-07-06", 69.8], ["2026-07-13", 70.7], ["2026-07-21", 69.9], ["2026-07-28", 69.8], ["2026-08-11", 70.8], ["2026-08-25", 69.8]]}, {"n": "SIBERT Charlie", "poste": 9, "pl": "Demi mêlée", "av": false, "prof": "socle", "w": 71.5, "esq": 135, "edc": 97, "etb": 155, "ant": "", "z": "none", "bron": "4:38", "cmj": "49.4", "pes": [["2026-07-06", 71.6], ["2026-07-14", 71.4], ["2026-07-21", 71.8], ["2026-07-28", 71.5]]}, {"n": "VIEZ Geoffrey", "poste": 10, "pl": "Ouvreur", "av": false, "prof": "masse", "w": 69.0, "esq": 151, "edc": 76, "etb": 174, "ant": "Lésions avec récidive mollet (Syndrome des loges ?)", "z": "none", "bron": "4:46", "cmj": null, "pes": [["2026-07-21", 68.5], ["2026-07-28", 67.9], ["2026-08-18", 69.0]]}, {"n": "ALIOTTI Loris", "poste": 11, "pl": "Ailier", "av": false, "prof": "masse", "w": 70.5, "esq": 140, "edc": 97, "etb": 161, "ant": "Entorse genou D", "z": "genou", "bron": "4:39", "cmj": "46.7", "pes": [["2026-07-06", 70.0], ["2026-07-13", 70.1], ["2026-07-28", 70.2], ["2026-08-18", 70.5], ["2026-08-25", 70.5]]}, {"n": "FERRAD Ilyes", "poste": 11, "pl": "Ailier", "av": false, "prof": "masse", "w": 74.4, "esq": 229, "edc": 146, "etb": 263, "ant": "Hernie cervicale (N-3, suite à impact, sans récidive)", "z": "cervical", "bron": "4:46", "cmj": "50", "pes": [["2026-07-06", 76.1], ["2026-07-21", 74.5], ["2026-08-12", 75.4], ["2026-08-18", 76.0], ["2026-08-25", 74.4]]}, {"n": "GILLE Tanguy", "poste": 11, "pl": "Ailier", "av": false, "prof": "socle", "w": 81.3, "esq": 151, "edc": 97, "etb": 174, "ant": "Fissure ménisque genou D + entorse (sans récidive)", "z": "genou", "bron": "4:43", "cmj": "41.3", "pes": [["2026-07-06", 80.2], ["2026-07-13", 81.0], ["2026-07-21", 81.3], ["2026-08-11", 82.0], ["2026-08-18", 81.5], ["2026-08-25", 81.3]]}, {"n": "LAVILLE Trevis", "poste": 11, "pl": "Ailier", "av": false, "prof": "socle", "w": 85.0, "esq": 162, "edc": 65, "etb": 186, "ant": "Élongation ischios — gêne encore présente (~2 mois post-trauma) + Osgood", "z": "ischios", "bron": "5:22", "cmj": null, "pes": [["2026-06-30", 82.5], ["2026-07-13", 83.4], ["2026-07-21", 86.1], ["2026-07-28", 86.4], ["2026-08-11", 85.3], ["2026-08-18", 85.8], ["2026-08-25", 85.0]]}, {"n": "CEBE Flavian", "poste": 12, "pl": "1er centre", "av": false, "prof": "socle", "w": 97.4, "esq": 140, "edc": 86, "etb": 161, "ant": "Déchirure ischios à droite + alerte à gauche", "z": "ischios", "bron": "5:05", "cmj": "42.1", "pes": [["2026-07-06", 96.6], ["2026-07-13", 96.9], ["2026-07-21", 97.3], ["2026-08-19", 96.0], ["2026-08-25", 97.4]]}, {"n": "DELMAIRE Léo", "poste": 12, "pl": "1er centre", "av": false, "prof": "socle", "w": 87.4, "esq": 205, "edc": 108, "etb": 236, "ant": "Luxation d'épaule + disjonction acromio-claviculaire (à surveiller)", "z": "epaule", "bron": "4:39", "cmj": "45.2", "pes": [["2026-06-30", 87.3], ["2026-07-06", 86.4], ["2026-07-13", 87.2], ["2026-07-21", 86.4], ["2026-07-28", 86.5], ["2026-08-11", 86.7], ["2026-08-18", 87.2], ["2026-08-25", 87.4]]}, {"n": "SAGNIAL Eliot", "poste": 12, "pl": "1er centre", "av": false, "prof": "socle", "w": 82.5, "esq": 216, "edc": 97, "etb": 248, "ant": "Rupture LCA non opérée — douleur encore présente + commotion", "z": "genou", "bron": "5:06", "cmj": "40.7", "pes": [["2026-07-06", 84.8], ["2026-07-21", 84.5], ["2026-08-11", 83.5], ["2026-08-18", 82.2], ["2026-08-25", 82.5]]}, {"n": "BAZIN Mathis", "poste": 13, "pl": "2e centre", "av": false, "prof": "socle", "w": 88.5, "esq": 157, "edc": 97, "etb": 181, "ant": "Disj. AC", "z": "none", "bron": "5:00", "cmj": null, "pes": [["2026-06-30", 87.7], ["2026-07-13", 89.3], ["2026-07-28", 88.9], ["2026-08-11", 89.6], ["2026-08-18", 89.7], ["2026-08-29", 88.5]]}, {"n": "DECAMPS Célian", "poste": 13, "pl": "2e centre", "av": false, "prof": "masse", "w": 81.6, "esq": 157, "edc": 97, "etb": 181, "ant": "Syndesmose cheville D + cheville G (bilatéral)", "z": "cheville", "bron": "5:00", "cmj": "49.7", "pes": [["2026-07-06", 82.7], ["2026-07-13", 82.2], ["2026-07-21", 83.1], ["2026-07-28", 84.1], ["2026-08-18", 81.5], ["2026-08-25", 81.6]]}, {"n": "COLLUS Renan", "poste": 14, "pl": "Ailier", "av": false, "prof": "masse", "w": 69.5, "esq": 130, "edc": 92, "etb": 149, "ant": "", "z": "none", "bron": "4:29", "cmj": "44", "pes": [["2026-06-30", 70.0], ["2026-07-06", 71.0], ["2026-07-13", 70.5], ["2026-07-21", 71.2], ["2026-07-28", 69.9], ["2026-08-18", 69.5]]}, {"n": "MITHIEUX Hugo", "poste": 14, "pl": "Ailier", "av": false, "prof": "socle", "w": 79.5, "esq": 229, "edc": 97, "etb": 263, "ant": "Pubalgie + Syndesmose", "z": "none", "bron": "4:39", "cmj": "49.4", "pes": [["2026-07-06", 79.0], ["2026-07-21", 79.0], ["2026-07-28", 79.9], ["2026-08-11", 79.5], ["2026-08-18", 79.6], ["2026-08-25", 79.5]]}, {"n": "TISSEYRE Eliott", "poste": 14, "pl": "Ailier", "av": false, "prof": "socle", "w": 77.0, "esq": 144, "edc": 92, "etb": 166, "ant": "2 luxations gléno-humérales (même épaule) + pose de butée — opéré", "z": "epaule", "bron": "4:21", "cmj": null, "pes": [["2026-07-06", 77.9], ["2026-07-28", 75.9], ["2026-08-11", 76.4], ["2026-08-18", 77.0], ["2026-08-25", 77.0]]}, {"n": "DUNCAN Liam", "poste": 15, "pl": "Arrière", "av": false, "prof": "socle", "w": 84.0, "esq": 162, "edc": 108, "etb": 186, "ant": "Disponibilité à confirmer (aucune semaine renseignée)", "z": "none", "bron": null, "cmj": null, "pes": [["2026-07-06", 84.1], ["2026-07-13", 83.9], ["2026-07-20", 84.6], ["2026-08-03", 82.9], ["2026-08-10", 84.4], ["2026-08-18", 83.6], ["2026-08-25", 84.0]]}, {"n": "JURIETTI-DEPARDAY Pierre", "poste": 15, "pl": "Arrière", "av": false, "prof": "masse", "w": 76.0, "esq": 142, "edc": 91, "etb": 163, "ant": "Lésions musculaires sur les vertébraux", "z": "Dos", "bron": "4:35", "cmj": "39.9", "pes": [["2026-07-06", 77.3], ["2026-07-13", 78.5], ["2026-07-21", 75.8], ["2026-07-28", 73.5], ["2026-08-11", 75.9], ["2026-08-18", 75.0], ["2026-08-25", 76.0]]}, {"n": "RAGE Liam", "poste": 15, "pl": "Arrière", "av": false, "prof": "masse", "w": 77.0, "esq": 130, "edc": 92, "etb": 149, "ant": "Lésions multiples ischios G, avec récidives", "z": "ischios", "bron": "5:02", "cmj": "39.6", "pes": [["2026-07-06", 76.8], ["2026-07-21", 76.6], ["2026-07-28", 75.7], ["2026-08-25", 77.0]]}];
+const CY=[
+ {n:"Cycle 1",s:"S27 → S29 · hypertrophie",wk:[["S27",""],["S28","tests"],["S29","pic PMA"]],
+  d:[["Haut A","poussée"],["Haut B","tirage"],["Bas","jambes"]]},
+ {n:"Cycle 2",s:"S30 → S31 · force",wk:[["S30",""],["S31",""]],
+  d:[["Mardi","poussée"],["Mercredi","tirage"],["Vendredi","bas du corps"]]},
+ {n:"Cycle 3",s:"S33 → S35 · puissance",wk:[["S33",""],["S34","amical"],["S35","amical"]],
+  d:[["Mardi","French Contrast"],["Mercredi","contraste haut"],["Vendredi","vitesse-force"]]},
+ {n:"Cycle 4",s:"S36 → S41 · championnat",wk:[["NICE","S36"],["NARBONNE","S37"],["DÉCHARGE","S38"],["BÉZIERS","S39"],["ALBI","S40"],["PROVENCE","S41"]],
+  d:[["Mardi","J-4 · force"],["Mercredi","J-3 · haut"],["Vendredi","J-1 · primer"]]}
+];
+const r25=v=>v==null?null:Math.round(v/2.5)*2.5;
+const fmt=v=>v==null?"—":(Number.isInteger(v)?v:v.toFixed(1));
+const K=(b,p)=>b?fmt(r25(b*p)):"—";
+
+function sess(p,c,d,i){
+ const AV=p.av, m=p.prof==="masse", f=p.prof==="force";
+ if(c===0){ // ---- CYCLE 1 · hypertrophie
+  if(d===0) return [["A","Développé couché","",{v:K(p.edc,.72),sub:"4×8"},""],
+    ["B","Développé militaire","",{v:"RPE 7",sub:"4×8"},""],
+    ["C",AV?"Dév. incliné barre":"Dév. incliné haltères","",{v:K(p.edc,.55),sub:"3×10"},""],
+    ["D",AV?"Dips":"Élévations latérales","finisher",{v:"RPE 7",sub:"3×10-12"},""]];
+  if(d===1) return [["A","Tractions","",{v:"PDC",sub:"4×8"},""],
+    ["B",AV?"Rowing barre":"Rowing haltère","",{v:K(p.edc,.50),sub:"4×8-10"},""],
+    ["C",AV?"Tirage menton":"Tirage horizontal","",{v:"RPE 7",sub:"3×10-12"},""],
+    ["D","Face pull","finisher",{v:"RPE 7",sub:"3×12"},""]];
+  return [["A","Back squat","",{v:K(p.esq,.72),sub:"4×8-10"},""],
+    ["B","SDT roumain","",{v:"RPE 7",sub:"3×8-10"},""],
+    ["C","Hip thrust","",{v:p.w?fmt(r25(p.w*.85)):"—",sub:"3×10"},""],
+    ["D","Mollets debout","",{v:"RPE 7",sub:"3×15"},""],
+    ["PRÉ","Nordic hamstring","excentrique lent",{v:"PDC",sub:"3×6"},""]];
+ }
+ if(c===1){ // ---- CYCLE 2 · force
+  if(d===0) return [["A","Développé couché",i?"+ bandes":"",{v:i?K(p.edc,.75)+" + bandes":K(p.edc,.80),sub:i?"4×3":"5×4"},""],
+    ["B","Développé militaire","",{v:"RPE 8",sub:i?"4×4":"4×5"},""],
+    ["C1",AV?"Dips lestés":"Dév. incliné haltères","",{v:"RPE 8",sub:"3×8-10"},"ss"],
+    ["C2","Gainage anti-rotation","Pallof",{v:"—",sub:"3×10/c"},"ss"],
+    ["PRÉ","Cou contre bande","4 directions",{v:"bande",sub:"2×8/dir"},""]];
+  if(d===1) return [["A","Tractions lestées","",{v:"RPE 8",sub:i?"5×3":"5×4"},""],
+    ["B",AV?"Rowing barre":"Rowing haltère 1 bras","",{v:"RPE 8",sub:i?"4×4":"4×5"},""],
+    ["C1","Tirage haut","APPRENTISSAGE · technique",{v:K(p.etb,.45),sub:"3×5"},"ss"],
+    ["C2","Face pull","",{v:"RPE 7",sub:"3×10"},"ss"],
+    ["PRÉ","Copenhagen","levées lentes",{v:"—",sub:"2×8/c"},""]];
+  return [["A","Back squat",i?"CLUSTER 2+2":AV?"1re série pause 2″ au trou":"",{v:K(p.esq,i?.85:.80),sub:i?"4×(2+2)":"5×4"},""],
+    ["B",AV?"Soulevé de terre":"SDT roumain","",{v:"RPE 8",sub:AV?(i?"4×3":"4×4"):(i?"4×5":"4×6")},""],
+    ["C1",AV?"Fentes arrières":"Bulgarian split squat","",{v:"RPE 8",sub:"3×8-10/c"},"ss"],
+    ["C2","Mollets debout","",{v:"RPE 8",sub:"3×12-15"},"ss"],
+    ["PRÉ","Nordic + GHR","",{v:"PDC",sub:i?"3×8":"3×6"},""]];
+ }
+ if(c===2){ // ---- CYCLE 3 · puissance
+  const sq=[.85,.87,.885][i];
+  if(d===0) return [["A1","Back squat","2 reps · contraste",{v:K(p.esq,sq),sub:"4 tours × 2"},"ct"],
+    ["A2",AV?"Depth jump":"Hurdle hops","renvoi immédiat",{v:"PDC",sub:AV?"3 reps":"4 reps"},"ct"],
+    ["A3","Squat jump","pic noté au capteur",{v:K(p.esq,.30),sub:"3 reps"},"ct"],
+    ["A4",AV?"Banded broad jump":"Banded vertical jump","intention max",{v:"bande",sub:AV?"3 reps":"4 reps"},"ct"],
+    ["B","RDL tempo explosif","3-0-X · descente 3 s",{v:K(p.esq,.4375),sub:i<2?"3×4":"2×4"},""],
+    ["D1","Hip thrust","finisher",{v:p.w?fmt(r25(p.w)):"—",sub:"2×12"},"ss"],
+    ["D2","Mollets debout","",{v:"RPE 8",sub:"2×15"},"ss"],
+    ["PRÉ",AV?"Landmine twist":"Back extension + abdos wheel","",{v:"optimale",sub:AV?"3×8-10/c":"3×6"},""]];
+  if(d===1) return [["A1","Développé couché","2 reps · contraste",{v:K(p.edc,sq),sub:"4 tours × 2"},"ct"],
+    ["A2",AV?"Plyo push-up":"MB chest slam","explosif",{v:AV?"PDC":"MB",sub:"4 reps"},"ct"],
+    ["A3","Jeté MB poitrine","projection max",{v:"MB",sub:"4 reps"},"ct"],
+    ["B","Tirage haut explosif","coudes hauts",{v:"RPE 6",sub:AV?"3×3-4":"4×3-4"},""],
+    ["C",AV?"Farmer walk":"Tractions explosives","EMOM1",{v:AV&&p.w?fmt(r25(p.w)):"MAX",sub:AV?"3×20 m":"3×3"},""],
+    ["D1",AV?"Dips lestés":"DC incliné haltères","finisher",{v:"RPE 8",sub:"3×10"},"ss"],
+    ["D2","Rowing haltère 1 bras","",{v:"RPE 8",sub:"3×12/c"},"ss"],
+    ["PRÉ","Iso cou","4 directions",{v:"bande",sub:"2×3×10″"},""]];
+  return [["A","Trap bar jump chargé","capteur",{v:K(p.etb,.35),sub:"3×3"},""],
+    ["B","SDT trap bar","VBT ≥ 0,70 m/s",{v:K(p.etb,.70),sub:"3×2"},""],
+    ["C1",AV?"Jammer press":"Landmine rotational press","",{v:"RPE 8",sub:AV?"3×4":"3×4/c"},"ss"],
+    ["C2",AV?"Pendlay row":"Rowing menton triché","",{v:K(p.edc,AV?.60:.50),sub:"3×4"},"ss"],
+    ["D","Finisher bras","",{v:"—",sub:"—"},""],
+    ["TER","Vitesse 4×20 m + 3×30 m","récup complète",{v:"—",sub:"—"},""]];
+ }
+ // ---- CYCLE 4 · championnat
+ const B=f?["C","D","E"]:["C1","C2","D"], nD=f?"2×12":(m?"6×12":"3×12");
+ const pc=m?[.80,.82,null,"83 %","85 %","85 %"]:[.85,.87,null,"88 %","89 %","90 %"];
+ const rp=(k)=>k===2?"test":(f?5:4)+"×"+(k<2?(m?5:3):(m?4:2));
+ const MAIN=(base,k)=>k===2?{v:"3RM",sub:"test",pct:true}:(typeof pc[k]==="string"?{v:pc[k],sub:rp(k),pct:true}:{v:K(base,pc[k]),sub:rp(k)});
+ if(d===0) return [["A1","Back squat","contraste avec A2",MAIN(p.esq,i),"ct"],
+   ["A2","Box jump","box 50-60 cm",{v:"PDC",sub:"3 reps"},"ct"],
+   ["B",AV?"SDT trap bar — dead stop":"Soulevé de terre — dead stop","relâcher 2 s au sol",
+     i===2?{v:"léger",sub:"2×3"}:(i<3?{v:K(p.etb,[.82,.84][i]),sub:"4×3"}:{v:["","","","86 %","87 %","82 %"][i],sub:i<4?"4×3":"3×2",pct:true}),""],
+   [B[0],AV?"Fentes bulgares lestées":"Split squat sauté lesté",AV?"tempo 3-0-1":"haltères",
+     {v:K(p.esq,AV?.18:.20),sub:f?(AV?"3×8/j":"3×5/j"):(m?(AV?"4×12/j":"4×8/j"):(AV?"4×10/j":"4×6/j"))},f?"":"ss"],
+   [B[1],AV?"Farmer walk unilatéral":"Accélérations traîneau",AV?"une main chargée":"départ explosif",
+     {v:p.w?fmt(r25(p.w*(AV?.60:.20))):"—",sub:AV?"3×20 m":"4×15 m"},f?"":"ss"],
+   [B[2],AV?"Hip thrust":"Nordic assisté","",{v:AV&&p.w?fmt(r25(p.w)):"PDC",sub:nD},""]];
+ if(d===1) return [["A1","Développé couché — clusters","20 s barre posée",MAIN(p.edc,i),"ct"],
+   ["A2",AV?"Plyo push-up":"Jeté MB poitrine","vitesse max",{v:AV?"PDC":"MB 5",sub:"4 reps"},"ct"],
+   ["B","Rowing barre + bandes","tirer vite",{v:K(p.edc,.45),sub:"4×6"},""],
+   [B[0],"Tractions lestées","charge croissante",{v:p.w?"+"+fmt(r25(p.w*.12)):"—",sub:"4×6→4×4"},f?"":"ss"],
+   [B[1],AV?"Landmine press unilatéral":"Dév. incliné haltères",AV?"par bras":"par haltère",{v:K(p.edc,.30),sub:nD},f?"":"ss"],
+   [B[2],AV?"Curl + triceps":"Curl + élévations",m?"volume doublé":"",{v:K(p.edc,.20),sub:nD},""]];
+ return [["A","Épaulé depuis les hanches","barre aux cuisses",{v:i===2?"—":K(p.esq,[.40,.43,0,.45,.48,.50][i]),sub:"3×2"},""],
+   ["B","Squat jump","hauteur max",{v:"PDC",sub:"2×3"},""],
+   ["C",AV?"Poussée traîneau":"Départs résistés","explosif",{v:p.w?fmt(r25(p.w*.25)):"—",sub:"3×10 m"},""],
+   ["D",AV?"Iso mêlée chargée":"Jeté MB rotationnel",AV?"montée progressive 3 s":"vitesse max",
+     {v:AV?K(p.esq,.45):"MB 5",sub:AV?"2×6″":"2×4/c"},""],
+   ["TER","Primer terrain","2 lignes + 2×15 m",{v:"—",sub:"—"},""]];
+}
+let ci=3, wi=0, di=0, q="";
+const ANT=[[/ischio/i,["Nordic + iso ischios","3×6 + 3×20″"]],[/lca|crois|ménisq|entorse genou|genou/i,["Split squat iso + proprio","3×20″/jambe"]],
+ [/osgood|rotulien/i,["Iso quadriceps + mollets","3×30″ + 3×15"]],[/syndesmose|cheville/i,["Proprio unipodale + pogo","3×30″/pied"]],
+ [/ac|disjonction|luxation|butée|épaule/i,["Rotations externes bande + Y-T-W","3×12 + 2×10"]],[/coude|radiale|valgus/i,["Prise neutre + avant-bras","3×12"]],
+ [/cervical|hernie|commotion/i,["Renfo cervical bande 4 dir.","3×10/dir"]],[/vertébr|lumbago|dos/i,["Dead bug + bird dog","3×30″ + 3×8/c"]],
+ [/mollet|loges/i,["Mollets excentrique + pogo","3×12 + 2×15"]],[/pubalgie/i,["Copenhagen + adducteurs iso","3×10/c + 3×20″"]]];
+function prehab(p){ const t=((p.ant||"")+" "+(p.z||"")).toLowerCase(); let o=[];
+  ANT.forEach(([re,e])=>{ if(o.length<3 && re.test(t) && !o.some(x=>x[0]===e[0])) o.push(e); });
+  const base = p.av?[["Renfo cervical bande 4 dir.","3×10/dir"],["Y-T-W + rotations externes","2×12"]]
+                   :[["Nordic hamstring","3×6"],["Copenhagen dynamique","2×10/côté"]];
+  base.forEach(b=>{ if(o.length<3 && !o.some(x=>x[0].slice(0,12)===b[0].slice(0,12))) o.push(b); });
+  return o.slice(0,3); }
+function chips(){
+  document.getElementById("mu_cycles").innerHTML=CY.map((c,i)=>
+    `<div class="chip cyc ${i===ci?"on":""}" onclick="setC(${i})">${c.n}<span style="opacity:.5;font-weight:600"> ${c.s.split(" · ")[1]}</span></div>`).join("");
+  document.getElementById("mu_weeks").innerHTML=CY[ci].wk.map((w,i)=>
+    `<div class="chip wk ${i===wi?"on":""} ${w[0]==="DÉCHARGE"?"dech":""}" onclick="setW(${i})">${w[0]}${w[1]?`<span style="opacity:.5;font-weight:600"> ${w[1]}</span>`:""}</div>`).join("");
+  document.getElementById("mu_days").innerHTML=CY[ci].d.map((d,i)=>
+    `<div class="chip ${i===di?"on":""}" onclick="setD(${i})">${d[0]}<span style="opacity:.55;font-weight:600"> ${d[1]}</span></div>`).join("");
+}
+function setC(i){ci=i;wi=0;di=0;chips();render();centre();}
+function centre(){["mu_cycles","mu_weeks","mu_days"].forEach(id=>{const c=document.getElementById(id),a=c.querySelector(".on");
+  if(a) c.scrollLeft=Math.max(0,a.offsetLeft-c.clientWidth/2+a.clientWidth/2);});}
+function setW(i){wi=i;chips();render();centre()} function setD(i){di=i;chips();render();centre()}
+function render(){
+  const f=P.filter(p=>p.n.toLowerCase().includes(q));
+  const av=f.filter(p=>p.av), tq=f.filter(p=>!p.av);
+  const blk=(t,arr)=>arr.length?`<div class="mu-grp">${t} · ${arr.length}</div>`+arr.map(card).join(""):"";
+  document.getElementById("mu_list").innerHTML = f.length? blk("Avants",av)+blk("Trois-quarts",tq)
+    : '<div class="mu-empty">Aucun joueur</div>';
+}
+function card(p){
+  const ex=sess(p,ci,di,wi).filter(e=>e[3]&&e[3].v&&e[3].v!=="—").slice(0,3);
+  const tg=p.prof!=="socle"?`<span class="tag ${p.prof}">${p.prof}</span>`:"";
+  return `<div class="mu-card" onclick='open_(${JSON.stringify(p.n)})'>
+    <div class="mu-row"><div class="mu-pos">${p.poste}</div>
+      <div class="mu-nm"><b>${p.n}</b><span>${p.pl}${p.w?" · "+p.w+" kg":""}</span></div>${tg}</div>
+    <div class="mu-kgs">${ex.map(e=>`<div class="kg ${e[3].pct?"pct":""}"><b>${e[3].v}</b><span>${e[1].split(" —")[0].slice(0,15)}</span></div>`).join("")}</div></div>`;
+}
+function open_(n){
+  const p=P.find(x=>x.n===n); const S=document.getElementById("mu_sheet");
+  const ex=sess(p,ci,di,wi);
+  const ph=prehab(p);
+  const note = ci!==3 ? "Cycle archivé — charges recalculées sur les tests de juillet, à titre d'historique." : p.prof==="force" ? "Priorité force : 5 séries au squat, repos 3′, aucun superset, volume accessoire réduit."
+    : p.prof==="masse" ? "Prise de masse : charges à 80-85 % mais séries de 5 puis 4, volume accessoire doublé, repos courts."
+    : "Socle commun. Plus de 60 min jouées samedi → une série en moins sur le bloc A1 du mardi.";
+  S.innerHTML=`<div class="mu-sh"><button class="mu-close" onclick="document.getElementById('mu_sheet').classList.remove('on')">×</button>
+    <h2>${p.n}</h2><p>${p.pl} · poste ${p.poste} · ${CY[ci].n} · ${CY[ci].wk[wi][0]} · ${CY[ci].d[di][0]}</p></div>
+    <div class="mu-stats">
+      <div><b>${p.w??"—"}</b><span>Poids kg</span></div>
+      <div><b>${p.esq??"—"}</b><span>e1RM squat</span></div>
+      <div><b>${p.edc??"—"}</b><span>e1RM DC</span></div>
+      <div><b>${p.bron??"—"}</b><span>Bronco</span></div>
+      <div><b>${p.cmj??"—"}</b><span>CMJ cm</span></div></div>
+    <div class="mu-sec">${CY[ci].d[di][0]} · ${CY[ci].d[di][1]}</div>
+    ${ex.map(e=>`<div class="ex ${e[4]}"><div class="mu-bl">${e[0]}</div>
+      <div class="mu-t"><b>${e[1]}</b><span>${e[2]}</span></div>
+      <div class="mu-v">${e[3]?`<b>${e[3].v}</b><span>${e[3].sub||""}</span>`:""}</div></div>`).join("")}
+    <div class="mu-sec">Ma préhab · 2 × / semaine</div>
+    <div class="mu-pre">${p.ant?`<div class="mu-ant">Antécédent · ${p.ant}</div>`:""}
+      ${ph.map(x=>`<div class="mu-ex"><div class="mu-t"><b>${x[0]}</b></div><div class="mu-v"><b>${x[1]}</b></div></div>`).join("")}</div>
+    <div class="mu-note">${note}</div>`;
+  S.classList.add("on"); S.scrollTop=0;
+}
+document.getElementById("mu_q").addEventListener("input",e=>{q=e.target.value.toLowerCase();render()});
+chips(); render(); centre();
+
+  $("btnMuscu").addEventListener("click",function(){
+    if(!MUREADY){ MUREADY=true; try{ if(typeof render==="function") render(); }catch(e){} }
+    muscuOverlay.classList.add("open");
+  });
+})();
 const bipOverlay=$("bipOverlay");
 $("bipClose").addEventListener("click",function(){ bipOverlay.classList.remove("open"); });
 bipOverlay.addEventListener("click",function(e){ if(e.target===bipOverlay) bipOverlay.classList.remove("open"); });
