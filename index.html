@@ -826,7 +826,7 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h53 — cartes joueurs : un seul état, filtres par phase</div>
+    <div style="font-size:.7rem;opacity:.5">h54 — cartes joueurs : état unique appliqué partout</div>
   </footer>
 </div>
 
@@ -1611,15 +1611,14 @@ function richParts(p){
   return parts.join("");
 }
 function card(p){
-  const st=STATUT[p.s], pi=posteInfo(p), z=zoneInfo(p);
-  const el=document.createElement("article"); el.className="card"; el.style.borderLeftColor=st.color; el.tabIndex=0;
+  const e=etatDe(p), pi=posteInfo(p);
+  const el=document.createElement("article"); el.className="card"; el.style.borderLeftColor=e.color; el.tabIndex=0;
   const jersey=(pi.num!=null)?'<span class="jersey">'+esc(String(pi.num))+'</span>':'<span class="jersey jersey-none">·</span>';
   const sub=[];
   if(pi.key!=="none") sub.push(esc(pi.label));
   if(catLabel(p)) sub.push(esc(catLabel(p)));
-  if(p.z!=="none") sub.push('<span class="zc" style="color:'+darker(z.color)+'">'+esc(z.label)+'</span>');
   const subLine=sub.length?'<div class="cmeta">'+sub.join('<span class="sep">·</span>')+'</div>':'';
-  const pill='<span class="pill" style="background:'+hexRgba(st.color,.12)+';color:'+darker(st.color)+'"><span class="pdot" style="background:'+st.color+'"></span>'+esc(st.label)+'</span>';
+  const pill='<span class="pill" style="background:'+hexRgba(e.color,.13)+';color:'+darker(e.color)+'"><span class="pdot" style="background:'+e.color+'"></span>'+esc(e.label)+(e.zone?' · '+esc(e.zone):'')+'</span>';
   const flag=(p.ant&&p.ant.trim()&&isAdmin())?'<div class="flag"><span>Antécédent</span>'+esc(p.ant)+'</div>':'';
   el.innerHTML='<div class="chead">'+jersey+'<div class="cbody"><div class="ctop"><h2 class="name">'+esc(p.n)+'</h2>'+pill+'</div>'+subLine+'</div></div>'+flag;
   el.addEventListener("click",()=>openDetail(p.id)); el.addEventListener("keydown",e=>{ if(e.key==="Enter") openDetail(p.id); });
@@ -1926,7 +1925,7 @@ function playerText(p){
   L.push("FICHE — "+p.n); L.push("CS Vienne U21 · Espoirs"); L.push("");
   if(pi.key!=="none") L.push("Poste : "+posteDisplay(pi));
   if(catLabel(p)) L.push("Catégorie : "+catLabel(p));
-  L.push("Statut : "+STATUT[p.s].label);
+  { const _e=etatDe(p); L.push("État : "+_e.label+(_e.zone?" · "+_e.zone:"")); }
   if(p.taille!==""&&p.taille!=null) L.push("Taille : "+p.taille+" cm");
   const hasP=(p.poids!==""&&p.poids!=null)||(p.poidsCible!==""&&p.poidsCible!=null);
   if(hasP){ let t=(p.poids!==""&&p.poids!=null)?(p.poids+" kg"):"—"; if(p.poidsCible!==""&&p.poidsCible!=null) t+=" (cible "+p.poidsCible+" kg)"; L.push("Poids : "+t); }
@@ -1959,7 +1958,7 @@ function openShare(id){
 }
 function frD(x){ return String(x).replace(".",","); }
 function ficheHTML(p){
-  const pi=posteInfo(p), st=STATUT[p.s];
+  const pi=posteInfo(p), st=etatDe(p);
   let h='<div class="pf">';
   h+='<div class="pf-head"><div class="pf-crest"></div><div><div class="pf-club">CS Vienne Rugby · Espoirs Reichel Accession U21</div><div class="pf-title">Fiche joueur · saison 2026-27</div></div></div>';
   h+='<div class="pf-name">'+esc(p.n)+'</div>';
