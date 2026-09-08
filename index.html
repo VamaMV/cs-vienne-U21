@@ -832,6 +832,56 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
 .muwrap .mu-grp span{color:#8A9BA8;font-weight:700}
 .muwrap .mu-row{padding:10px 12px 9px}
 .muwrap .mu-card{display:flex;flex-direction:column}
+
+.muwrap .mu-bar{display:flex;align-items:center;gap:8px;margin-bottom:11px;flex-wrap:wrap}
+.muwrap .mu-bar button{font-family:var(--body);font-size:.78rem;font-weight:700;padding:7px 13px;border-radius:9px;
+  border:1.5px solid #CFE3E3;background:#F2FAFA;color:#0B7C7C;cursor:pointer}
+.muwrap .mu-bar button:hover{background:#E4F4F4}
+.muwrap .mu-src{font-size:.72rem;color:#8A9BA8;margin-left:auto}
+/* ================= muscu : identité visuelle ================= */
+.muwrap{--mu-force:#B3261E;--mu-masse:#B4460C;--mu-vitesse:#0B7C7C;--mu-socle:#5B7386;--mu-ink:#0F2233;--mu-line:#DEE9F0}
+.muwrap .mu-pick{background:#fff;border:1px solid var(--mu-line);border-radius:14px;padding:6px 0 2px;margin-bottom:14px}
+.muwrap .mu-chip{flex:0 0 auto;font-family:var(--body);font-size:.8rem;font-weight:600;color:#5B7386;background:#fff;
+  border:1.5px solid var(--mu-line);border-radius:99px;padding:6px 13px;cursor:pointer;white-space:nowrap;transition:all .13s}
+.muwrap .mu-chip:hover{border-color:#0EA5A5;color:#0B7C7C}
+.muwrap .mu-chip span{opacity:.6;font-weight:500}
+.muwrap .mu-chip.mu-on{background:var(--mu-ink);border-color:var(--mu-ink);color:#fff}
+.muwrap .mu-chip.mu-on span{opacity:.65;color:#fff}
+.muwrap .mu-chip.mu-cyc.mu-on{background:#0B7C7C;border-color:#0B7C7C}
+.muwrap .mu-chip.mu-dech{border-style:dashed}
+
+.muwrap .mu-grp{grid-column:1/-1;display:flex;align-items:baseline;gap:9px;font-family:var(--display);font-size:.95rem;
+  font-weight:700;color:var(--mu-ink);padding:12px 2px 5px;border-bottom:2px solid var(--mu-line);margin-bottom:4px;text-transform:none;letter-spacing:0}
+.muwrap .mu-grp span{font-family:var(--body);font-size:.76rem;font-weight:600;color:#8A9BA8}
+
+.muwrap .mu-card{position:relative;background:#fff;border:1px solid var(--mu-line);border-radius:13px;overflow:hidden;
+  cursor:pointer;box-shadow:none;transition:border-color .13s,box-shadow .13s}
+.muwrap .mu-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--mu-socle)}
+.muwrap .mu-card:has(.mu-force)::before{background:var(--mu-force)}
+.muwrap .mu-card:has(.mu-masse)::before{background:var(--mu-masse)}
+.muwrap .mu-card:has(.mu-vitesse)::before{background:var(--mu-vitesse)}
+.muwrap .mu-card:hover{border-color:#9FC7DA;box-shadow:0 3px 12px rgba(15,34,51,.09)}
+
+.muwrap .mu-row{display:flex;align-items:center;gap:10px;padding:11px 13px 9px 15px}
+.muwrap .mu-pos{flex:0 0 30px;height:34px;border-radius:5px;background:var(--mu-ink);color:#fff;display:flex;align-items:center;
+  justify-content:center;font-family:var(--display);font-size:14px;font-weight:800;letter-spacing:-.02em;
+  box-shadow:inset 0 -3px 0 rgba(255,255,255,.16)}
+.muwrap .mu-nm{flex:1;min-width:0}
+.muwrap .mu-nm b{display:block;font-family:var(--display);font-size:.95rem;font-weight:700;color:var(--mu-ink);line-height:1.15;letter-spacing:-.01em}
+.muwrap .mu-nm span{display:block;font-size:.73rem;color:#7B8FA0;margin-top:1px}
+.muwrap .mu-tag{flex:0 0 auto;font-size:.66rem;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:0;text-transform:none}
+.muwrap .mu-tag.mu-force{background:#FBE9E7;color:var(--mu-force)}
+.muwrap .mu-tag.mu-masse{background:#FDECDC;color:var(--mu-masse)}
+.muwrap .mu-tag.mu-vitesse{background:#DDF0EF;color:var(--mu-vitesse)}
+
+.muwrap .mu-kgs{display:grid;grid-template-columns:repeat(3,1fr);padding:0;border-top:1px solid #EDF3F7;background:#F7FBFD}
+.muwrap .mu-kg{padding:9px 5px 10px;text-align:center;border-right:1px solid #EDF3F7}
+.muwrap .mu-kg:last-child{border-right:none}
+.muwrap .mu-kg b{display:block;font-family:var(--display);font-size:1.2rem;font-weight:800;color:var(--mu-ink);line-height:1;letter-spacing:-.02em}
+.muwrap .mu-kg span{display:block;font-size:.66rem;color:#8A9BA8;font-weight:500;margin-top:3px;text-transform:none;letter-spacing:0}
+.muwrap .mu-kg.mu-pct b{color:var(--mu-vitesse)}
+.muwrap .mu-search input{width:100%;font-family:var(--body);font-size:.9rem;padding:9px 13px;border:1.5px solid var(--mu-line);border-radius:10px;background:#F7FBFD}
+.muwrap .mu-search input:focus{outline:none;border-color:#0EA5A5;background:#fff;box-shadow:0 0 0 3px rgba(14,165,165,.13)}
 </style>
 </head>
 <body>
@@ -936,7 +986,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h57 — muscu : grille et mise en page revues</div>
+    <div style="font-size:.7rem;opacity:.5">h58 — muscu : identité visuelle et import des cycles</div>
   </footer>
 </div>
 
@@ -1058,6 +1108,11 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
   <div class="sheet musheet" role="dialog" aria-modal="true" aria-labelledby="muscuTitle">
     <h2 id="muscuTitle">Musculation — Espoirs U21</h2>
     <div class="muwrap">
+    <div class="mu-bar">
+      <button type="button" id="mu_import">Importer mes cycles</button>
+      <button type="button" id="mu_export">Exporter le modèle</button>
+      <span id="mu_src" class="mu-src"></span>
+    </div>
 
 <div class="mu-pick">
   <div class="mu-scroll" id="mu_cycles"></div>
@@ -2559,11 +2614,11 @@ function prehab(p){ const t=((p.ant||"")+" "+(p.z||"")).toLowerCase(); let o=[];
   return o.slice(0,3); }
 function chips(){
   document.getElementById("mu_cycles").innerHTML=CY.map((c,i)=>
-    `<div class="chip cyc ${i===ci?"on":""}" onclick="setC(${i})">${c.n}<span style="opacity:.5;font-weight:600"> ${c.s.split(" · ")[1]}</span></div>`).join("");
+    `<div class="mu-chip mu-cyc ${i===ci?"mu-on":""}" onclick="setC(${i})">${c.n}<span style="opacity:.5;font-weight:600"> ${c.s.split(" · ")[1]}</span></div>`).join("");
   document.getElementById("mu_weeks").innerHTML=CY[ci].wk.map((w,i)=>
-    `<div class="chip wk ${i===wi?"on":""} ${w[0]==="DÉCHARGE"?"dech":""}" onclick="setW(${i})">${w[0]}${w[1]?`<span style="opacity:.5;font-weight:600"> ${w[1]}</span>`:""}</div>`).join("");
+    `<div class="mu-chip mu-wk ${i===wi?"mu-on":""} ${w[0]==="DÉCHARGE"?"mu-dech":""}" onclick="setW(${i})">${w[0]}${w[1]?`<span style="opacity:.5;font-weight:600"> ${w[1]}</span>`:""}</div>`).join("");
   document.getElementById("mu_days").innerHTML=CY[ci].d.map((d,i)=>
-    `<div class="chip ${i===di?"on":""}" onclick="setD(${i})">${d[0]}<span style="opacity:.55;font-weight:600"> ${d[1]}</span></div>`).join("");
+    `<div class="mu-chip ${i===di?"mu-on":""}" onclick="setD(${i})">${d[0]}<span style="opacity:.55;font-weight:600"> ${d[1]}</span></div>`).join("");
 }
 function setC(i){ci=i;wi=0;di=0;chips();render();centre();}
 function centre(){["mu_cycles","mu_weeks","mu_days"].forEach(id=>{const c=document.getElementById(id),a=c.querySelector(".on");
@@ -2600,7 +2655,7 @@ function open_(n){
       <div><b>${p.bron??"—"}</b><span>Bronco</span></div>
       <div><b>${p.cmj??"—"}</b><span>CMJ cm</span></div></div>
     <div class="mu-sec">${CY[ci].d[di][0]} · ${CY[ci].d[di][1]}</div>
-    ${ex.map(e=>`<div class="ex ${e[4]}"><div class="mu-bl">${e[0]}</div>
+    ${ex.map(e=>`<div class="mu-ex ${e[4]}"><div class="mu-bl">${e[0]}</div>
       <div class="mu-t"><b>${e[1]}</b><span>${e[2]}</span></div>
       <div class="mu-v">${e[3]?`<b>${e[3].v}</b><span>${e[3].sub||""}</span>`:""}</div></div>`).join("")}
     <div class="mu-sec">Ma préhab · 2 × / semaine</div>
@@ -2612,10 +2667,66 @@ function open_(n){
 document.getElementById("mu_q").addEventListener("input",e=>{q=e.target.value.toLowerCase();render()});
 chips(); render(); centre();
 
+  async function muCharger(){
+    try{
+      const r=await sb.from("app_data").select("data").eq("id","muscu").maybeSingle();
+      if(r&&!r.error&&r.data&&r.data.data&&Array.isArray(r.data.data.CY)&&r.data.data.CY.length){
+        CY.length=0; r.data.data.CY.forEach(function(c){ CY.push(c); });
+        if(Array.isArray(r.data.data.P)&&r.data.data.P.length){ P.length=0; r.data.data.P.forEach(function(x){ P.push(x); }); }
+        ci=0; wi=0; di=0;
+        $("mu_src").textContent="Cycles importés"+(r.data.data.maj?" le "+r.data.data.maj:"");
+        return true;
+      }
+    }catch(e){}
+    $("mu_src").textContent="Cycles d origine";
+    return false;
+  }
+  async function muEnregistrer(obj){
+    obj.maj=new Date().toLocaleDateString("fr-FR");
+    const r=await sb.from("app_data").upsert({id:"muscu",data:obj,updated_at:new Date().toISOString()});
+    if(r&&r.error) throw new Error("écriture refusée");
+  }
+  function muValider(o){
+    if(!o||typeof o!=="object") throw new Error("Le fichier ne contient pas de données.");
+    if(!Array.isArray(o.CY)||!o.CY.length) throw new Error("Aucun cycle trouvé. Le fichier doit contenir une liste CY.");
+    o.CY.forEach(function(c,i){
+      if(!c.n) throw new Error("Cycle "+(i+1)+" : le nom (n) manque.");
+      if(!Array.isArray(c.wk)||!c.wk.length) throw new Error(c.n+" : la liste des semaines (wk) manque.");
+      if(!Array.isArray(c.d)||!c.d.length) throw new Error(c.n+" : la liste des jours (d) manque.");
+    });
+    if(o.P!==undefined&&!Array.isArray(o.P)) throw new Error("La liste des joueurs (P) doit être un tableau.");
+    return o;
+  }
+  $("mu_export").addEventListener("click",function(){
+    const txt=JSON.stringify({CY:CY,P:P},null,1);
+    try{
+      const b=new Blob([txt],{type:"application/json"});
+      const u=URL.createObjectURL(b); const a=document.createElement("a");
+      a.href=u; a.download="muscu-modele.json"; a.click(); URL.revokeObjectURL(u);
+      toast("Modèle téléchargé");
+    }catch(e){ toast("Téléchargement indisponible ici"); }
+  });
+  $("mu_import").addEventListener("click",function(){
+    const inp=document.createElement("input");
+    inp.type="file"; inp.accept=".json,application/json";
+    inp.addEventListener("change",async function(){
+      const f=inp.files&&inp.files[0]; if(!f) return;
+      try{
+        const o=muValider(JSON.parse(await f.text()));
+        await muEnregistrer(o);
+        CY.length=0; o.CY.forEach(function(c){ CY.push(c); });
+        if(Array.isArray(o.P)&&o.P.length){ P.length=0; o.P.forEach(function(x){ P.push(x); }); }
+        ci=0; wi=0; di=0; chips(); render(); centre();
+        $("mu_src").textContent="Cycles importés le "+new Date().toLocaleDateString("fr-FR");
+        toast(o.CY.length+" cycle"+(o.CY.length>1?"s":"")+" importé"+(o.CY.length>1?"s":""));
+      }catch(e){ alert("Import impossible.\n\n"+(e.message||e)); }
+    });
+    inp.click();
+  });
   window.setC=setC; window.setW=setW; window.setD=setD;
   if(typeof open_==="function") window.open_=open_;
-  $("btnMuscu").addEventListener("click",function(){
-    if(!MUREADY){ MUREADY=true; try{ if(typeof render==="function") render(); }catch(e){} }
+  $("btnMuscu").addEventListener("click",async function(){
+    if(!MUREADY){ MUREADY=true; try{ await muCharger(); chips(); render(); centre(); }catch(e){} }
     muscuOverlay.classList.add("open");
   });
 })();
