@@ -733,12 +733,12 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--ink:#14181F;--navy:#1B3A5C;--mut:#77808C;--rule:#E4E8ED;--amb:#B45309;--bg:#F7F8FA}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:80px}
-header{background:var(--ink);color:#fff;padding:14px 16px calc(14px + env(safe-area-inset-top)) 16px;display:flex;align-items:center;gap:11px;position:sticky;top:0;z-index:20}
-header img{width:34px;height:34px;object-fit:contain;background:#fff;border-radius:7px;padding:3px}
-header h1{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.15}
+.muwrap{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:80px}
+.muwrap .mu-hdr{background:var(--ink);color:#fff;padding:14px 16px calc(14px + env(safe-area-inset-top)) 16px;display:flex;align-items:center;gap:11px;position:relative;top:0;z-index:20}
+.muwrap .mu-hdr img{width:34px;height:34px;object-fit:contain;background:#fff;border-radius:7px;padding:3px}
+.muwrap .mu-hdr h1{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.15}
 header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
-.muwrap .mu-pick{background:#fff;border-bottom:1px solid var(--rule);position:sticky;top:62px;z-index:19}
+.muwrap .mu-pick{background:#fff;border-bottom:1px solid var(--rule);position:relative;top:62px;z-index:19}
 .muwrap .mu-scroll{display:flex;gap:6px;overflow-x:auto;padding:9px 12px;scrollbar-width:none}
 .muwrap .mu-scroll::-webkit-scrollbar{display:none}
 .muwrap .chip{flex:0 0 auto;padding:7px 13px;border-radius:999px;border:1.5px solid var(--rule);background:#fff;font-size:12.5px;font-weight:700;color:var(--mut);white-space:nowrap;cursor:pointer}
@@ -764,7 +764,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
 .muwrap .kg.pct b{color:var(--amb)}
 .muwrap .mu-sheet{position:fixed;inset:0;background:#fff;z-index:50;overflow-y:auto;display:none;padding-bottom:40px}
 .muwrap .mu-sheet.on{display:block}
-.muwrap .mu-sh{background:var(--ink);color:#fff;padding:16px 16px calc(16px + env(safe-area-inset-top));position:sticky;top:0}
+.muwrap .mu-sh{background:var(--ink);color:#fff;padding:16px 16px calc(16px + env(safe-area-inset-top));position:relative;top:0}
 .muwrap .mu-sh h2{font-size:21px;font-weight:800;letter-spacing:-.5px}
 .muwrap .mu-sh p{font-size:11.5px;opacity:.66;margin-top:3px}
 .muwrap .mu-close{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;border:0;font-size:19px;cursor:pointer;line-height:1}
@@ -907,7 +907,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h55 — onglet musculation + cartes Équipe 1 distinctes</div>
+    <div style="font-size:.7rem;opacity:.5">h56 — muscu : navigation réparée, styles isolés</div>
   </footer>
 </div>
 
@@ -2583,6 +2583,8 @@ function open_(n){
 document.getElementById("mu_q").addEventListener("input",e=>{q=e.target.value.toLowerCase();render()});
 chips(); render(); centre();
 
+  window.setC=setC; window.setW=setW; window.setD=setD;
+  if(typeof open_==="function") window.open_=open_;
   $("btnMuscu").addEventListener("click",function(){
     if(!MUREADY){ MUREADY=true; try{ if(typeof render==="function") render(); }catch(e){} }
     muscuOverlay.classList.add("open");
