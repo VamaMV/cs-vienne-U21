@@ -722,6 +722,10 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
 .bqwrap .bq-bal input{transition:border-color .12s}
 .bqwrap .bq-bal input:focus{outline:none;border-color:#0F80C4;box-shadow:0 0 0 3px rgba(15,128,196,.12)}
 
+
+.flag{margin-top:6px;padding:4px 9px;background:#F6F8FA;border-left:3px solid #C7D4DD;border-radius:0 6px 6px 0;font-size:.72rem;color:#5B7386;line-height:1.4}
+.flag span{display:block;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#8A9BA8;margin-bottom:1px}
+
 </style>
 </head>
 <body>
@@ -822,7 +826,7 @@ svg.chart{display:block;min-width:640px;width:100%;height:230px}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h52 — séquenceur : tout modifiable, logos au rail, interface revue</div>
+    <div style="font-size:.7rem;opacity:.5">h53 — cartes joueurs : un seul état, filtres par phase</div>
   </footer>
 </div>
 
@@ -1101,8 +1105,13 @@ const GRANK={avants:0,backs:1,autre:2,zzz:3};
 const SECTION_LABEL={avants:"Avants",backs:"Trois-quarts",autre:"Autre",zzz:"Non défini"};
 const CHIPS = [
   {key:"all",label:"Tous",color:null},{key:"avants",label:"Avants",color:"#475569"},{key:"backs",label:"Trois-quarts",color:"#0E4D5C"},
-  {key:"watch",label:"À surveiller",color:STATUT.watch.color},{key:"close",label:"À suivre",color:STATUT.close.color},{key:"confirm",label:"À confirmer",color:STATUT.confirm.color},
-  {key:"ischios",label:"Ischios",color:ZONE.ischios.color},{key:"epaule",label:"Épaule",color:ZONE.epaule.color},{key:"genou",label:"Genou",color:ZONE.genou.color},{key:"cheville",label:"Cheville",color:ZONE.cheville.color},{key:"autres",label:"Autres zones",color:"#8A6A38"},
+  {key:"apte",label:"Aptes",color:"#1C8C5A"},
+  {key:"ph_attente",label:"En attente de diagnostic",color:"#7C3AED"},
+  {key:"ph_soins",label:"Soins",color:"#DC2626"},
+  {key:"ph_reathle",label:"Réathlé",color:"#EA580C"},
+  {key:"ph_reentrainement",label:"Réentraînement",color:"#B45309"},
+  {key:"ph_retourp",label:"Retour partiel",color:"#0F80C4"},
+  {key:"confirm",label:"À confirmer",color:STATUT.confirm.color},
 ];
 const PRIO={close:0,watch:1,indispo:2,confirm:3,apte:4};
 function statutGroupKey(s){ if(s==="close"||s==="watch") return "suivi"; if(s==="indispo") return "indispo"; if(s==="confirm") return "confirm"; return "apte"; }
@@ -1518,22 +1527,36 @@ $("viewseg").addEventListener("click",e=>{ const btn=e.target.closest("button");
 elQ.addEventListener("input",()=>{ query=elQ.value.trim(); elClear.classList.toggle("show",query.length>0); render(); });
 elClear.addEventListener("click",()=>{ elQ.value=""; query=""; elClear.classList.remove("show"); elQ.focus(); render(); });
 
-function matchesFilter(p){ if(activeFilter==="all") return true; if(activeFilter==="avants") return posteInfo(p).g==="avants"; if(activeFilter==="backs") return posteInfo(p).g==="backs"; if(STATUT[activeFilter]) return p.s===activeFilter; if(activeFilter==="autres") return ["mollet","coude","tendon","cervical","charge"].includes(p.z); return p.z===activeFilter; }
+function matchesFilter(p){ if(activeFilter==="all") return true; if(activeFilter==="avants") return posteInfo(p).g==="avants"; if(activeFilter==="backs") return posteInfo(p).g==="backs"; if(activeFilter==="apte") return etatDe(p).cle==="apte";
+  if(activeFilter.indexOf("ph_")===0) return etatDe(p).cle===activeFilter.slice(3);
+  if(STATUT[activeFilter]) return etatDe(p).cle===activeFilter;
+  if(activeFilter==="autres") return ["mollet","coude","tendon","cervical","charge"].includes(p.z); return p.z===activeFilter; }
 function filteredBase(){ const q=norm(query); return players.filter(p=>matchesFilter(p) && (q==="" || norm(p.n).includes(q))); }
-function renderCounts(){ const order=["apte","watch","close","confirm","indispo"]; elCounts.innerHTML='<span class="cstat"><b>'+players.length+'</b> joueurs</span>'+order.map(s=>{ const k=players.filter(p=>p.s===s).length; if(k===0&&s==="indispo") return ""; return '<span class="cstat"><span class="cd" style="background:'+STATUT[s].color+'"></span><b>'+k+'</b> '+STATUT[s].label+'</span>'; }).join(""); }
+function renderCounts(){ const order=["apte","attente","soins","reathle","reentrainement","retourp","confirm","indispo"]; elCounts.innerHTML='<span class="cstat"><b>'+players.length+'</b> joueurs</span>'+order.map(s=>{
+  const k=players.filter(p=>etatDe(p).cle===s).length;
+  if(k===0) return "";
+  const c=(s==="apte")?"#1C8C5A":(PHASES[s]?PHASES[s].color:(STATUT[s]?STATUT[s].color:"#6B7280"));
+  const l=(s==="apte")?"aptes":(PHASES[s]?PHASES[s].label:(STATUT[s]?STATUT[s].label:s));
+  return '<span class="cstat"><span class="cd" style="background:'+c+'"></span><b>'+k+'</b> '+l+'</span>'; }).join(""); }
 
+function etatDe(p){
+  /* un seul etat : la phase de reathle si episode en cours, sinon apte */
+  const ep=activeEpisode(p);
+  if(ep){ const ph=PHASES[ep.phase]; return {cle:ep.phase,label:ph.label,color:ph.color,zone:ep.zone||"",ep:ep}; }
+  if(p.s==="indispo") return {cle:"indispo",label:STATUT.indispo.label,color:STATUT.indispo.color,zone:"",ep:null};
+  if(p.s==="confirm") return {cle:"confirm",label:STATUT.confirm.label,color:STATUT.confirm.color,zone:"",ep:null};
+  return {cle:"apte",label:"Apte",color:"#1C8C5A",zone:"",ep:null};
+}
 function metaHTML(p){
-  const z=zoneInfo(p),st=STATUT[p.s],pi=posteInfo(p);
+  const pi=posteInfo(p), e=etatDe(p);
   let meta="";
   if(pi.key!=="none") meta+='<span class="ptag">'+esc(posteDisplay(pi))+'</span>';
-  if(p.z!=="none") meta+='<span class="tag" style="background:'+hexRgba(z.color,.12)+';color:'+darker(z.color)+'">'+esc(z.label)+'</span>';
   if(catLabel(p)) meta+='<span class="cat">'+esc(catLabel(p))+'</span>';
-  { const _ep=activeEpisode(p); if(_ep){ const ph=PHASES[_ep.phase]; meta+='<span class="tag" style="background:'+hexRgba(ph.color,.14)+';color:'+darker(ph.color)+'">'+esc(ph.label)+(_ep.zone?' · '+esc(_ep.zone):'')+'</span>'; } }
   { const _tot=totalMin(p), _nb=nbMatchs(p);
     if(_nb>0) meta+='<span class="tag tdjtag">'+_tot+' min · '+_nb+' match'+(_nb>1?'s':'')+'</span>';
     const _sw=Math.max(serieSemaines(p),serieConsecutive(p));
     if(_sw>=3) meta+='<span class="tag surtag" title="Week-ends consécutifs avec un match, toutes compétitions">'+_sw+' week-ends d\'affilée</span>'; }
-  meta+='<span class="pill" style="background:'+hexRgba(st.color,.12)+';color:'+darker(st.color)+'"><span class="pdot" style="background:'+st.color+'"></span>'+esc(st.label)+'</span>';
+  meta+='<span class="pill" style="background:'+hexRgba(e.color,.13)+';color:'+darker(e.color)+'"><span class="pdot" style="background:'+e.color+'"></span>'+esc(e.label)+(e.zone?' · '+esc(e.zone):'')+'</span>';
   return meta;
 }
 function richParts(p){
@@ -1597,7 +1620,7 @@ function card(p){
   if(p.z!=="none") sub.push('<span class="zc" style="color:'+darker(z.color)+'">'+esc(z.label)+'</span>');
   const subLine=sub.length?'<div class="cmeta">'+sub.join('<span class="sep">·</span>')+'</div>':'';
   const pill='<span class="pill" style="background:'+hexRgba(st.color,.12)+';color:'+darker(st.color)+'"><span class="pdot" style="background:'+st.color+'"></span>'+esc(st.label)+'</span>';
-  const flag=(p.ant&&p.ant.trim())?'<div class="flag">'+esc(p.ant)+'</div>':'';
+  const flag=(p.ant&&p.ant.trim()&&isAdmin())?'<div class="flag"><span>Antécédent</span>'+esc(p.ant)+'</div>':'';
   el.innerHTML='<div class="chead">'+jersey+'<div class="cbody"><div class="ctop"><h2 class="name">'+esc(p.n)+'</h2>'+pill+'</div>'+subLine+'</div></div>'+flag;
   el.addEventListener("click",()=>openDetail(p.id)); el.addEventListener("keydown",e=>{ if(e.key==="Enter") openDetail(p.id); });
   return el;
