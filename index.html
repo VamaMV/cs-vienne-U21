@@ -894,7 +894,49 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
 .muwrap .mu-kg b{display:block;font-family:var(--display);font-size:1.42rem;font-weight:800;color:var(--mu-deep);line-height:1;letter-spacing:-.03em}
 .muwrap .mu-kg span{display:block;font-size:.66rem;color:#8A9BA8;font-weight:500;margin-top:4px;text-transform:none;letter-spacing:0}
 .muwrap .mu-kg.mu-pct b{color:var(--mu-vitesse)}
+.bqwrap .bq-wk .n u{text-decoration:none;color:#7C93A6;font-size:.74rem}
 .muwrap .mu-empty{grid-column:1/-1;color:#8FC7E4;font-size:.86rem;padding:18px 4px;text-align:center}
+
+.ov-head{display:flex;align-items:center;gap:13px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.ov-crest{flex:0 0 auto;width:44px;height:44px;background:var(--logo) center/contain no-repeat;filter:drop-shadow(0 1px 2px rgba(15,34,51,.18))}
+.ov-head h2{margin:0;font-family:var(--display);font-size:1.22rem;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+.ov-head p{margin:2px 0 0;font-size:.76rem;color:var(--faint)}
+
+
+/* ---- fiche joueur : reprise ---- */
+.muwrap .mu-sheet{background:#F4F8FB}
+.muwrap .mu-sh{background:linear-gradient(135deg,#14314A 0%,#0F2233 62%);color:#fff;padding:17px 19px 16px;position:relative}
+.muwrap .mu-sh::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:linear-gradient(90deg,var(--mu-force),var(--mu-masse),var(--mu-vitesse))}
+.muwrap .mu-sh h2{margin:0;font-family:var(--display);font-size:1.2rem;font-weight:800;letter-spacing:-.02em;color:#fff}
+.muwrap .mu-sh p{margin:3px 0 0;font-size:.76rem;color:#9FC0D6}
+.muwrap .mu-close{background:rgba(255,255,255,.14);color:#fff;border:none;font-size:17px}
+.muwrap .mu-close:hover{background:rgba(255,255,255,.26)}
+
+.muwrap .mu-stats{display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-bottom:1px solid #E4EDF3}
+.muwrap .mu-stats>div{padding:12px 8px 13px;text-align:center;border-right:1px solid #EEF4F8}
+.muwrap .mu-stats>div:last-child{border-right:none}
+.muwrap .mu-stats b{display:block;font-family:var(--display);font-size:1.18rem;font-weight:800;color:var(--mu-deep);line-height:1}
+.muwrap .mu-stats span{display:block;font-size:.64rem;color:#8A9BA8;margin-top:4px;text-transform:none;letter-spacing:0}
+
+.muwrap .mu-sec{padding:16px 16px 6px;font-family:var(--display);font-size:.86rem;font-weight:700;
+  letter-spacing:0;text-transform:none;color:var(--mu-deep)}
+.muwrap .mu-ex{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid #EAF1F6;background:#fff}
+.muwrap .mu-ex:hover{background:#FAFCFE}
+.muwrap .mu-bl{flex:0 0 24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;
+  font-size:9.5px;font-weight:800;color:#fff;background:var(--mu-socle)}
+.muwrap .mu-t{flex:1;min-width:0}
+.muwrap .mu-t b{display:block;font-size:.92rem;font-weight:600;color:var(--mu-deep);line-height:1.25}
+.muwrap .mu-t span{display:block;font-size:.74rem;color:#8A9BA8;margin-top:1px}
+.muwrap .mu-v{flex:0 0 auto;text-align:right}
+.muwrap .mu-v b{display:block;font-family:var(--display);font-size:1.12rem;font-weight:800;color:var(--mu-deep);line-height:1}
+.muwrap .mu-v span{display:block;font-size:.7rem;color:#8A9BA8;margin-top:2px}
+
+.muwrap .mu-pre{background:#fff;margin:6px 16px 0;border:1px solid #E4EDF3;border-radius:11px;padding:2px 0;overflow:hidden}
+.muwrap .mu-pre .mu-ex{border-bottom:1px solid #F2F7FA;padding:9px 13px}
+.muwrap .mu-pre .mu-ex:last-child{border-bottom:none}
+.muwrap .mu-ant{font-size:.72rem;font-weight:600;color:#B4460C;background:#FDF4EC;text-transform:none;letter-spacing:0;padding:8px 13px;border-bottom:1px solid #F7E6D6}
+.muwrap .mu-note{margin:14px 16px 0;padding:12px 14px;background:#EAF3FA;border-left:3px solid #3FA9DC;border-radius:0 9px 9px 0;font-size:.8rem;line-height:1.55;color:#2A4A63}
 </style>
 </head>
 <body>
@@ -999,7 +1041,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h59 — muscu : plateau sombre + captain run le vendredi</div>
+    <div style="font-size:.7rem;opacity:.5">h61 — 3e séance, blason, fiche joueur revue</div>
   </footer>
 </div>
 
@@ -1119,7 +1161,8 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
 </div>
 <div class="overlay" id="muscuOverlay">
   <div class="sheet musheet" role="dialog" aria-modal="true" aria-labelledby="muscuTitle">
-    <h2 id="muscuTitle">Musculation — Espoirs U21</h2>
+    <div class="ov-head"><span class="ov-crest"></span>
+      <div><h2 id="muscuTitle">Musculation</h2><p>CS Vienne · Espoirs Reichel Accession U21</p></div></div>
     <div class="muwrap">
     <div class="mu-bar">
       <button type="button" id="mu_import">Importer mes cycles</button>
@@ -1141,7 +1184,8 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
 </div>
 <div class="overlay" id="bipOverlay">
   <div class="sheet bqsheet" role="dialog" aria-modal="true" aria-labelledby="bipTitle">
-    <h2 id="bipTitle">Jeu séquencé — suivi du BIP</h2>
+    <div class="ov-head"><span class="ov-crest"></span>
+      <div><h2 id="bipTitle">Jeu séquencé</h2><p>Suivi du temps de ballon en jeu · saison 2026-27</p></div></div>
     <div class="bqwrap">
 
 <div class="bq-top">
@@ -2773,6 +2817,7 @@ const SEED = [
 
 const DEF_A = {blocks:2, perBlock:4, rec:90, cut:180, contact:"Attrapé"};
 const DEF_B = {blocks:2, perBlock:5, rec:45, cut:180, contact:"Plaqué"};
+const DEF_C = {blocks:2, perBlock:3, rec:60, cut:120, contact:"Captain run"};
 
 /* proportions par nombre de ballons — court/moyen/long, jamais le plus long en dernier */
 const SHAPES = {
@@ -2833,6 +2878,9 @@ function fresh(){
     o.a = w.a.pool ? {pool:true, day:w.a.day}
                    : Object.assign(blankSession(DEF_A, w.a.t), {day:w.a.day, done:!!w.a.done});
     o.b = Object.assign(blankSession(DEF_B, w.b.t), {day:w.b.day, done:!!w.b.done});
+    o.c = w.c ? (w.c.pool ? {pool:true, day:w.c.day||"Vendredi"}
+                          : Object.assign(blankSession(DEF_C, w.c.t||240), {day:w.c.day||"Vendredi", done:!!w.c.done}))
+              : Object.assign(blankSession(DEF_C, 240), {day:"Vendredi", done:false});
     if (w.a.t === 0 && !w.a.pool) o.a.balls = [];
     return o;
   });
@@ -2879,7 +2927,9 @@ function drawRail(){
     if (w.rest) right = "—";
     else {
       const A = w.a.pool ? "piscine" : bqShow(bip(w.a));
-      right = `${A}<br><em>${w.b.pool ? "piscine" : bqShow(bip(w.b))}</em>`;
+      const Bv = w.b.pool ? "piscine" : bqShow(bip(w.b));
+      const Cv = (w.c && !w.c.pool && bip(w.c)>0) ? `<br><u>${bqShow(bip(w.c))}</u>` : "";
+      right = `${A}<br><em>${Bv}</em>${Cv}`;
     }
     const lg = (typeof bqLogo==="function") ? bqLogo(w.adv) : "";
     btn.innerHTML = `<span class="s">${w.s}</span>
@@ -2992,7 +3042,7 @@ function render(){
     : (w.lieu==="E+" ? "Déplacement long. " : w.lieu==="E" ? "Déplacement. " : w.lieu==="D" ? "À domicile. " : "")
       + (w.serie ? `Semaine ${w.serie} de la série.` : "Semaine sans match.");
 
-  document.getElementById("bq_sessions").innerHTML = w.rest ? "" : sessionHTML(w,"a") + sessionHTML(w,"b");
+  document.getElementById("bq_sessions").innerHTML = w.rest ? "" : sessionHTML(w,"a") + sessionHTML(w,"b") + (w.c ? sessionHTML(w,"c") : "");
   drawRail(); drawChart(); save();
 }
 
@@ -3007,12 +3057,13 @@ function bqXls(){
   rows+='<Row>'+["Semaine","Date","Adversaire","Lieu","Serie","Seance","Jour","Contact","Cible BIP","BIP realise","Ecart","Duree creneau","Densite %","Blocs","Ballons","Recup ballon (s)","Coupure (s)","Detail des ballons"].map(bqCellH).join("")+'</Row>';
   state.forEach(function(w){
     if(w.rest){ rows+='<Row>'+bqCellH(w.s)+bqCellT(w.d)+bqCellT("Vacances")+new Array(15).fill(bqCellT("")).join("")+'</Row>'; return; }
-    ["a","b"].forEach(function(k){
+    ["a","b","c"].forEach(function(k){
       var se=w[k];
-      if(se.pool){ rows+='<Row>'+bqCellH(w.s)+bqCellT(w.d)+bqCellT(w.adv)+bqCellT(w.lieu)+bqCellT(w.serie)+bqCellT(k==="a"?"1re":"2e")+bqCellT(se.day)+bqCellT("Aqualone")+new Array(10).fill(bqCellT("")).join("")+'</Row>'; return; }
+      if(!se) return;
+      if(se.pool){ rows+='<Row>'+bqCellH(w.s)+bqCellT(w.d)+bqCellT(w.adv)+bqCellT(w.lieu)+bqCellT(w.serie)+bqCellT(k==="a"?"1re":(k==="b"?"2e":"3e"))+bqCellT(se.day)+bqCellT("Aqualone")+new Array(10).fill(bqCellT("")).join("")+'</Row>'; return; }
       var B=bip(se), S=slot(se), det=se.balls.map(function(b){ return b.map(function(v){ return bqShow(v); }).join(" \u00b7 "); }).join("  ||  ");
       rows+='<Row>'+bqCellH(w.s)+bqCellT(w.d)+bqCellT(w.adv)+bqCellT(w.lieu)+bqCellT(w.serie)
-        +bqCellT(k==="a"?"1re":"2e")+bqCellT(se.day)+bqCellT(bqContact(se))
+        +bqCellT(k==="a"?"1re":(k==="b"?"2e":"3e"))+bqCellT(se.day)+bqCellT(bqContact(se))
         +bqCellT(mmss(se.target))+bqCellT(mmss(B))+bqCellT((B-se.target>=0?"+":"-")+mmss(Math.abs(B-se.target)))
         +bqCellT(mmss(S))+bqCellN(Math.round(density(se)*1000)/10)
         +bqCellN(se.balls.length)+bqCellN(se.balls.reduce(function(a,b){return a+b.length;},0))
