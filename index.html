@@ -1041,7 +1041,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h61 — 3e séance, blason, fiche joueur revue</div>
+    <div style="font-size:.7rem;opacity:.5">h63 — téléchargement des rendus temps de jeu</div>
   </footer>
 </div>
 
@@ -1253,6 +1253,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
       <button type="button" id="saisieSave" class="primary">Enregistrer ce match</button>
       <button type="button" id="saisieFeuille">Feuille à imprimer</button>
       <button type="button" id="saisieBilan">Bilan du match</button>
+      <button type="button" id="saisieBilanDl">Télécharger le bilan</button>
       <button type="button" id="saisieClose">Fermer</button>
     </div>
     <div id="saisieMsg" class="saisie-msg"></div>
@@ -1266,6 +1267,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
       <button type="button" id="tdjSaisie">Saisir un match</button>
       <button type="button" id="tdjCopy">Copier</button>
       <button type="button" id="tdjCsv">Export Excel</button>
+      <button type="button" id="tdjDl">Télécharger le rendu</button>
       <button type="button" id="tdjFiche">Fiche PDF</button>
       <button type="button" id="tdjClose">Fermer</button>
     </div>
@@ -2515,6 +2517,23 @@ function lireForm(){
 
 
 
+function telechargerRendu(html, nomFichier){
+  try{
+    const css=[...document.querySelectorAll("style")].map(function(x){ return x.textContent; }).join("\n");
+    const doc='<!doctype html><html lang="fr"><head><meta charset="utf-8">'
+      +'<title>'+esc(nomFichier)+'</title>'
+      +'<style>'+css+'\n'
+      +'body{margin:0;background:#fff;font-family:var(--body,Arial,sans-serif)}'
+      +'#printArea{display:block!important;padding:14px;max-width:1100px;margin:0 auto}'
+      +'@media print{#printArea{padding:0;max-width:none}}'
+      +'</style></head><body><div id="printArea">'+html+'</div></body></html>';
+    const b=new Blob([doc],{type:"text/html;charset=utf-8"});
+    const u=URL.createObjectURL(b); const a=document.createElement("a");
+    a.href=u; a.download=nomFichier+".html"; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(u); },1500);
+    toast("Rendu téléchargé — ouvre-le pour l imprimer en PDF");
+  }catch(e){ toast("Téléchargement indisponible ici"); }
+}
 function printReathle(){ document.getElementById("printArea").innerHTML=reathleFicheHTML(); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
 function printFiches(list){
   const arr=(list||[]).filter(Boolean);
@@ -2981,7 +3000,12 @@ function drawChart(){
 
 /* ---------------- rendu : séances ---------------- */
 function sessionHTML(w, key){
-  const sess = w[key];
+  let sess = w[key];
+  if(!sess && key==="c" && !w.rest){
+    sess = w.c = Object.assign({}, DEF_C, {target:240, day:"Vendredi", done:false,
+      balls:build(240, DEF_C.blocks, DEF_C.perBlock, true)});
+  }
+  if(!sess) return "";
   if (sess.pool) {
     return `<div class="sess"><h3>${sess.day} <span>Aqualone</span></h3>
       <p class="note">Séance piscine. Pas de jeu séquencé, le BIP de la semaine passe entièrement sur la seconde séance.</p></div>`;
@@ -3042,7 +3066,7 @@ function render(){
     : (w.lieu==="E+" ? "Déplacement long. " : w.lieu==="E" ? "Déplacement. " : w.lieu==="D" ? "À domicile. " : "")
       + (w.serie ? `Semaine ${w.serie} de la série.` : "Semaine sans match.");
 
-  document.getElementById("bq_sessions").innerHTML = w.rest ? "" : sessionHTML(w,"a") + sessionHTML(w,"b") + (w.c ? sessionHTML(w,"c") : "");
+  document.getElementById("bq_sessions").innerHTML = w.rest ? "" : sessionHTML(w,"a") + sessionHTML(w,"b") + sessionHTML(w,"c");
   drawRail(); drawChart(); save();
 }
 
@@ -3330,10 +3354,26 @@ document.getElementById("bq_file").addEventListener("change", ev=>{
 async function save(){
   try { const r = await sb.from("app_data").upsert({id:"bip",data:state,updated_at:new Date().toISOString()}); toast(r&&r.error?"Séquençage : sauvegarde impossible":"Séquençage enregistré"); } catch(_){ toast("Séquençage : sauvegarde impossible"); }
 }
+function bqMigrer(){
+  let ajout=0;
+  state.forEach(function(w){
+    if(w.rest) return;
+    if(!w.c){
+      w.c=Object.assign({}, DEF_C, {target:240, day:"Vendredi", done:false,
+        balls:build(240, DEF_C.blocks, DEF_C.perBlock, true)});
+      ajout++;
+    } else if(!w.c.pool && !Array.isArray(w.c.balls)){
+      w.c.balls=build(w.c.target||240, w.c.blocks||2, w.c.perBlock||3, true);
+    }
+  });
+  if(ajout) save();
+  return ajout;
+}
 async function boot(){
   let loaded = null;
   try { const r = await sb.from("app_data").select("data").eq("id","bip").maybeSingle(); if (r && !r.error && r.data && r.data.data) loaded = r.data.data; } catch(_){}
   state = Array.isArray(loaded) && loaded.length === SEED.length ? loaded : fresh();
+  bqMigrer();
   render();
 }
 window.bqBoot=boot;
@@ -3555,6 +3595,11 @@ $("saisieBody").addEventListener("click",function(e){
 $("saisieSave").addEventListener("click",enregistrerSaisie);
 $("saisieFeuille").addEventListener("click",function(){ saisieOverlay.classList.remove("open"); setTimeout(printFeuilleMatch,120); });
 $("saisieBilan").addEventListener("click",function(){ saisieOverlay.classList.remove("open"); setTimeout(printBilanMatch,120); });
+$("saisieBilanDl").addEventListener("click",function(){
+  const d=$("saisieMatch").value; if(!d){ toast("Choisis un match"); return; }
+  const m=matchDe(d);
+  telechargerRendu(bilanMatchHTML(d), "bilan-"+(m?labJ(m)+"-"+m.adv.replace(/[^A-Za-z0-9]+/g,"-"):d));
+});
 function fermerSaisie(){
   if(DIRTY&&!confirm("Des saisies ne sont pas enregistrées. Fermer quand même ?")) return;
   DIRTY=false; saisieOverlay.classList.remove("open");
@@ -3659,6 +3704,9 @@ function tdjTexte(){
 }
 $("tdjCopy").addEventListener("click",()=>{ const t=tdjTexte(); try{ navigator.clipboard.writeText(t); toast("Temps de jeu copié"); }catch(err){ toast("Copie indisponible"); } });
 $("tdjCsv").addEventListener("click",telechargerCSV);
+$("tdjDl").addEventListener("click",function(){
+  telechargerRendu(tdjFicheHTML(), "temps-de-jeu-u21");
+});
 $("tdjFiche").addEventListener("click",()=>{ tdjOverlay.classList.remove("open"); setTimeout(printTdj,120); });
 $("tdjClose").addEventListener("click",()=>tdjOverlay.classList.remove("open"));
 tdjOverlay.addEventListener("click",e=>{ if(e.target===tdjOverlay) tdjOverlay.classList.remove("open"); });
