@@ -265,6 +265,9 @@
   .srow .s-mai{flex:0 0 46px;font-family:var(--body);font-size:.82rem;padding:5px 4px;border:1.5px solid var(--line);border-radius:8px;text-align:center;color:#0E5E8E;font-weight:700}
   .srow .s-min{flex:0 0 58px;font-family:var(--body);font-size:.86rem;padding:5px 6px;border:1.5px solid var(--line);border-radius:8px;text-align:center}
   #saisieMatch{width:100%;font-family:var(--body);font-size:.9rem;padding:8px 9px;border:1.5px solid var(--line);border-radius:9px;background:#fff}
+  .tdjmact{display:flex;gap:7px;margin:8px 0 4px;flex-wrap:wrap}
+  .tdjmact button{font-family:var(--body);font-size:.76rem;font-weight:700;padding:6px 12px;border-radius:9px;border:1.5px solid var(--line);background:#F6FAFD;color:var(--brand);cursor:pointer}
+  .tdjmact button:hover{background:#EAF3FA}
   .tdjfocus{margin-top:13px;padding:11px;background:#F6FAFD;border:1px solid #E1EDF5;border-radius:10px}
   .tdjfocus select{width:100%;font-family:var(--body);font-size:.88rem;padding:8px 9px;border:1.5px solid var(--line);border-radius:9px;background:#fff}
   .tdjtag{background:#EAF3FA;color:#0E5E8E}
@@ -1052,7 +1055,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h65 — les trois séances côte à côte</div>
+    <div style="font-size:.7rem;opacity:.5">h66 — captain run au graphique, bilan par match accessible</div>
   </footer>
 </div>
 
@@ -1226,6 +1229,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
       <div class="bq-legend">
         <span><i style="background:#8fc1ea"></i>Mardi</span>
         <span><i style="background:#13283b"></i>2ᵉ séance</span>
+        <span><i style="background:#12A39B"></i>Captain run</span>
         <span><i style="background:#e5edf4"></i>Plafond 18-20′</span>
       </div>
     </section>
@@ -2999,10 +3003,11 @@ function drawChart(){
     if (w.rest){
       g += `<text x="${cx}" y="${T+ih-6}" font-size="9" fill="#9fb2c4" text-anchor="middle">vac.</text>`;
     } else {
-      const A = w.a.pool ? 0 : bip(w.a), Bv = bip(w.b);
-      const bw = Math.min(15, step*0.30);
-      g += `<rect x="${cx-bw-2}" y="${y(A)}" width="${bw}" height="${T+ih-y(A)}" fill="#8fc1ea"/>`;
-      g += `<rect x="${cx+2}"    y="${y(Bv)}" width="${bw}" height="${T+ih-y(Bv)}" fill="#13283b"/>`;
+      const A = w.a.pool ? 0 : bip(w.a), Bv = w.b.pool ? 0 : bip(w.b), Cv = (w.c && !w.c.pool) ? bip(w.c) : 0;
+      const bw = Math.min(11, step*0.22);
+      g += `<rect x="${cx-1.5*bw-3}" y="${y(A)}" width="${bw}" height="${T+ih-y(A)}" fill="#8fc1ea"/>`;
+      g += `<rect x="${cx-bw/2}"     y="${y(Bv)}" width="${bw}" height="${T+ih-y(Bv)}" fill="#13283b"/>`;
+      g += `<rect x="${cx+bw/2+3}"   y="${y(Cv)}" width="${bw}" height="${T+ih-y(Cv)}" fill="#12A39B"/>`;
       if (w.a.pool) g += `<text x="${cx-bw/2-2}" y="${T+ih-4}" font-size="8.5" fill="#6b8098" text-anchor="middle">🌊</text>`;
     }
     g += `<text x="${cx}" y="${H-16}" font-size="9.5" fill="${i===sel?'#13283b':'#6b8098'}" font-weight="${i===sel?700:400}" text-anchor="middle">${w.s}</text>`;
@@ -3653,7 +3658,10 @@ function openTdj(){
       h+='</tbody></table></div>';
       h+='<div class="tdjfocus"><label class="mini" style="display:block;margin-bottom:5px">Focus match</label><select id="tdjMSel"><option value="">— Choisir un match —</option>'
         +mp.slice().reverse().map(function(m){ return '<option value="'+esc(m.d)+'">'+labJ(m)+' · '+esc(m.adv)+' ('+frDate(m.d)+')</option>'; }).join("")
-        +'</select><div id="tdjMBody"></div></div>';
+        +'</select>'
+        +'<div class="tdjmact"><button type="button" id="tdjMBilan">Bilan du match</button>'
+        +'<button type="button" id="tdjMDl">Télécharger le bilan</button></div>'
+        +'<div id="tdjMBody"></div></div>';
     }
   }
   h+='<div class="tdjfocus"><label class="mini" style="display:block;margin-bottom:5px">Focus joueur</label><select id="tdjSel"><option value="">— Choisir un joueur —</option>'
@@ -3721,6 +3729,20 @@ function tdjTexte(){
 }
 $("tdjCopy").addEventListener("click",()=>{ const t=tdjTexte(); try{ navigator.clipboard.writeText(t); toast("Temps de jeu copié"); }catch(err){ toast("Copie indisponible"); } });
 $("tdjCsv").addEventListener("click",telechargerCSV);
+$("tdjBody").addEventListener("click",function(e){
+  const t=e.target.closest?e.target.closest("#tdjMBilan,#tdjMDl"):null; if(!t) return;
+  const sel=document.getElementById("tdjMSel");
+  const d=sel?sel.value:"";
+  if(!d){ toast("Choisis un match dans la liste"); return; }
+  const m=matchDe(d);
+  if(t.id==="tdjMDl"){
+    telechargerRendu(bilanMatchHTML(d), "bilan-"+(m?labJ(m)+"-"+m.adv.replace(/[^A-Za-z0-9]+/g,"-"):d));
+  } else {
+    document.getElementById("printArea").innerHTML=bilanMatchHTML(d);
+    tdjOverlay.classList.remove("open");
+    setTimeout(function(){ if(window.print) window.print(); },140);
+  }
+});
 $("tdjDl").addEventListener("click",function(){
   telechargerRendu(tdjFicheHTML(), "temps-de-jeu-u21");
 });
