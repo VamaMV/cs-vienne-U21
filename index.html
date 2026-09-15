@@ -1103,7 +1103,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h70 — bilan : marge d impression suffisante</div>
+    <div style="font-size:.7rem;opacity:.5">h71 — date de séance enregistrée et visible</div>
   </footer>
 </div>
 
@@ -3060,11 +3060,17 @@ function drawChart(){
       ar.forEach(function(se,i){
         const v = se.pool ? 0 : bip(se);
         const x = cx - larg/2 + i*(bw+2);
-        g += `<rect x="${x}" y="${y(v)}" width="${bw}" height="${T+ih-y(v)}" fill="${PAL[i%PAL.length]}"/>`;
+        let dt = "";
+        if(se.date){ const p=String(se.date).split("-"); if(p.length===3) dt=" "+p[2]+"/"+p[1]; }
+        const info = (se.day||"Séance")+dt+" · "+(se.pool?"piscine":bqShow(v));
+        g += `<rect x="${x}" y="${y(v)}" width="${bw}" height="${T+ih-y(v)}" fill="${PAL[i%PAL.length]}"><title>${esc(w.s+" — "+info)}</title></rect>`;
       });
       if (bqSeances(w)[0] && bqSeances(w)[0].pool) g += `<text x="${cx-6}" y="${T+ih-4}" font-size="8.5" fill="#6b8098" text-anchor="middle">🌊</text>`;
     }
     g += `<text x="${cx}" y="${H-16}" font-size="9.5" fill="${i===sel?'#13283b':'#6b8098'}" font-weight="${i===sel?700:400}" text-anchor="middle">${w.s}</text>`;
+    if(!w.rest){ const d0=(bqSeances(w).find(function(x){ return x.date; })||{}).date;
+      if(d0){ const p=String(d0).split("-"); if(p.length===3)
+        g += `<text x="${cx}" y="${H-6}" font-size="7.5" fill="#9fb2c4" text-anchor="middle">${p[2]}/${p[1]}</text>`; } }
     if (i===sel) g += `<rect x="${x0}" y="${T}" width="${step}" height="${ih}" fill="#3d7fbf" opacity="0.06"/>`;
   });
 
@@ -3396,7 +3402,7 @@ document.getElementById("bq_sessions").addEventListener("click", function(e){
   if(x) bqXlsSeance(x.dataset.xls);
 });
 document.getElementById("bq_sessions").addEventListener("input", e=>{
-  if (e.target.classList && (e.target.classList.contains("bqdur")||e.target.classList.contains("sday"))) return;
+  if (e.target.classList && (e.target.classList.contains("bqdur")||e.target.classList.contains("sday")||e.target.classList.contains("sdate"))) return;
   const t = e.target, w = state[sel];
   if (t.dataset.p){
     const s = bqSeances(w)[+t.dataset.k];
