@@ -424,8 +424,23 @@
   .bl-acct{font-size:7px;margin-bottom:3px}
   .bl-ac{padding:1px 0;font-size:7.8px}
   .bl-ac .am{font-size:7.2px}
-  .bl-nt{margin-top:6px;padding:4px 8px;font-size:7px;line-height:1.4}
-  .pf-foot{margin-top:5px;font-size:6.6px}
+  .bl-nt{margin-top:5px;padding:3px 7px;font-size:6.6px;line-height:1.35}
+  .pf-foot{margin-top:4px;font-size:6.2px}
+  .bl-t td{padding:1.05px 4px;font-size:8.1px}
+  .bl-bar i{height:5.5px}
+  .bl-kpi b{font-size:11.5px}
+  .bl-kpi div{padding:4px 5px}
+  .bl-hd{padding:6px 11px}
+  .bl-hd img,.bl-crest{width:28px;height:28px}
+  .bl-mid h1{font-size:12.5px}
+  .bl-cp{font-size:6.6px}
+  .bl-dt{font-size:7.4px}
+  .bl-sec{margin:5px 0 1.5px}
+  .bl-acc{margin-top:5px;padding:4px 7px}
+  .bl-ac{padding:0.6px 0;font-size:7.4px}
+  .bl-ac .am{font-size:6.8px}
+  .bl-leg,.bl-leg2{font-size:6.4px;margin-bottom:0}
+  @page{margin:9mm}
 }
   .bm-t{width:100%;border-collapse:collapse;margin-bottom:3px}
   .bm-t th{font-size:7.4px;text-transform:uppercase;letter-spacing:.05em;color:#8A9BA8;font-weight:700;text-align:left;padding:0 4px 2px;border-bottom:1.2px solid #D3E2EC}
@@ -930,6 +945,8 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
 .bqwrap .sess h3{flex-wrap:wrap;gap:6px;font-size:13.5px;align-items:center}
 .bqwrap .sday{font-family:var(--display);font-size:13.5px;font-weight:700;color:var(--ink);border:1.5px solid transparent;border-radius:7px;padding:3px 6px;width:110px;background:#F6FAFD}
 .bqwrap .sday:focus{outline:none;border-color:#0F80C4;background:#fff}
+.bqwrap .sdate{font-family:var(--body);font-size:.72rem;color:#5B7386;border:1.5px solid var(--line);border-radius:7px;padding:3px 5px;background:#fff}
+.bqwrap .sdate:focus{outline:none;border-color:#0F80C4}
 .bqwrap .sct{font-family:var(--body);font-size:.74rem;font-weight:600;color:#5B7386;border:1.5px solid var(--line);border-radius:7px;padding:3px 6px;background:#fff}
 .bqwrap .snb{font-family:var(--body);font-size:.72rem;color:#8A9BA8;font-weight:600}
 .bqwrap .sdel{margin-left:auto;font-size:15px;line-height:1;color:#C32A2A;background:#FDF3F3;border:1.5px solid #F0D6D6;border-radius:7px;width:24px;height:24px;cursor:pointer}
@@ -1086,7 +1103,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h68 — séquençage entièrement modifiable</div>
+    <div style="font-size:.7rem;opacity:.5">h70 — bilan : marge d impression suffisante</div>
   </footer>
 </div>
 
@@ -2995,10 +3012,11 @@ function drawRail(){
     let right;
     if (w.rest) right = "—";
     else {
-      const A = w.a.pool ? "piscine" : bqShow(bip(w.a));
-      const Bv = w.b.pool ? "piscine" : bqShow(bip(w.b));
-      const Cv = (w.c && !w.c.pool && bip(w.c)>0) ? `<br><u>${bqShow(bip(w.c))}</u>` : "";
-      right = `${A}<br><em>${Bv}</em>${Cv}`;
+      const ar = bqSeances(w);
+      right = ar.map(function(se,i){
+        const v = se.pool ? "piscine" : bqShow(bip(se));
+        return i===0 ? v : (i===1 ? `<em>${v}</em>` : `<u>${v}</u>`);
+      }).join("<br>");
     }
     const lg = (typeof bqLogo==="function") ? bqLogo(w.adv) : "";
     btn.innerHTML = `<span class="s">${w.s}</span>
@@ -3034,12 +3052,17 @@ function drawChart(){
     if (w.rest){
       g += `<text x="${cx}" y="${T+ih-6}" font-size="9" fill="#9fb2c4" text-anchor="middle">vac.</text>`;
     } else {
-      const A = w.a.pool ? 0 : bip(w.a), Bv = w.b.pool ? 0 : bip(w.b), Cv = (w.c && !w.c.pool) ? bip(w.c) : 0;
-      const bw = Math.min(11, step*0.22);
-      g += `<rect x="${cx-1.5*bw-3}" y="${y(A)}" width="${bw}" height="${T+ih-y(A)}" fill="#8fc1ea"/>`;
-      g += `<rect x="${cx-bw/2}"     y="${y(Bv)}" width="${bw}" height="${T+ih-y(Bv)}" fill="#13283b"/>`;
-      g += `<rect x="${cx+bw/2+3}"   y="${y(Cv)}" width="${bw}" height="${T+ih-y(Cv)}" fill="#12A39B"/>`;
-      if (w.a.pool) g += `<text x="${cx-bw/2-2}" y="${T+ih-4}" font-size="8.5" fill="#6b8098" text-anchor="middle">🌊</text>`;
+      const ar = bqSeances(w);
+      const PAL = ["#8fc1ea","#13283b","#12A39B","#E08A00","#7C3AED"];
+      const nb = Math.max(1, ar.length);
+      const bw = Math.min(11, Math.max(4, (step*0.66)/nb));
+      const larg = nb*bw + (nb-1)*2;
+      ar.forEach(function(se,i){
+        const v = se.pool ? 0 : bip(se);
+        const x = cx - larg/2 + i*(bw+2);
+        g += `<rect x="${x}" y="${y(v)}" width="${bw}" height="${T+ih-y(v)}" fill="${PAL[i%PAL.length]}"/>`;
+      });
+      if (bqSeances(w)[0] && bqSeances(w)[0].pool) g += `<text x="${cx-6}" y="${T+ih-4}" font-size="8.5" fill="#6b8098" text-anchor="middle">🌊</text>`;
     }
     g += `<text x="${cx}" y="${H-16}" font-size="9.5" fill="${i===sel?'#13283b':'#6b8098'}" font-weight="${i===sel?700:400}" text-anchor="middle">${w.s}</text>`;
     if (i===sel) g += `<rect x="${x0}" y="${T}" width="${step}" height="${ih}" fill="#3d7fbf" opacity="0.06"/>`;
@@ -3080,7 +3103,8 @@ function sessionHTML(w, key){
   const bd = bands(sess).map(b=>`<tr><td>${b.k}</td><td>${b.pct}%</td><td class="m">${b.ref}%</td></tr>`).join("");
 
   return `<div class="sess">
-    <h3><input class="sday" type="text" value="${esc(sess.day)}" data-p="day" data-k="${key}" title="Jour de la séance" />
+    <h3><input class="sday" type="text" value="${esc(sess.day)}" data-p="day" data-k="${key}" title="Nom du jour" />
+      <input class="sdate" type="date" value="${esc(sess.date||"")}" data-p="date" data-k="${key}" title="Date de la séance" />
       <select class="sct" data-p="contact" data-k="${key}" title="Type de séance">${["Attrapé","Plaqué","Captain run","Aqualone","Autre"].map(function(o){return `<option value="${o}"${o===sess.contact?" selected":""}>${o}</option>`;}).join("")}</select>
       <span class="snb">${sess.balls.length}×${sess.balls[0]?sess.balls[0].length:0}</span>
       <button type="button" class="bqf-btn" data-feuille="${key}">Feuille chrono</button>
@@ -3177,6 +3201,7 @@ function bqContact(se){
   return (se.day==="Vendredi") ? "Captain run" : (se.contact||"");
 }
 function bqDateSeance(w, se){
+  if(se && se.date){ var p=String(se.date).split("-"); if(p.length===3) return se.day+" "+p[2]+"/"+p[1]; }
   var OFF={"Lundi":5,"Mardi":4,"Mercredi":3,"Jeudi":2,"Vendredi":1,"Samedi":0};
   var o=OFF[se.day];
   if(o==null||!w.d||w.d==="\u2014") return se.day;
@@ -3314,6 +3339,9 @@ document.getElementById("bq_btnXls").addEventListener("click", bqXls);
 /* les durees se valident quand on quitte le champ ou avec Entree */
 document.getElementById("bq_sessions").addEventListener("change", function(e){
   const t=e.target;
+  if(t.dataset&&t.dataset.p==="date"){
+    bqSeances(state[sel])[+t.dataset.k].date=t.value; render(); return;
+  }
   if(t.classList&&t.classList.contains("sday")){
     bqSeances(state[sel])[+t.dataset.k].day=t.value.trim()||"Séance"; render(); return;
   }
@@ -3322,6 +3350,9 @@ document.getElementById("bq_sessions").addEventListener("change", function(e){
   if(t.dataset.p==="target"){
     const d=bqParse(t.value); if(d===null){ render(); return; }
     bqSeances(w)[+t.dataset.k].target = Math.max(60, d<60 ? d*60 : d);
+  } else if(t.dataset.p==="date"){
+    bqSeances(w)[+t.dataset.k].date = t.value;
+    render(); return;
   } else if(t.dataset.p==="day"){
     bqSeances(w)[+t.dataset.k].day = t.value.trim() || "Séance";
     render(); return;
