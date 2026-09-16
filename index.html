@@ -19,7 +19,7 @@
   .top{padding:14px 0 2px}
   .masthead{background:radial-gradient(120% 140% at 80% -20%,#1b3a55 0%,#13283B 55%,#0E1F2E 100%)}
   .masthead-inner{position:relative;overflow:hidden;max-width:1240px;margin:0 auto;padding:20px 16px 18px;display:flex;align-items:center;gap:16px}
-  .masthead-inner::before{content:"";position:absolute;top:-44px;right:-30px;width:210px;height:210px;background:var(--logo) center/contain no-repeat;opacity:.07;pointer-events:none}
+  
   .masthead .crest{flex:0 0 auto;width:62px;height:62px;background:var(--logo) center/contain no-repeat;filter:drop-shadow(0 5px 14px rgba(63,169,220,.32));position:relative;z-index:1}
   .masthead .brandtext{min-width:0;position:relative;z-index:1}
   .masthead .kicker{color:var(--sky)}
@@ -1007,8 +1007,11 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
 .muwrap .mu-note{margin:14px 16px 0;padding:12px 14px;background:#EAF3FA;border-left:3px solid #3FA9DC;border-radius:0 9px 9px 0;font-size:.8rem;line-height:1.55;color:#2A4A63}
 
 /* ---- en-tete en onglets ---- */
-.masthead{background:linear-gradient(135deg,#7AAADB 0%,#12324C 62%) !important}
-.masthead-inner{background:var(--filc) no-repeat right -26px center/130px}
+.masthead{background:linear-gradient(135deg,#7AAADB 0%,#12324C 62%) !important;position:relative;overflow:hidden}
+.masthead::after{content:"";position:absolute;top:50%;right:-34px;transform:translateY(-50%);
+  width:190px;height:190px;background:var(--filc) center/contain no-repeat;pointer-events:none;z-index:0}
+.masthead-inner{position:relative;z-index:1;overflow:visible}
+
 .tabs{display:flex;align-items:center;gap:2px;background:#fff;border-bottom:1px solid var(--line);
   margin:0 0 12px;padding:0 2px;overflow-x:auto;scrollbar-width:none;position:relative;z-index:7}
 .tabs::-webkit-scrollbar{display:none}
@@ -1021,8 +1024,9 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
 .tab.gh{color:#9FB2C4}
 .tabsp{flex:1}
 .outils{position:relative;flex:0 0 auto}
-.menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--line);border-radius:10px;
-  box-shadow:0 8px 24px rgba(15,34,51,.14);padding:5px;min-width:172px;z-index:30}
+.menu{display:none;position:fixed;background:#fff;border:1px solid var(--line);border-radius:10px;
+  box-shadow:0 10px 28px rgba(15,34,51,.18);padding:5px;min-width:186px;z-index:9999}
+.menu.open{display:block}
 .menu.open{display:block}
 .menu button{display:block;width:100%;text-align:left;font-family:var(--body);font-size:.82rem;font-weight:600;
   color:var(--ink);background:none;border:none;padding:8px 11px;border-radius:7px;cursor:pointer}
@@ -1228,7 +1232,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h75 — fiche joueur en paysage sur une page</div>
+    <div style="font-size:.7rem;opacity:.5">h77 — menu Outils accessible, bandeau sans filigrane dédoublé</div>
   </footer>
 </div>
 
@@ -1585,20 +1589,26 @@ function cmjGaugeHTML(cmjs,grp){ const B=cmjOf(grp); const L=B.low,H=B.high,M1=B
 function cmjEvol(cmjs,grp){ const data=(Array.isArray(cmjs)?cmjs:[]).filter(x=>x&&cmjNum(x.v)!=null).slice().sort((a,b)=>(a.d||"").localeCompare(b.d||"")); if(!data.length) return ""; const cm=cmjNum(data[data.length-1].v); const z=cmjZone(cm,grp); const gl=(grp==="avants")?"avants":"3/4"; let s='<b>'+frD(cm)+' cm</b>'; if(z) s+='<span style="color:'+z.color+';font-weight:600">'+z.label+' · '+gl+'</span>'; if(data.length>=2){ const pcm=cmjNum(data[data.length-2].v); if(pcm!=null){ const d=Math.round((cm-pcm)*10)/10; s+='<span>'+(d>0?"↑ +"+d:(d<0?"↓ "+d:"="))+' cm vs '+frD(pcm)+' cm</span>'; } } return s; }
 /* ===== Supabase (cloud + connexion) ===== */
 /* ---- UTILISATEURS : ajouter ici chaque compte cree dans Supabase ----
-   role "admin" = tous les droits (prepa physique) · "coach" = consultation seule */
+   role "admin" = tous les droits (prepa physique)
+   role "stagiaire" = reathle et donnees medicales, pas d ecriture sur l effectif ni les matchs
+   role "coach" = consultation seule, sans donnees medicales */
 const UTILISATEURS={
   "matis.vachon1998@gmail.com":{nom:"Matis",role:"admin",fonction:"Préparateur physique"},
   "sebp.csv@gmail.com":{nom:"Sébastien",role:"coach",fonction:"Coach des avants"},
   "chatagner.simon@orange.fr":{nom:"Simon",role:"coach",fonction:"Coach des trois-quarts"},
-  "ciryl.payet-morice80@laposte.net":{nom:"Cyril",role:"coach",fonction:"Coach de la mêlée"}
+  "ciryl.payet-morice80@laposte.net":{nom:"Cyril",role:"coach",fonction:"Coach de la mêlée"},
+  "jules.martin2006@gmail.com":{nom:"Jules",role:"stagiaire",fonction:"Stagiaire préparation physique"}
   /* ,"prenom.nom@exemple.com":{nom:"Prenom",role:"coach",fonction:"Fonction"} */
 };
 let ROLE="coach", UNOM="", UFONC="";
 function isAdmin(){ return ROLE==="admin"; }
+function isStagiaire(){ return ROLE==="stagiaire"; }
+function voitMedical(){ return ROLE==="admin"||ROLE==="stagiaire"; }
+function peutReathle(){ return ROLE==="admin"||ROLE==="stagiaire"; }
 function profilDe(email){
   const e=String(email||"").trim().toLowerCase();
   const u=UTILISATEURS[e];
-  if(u) return {nom:u.nom||"",role:(u.role==="admin"?"admin":"coach"),fonction:u.fonction||""};
+  if(u) return {nom:u.nom||"",role:(u.role==="admin"?"admin":(u.role==="stagiaire"?"stagiaire":"coach")),fonction:u.fonction||""};
   const av=e.split("@")[0].replace(/[._-]+/g," ").trim();
   const nom=av?av.charAt(0).toUpperCase()+av.slice(1):"";
   return {nom:nom,role:"coach",fonction:""};
@@ -1985,7 +1995,7 @@ function normRec(p){
 let players=[]; let activeFilter="all"; let query=""; let editingId=null; let viewMode="poste";
 const $=id=>document.getElementById(id);
 const elList=$("list"),elCount=$("count"),elChips=$("chips"),elQ=$("q"),elClear=$("clear"),elCounts=$("counts"),elToast=$("toast");
-function persist(){ if(!isAdmin()){ toast("Accès en consultation seule"); return; } store.save(players); }
+function persist(){ if(!isAdmin()&&!isStagiaire()){ toast("Accès en consultation seule"); return; } store.save(players); }
 function toast(msg){ elToast.textContent=msg; elToast.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>elToast.classList.remove("show"),1600); }
 
 CHIPS.forEach(c=>{ const b=document.createElement("button"); b.className="chip"; b.type="button"; b.dataset.key=c.key; b.setAttribute("aria-pressed",c.key===activeFilter?"true":"false"); b.innerHTML=(c.color?'<span class="dot" style="background:'+c.color+'"></span>':"")+c.label; b.addEventListener("click",()=>{ activeFilter=c.key; [...elChips.children].forEach(x=>x.setAttribute("aria-pressed",x.dataset.key===activeFilter?"true":"false")); render(); }); elChips.appendChild(b); });
@@ -2069,17 +2079,17 @@ function richParts(p){
       const ef=ecartFourchette(e); const ec=ETATCOL[ef.etat]; const pth=pathoOf(e);
       const jl=jalonsOf(e); const nOk=(e.jal||[]).filter(Boolean).length;
       ehtml+='<div class="tline"><b style="color:'+ph.color+'">'+ph.label+'</b> — '+esc(e.zone||EPTYPES[e.type])+(e.deb?' <span class="e">depuis le '+frDate(e.deb)+(ds!=null?' ('+ds+' j)':'')+'</span>':'')+(e.ret?' <span class="e">· retour prévu '+frDate(e.ret)+'</span>':'')
-        +(isAdmin()?((pth||bornesDe(e))?'<br>'+(pth?'<span class="e">'+esc(pth.lab)+'</span>':'')+(bornesDe(e)?' <span class="e">· '+(bornesDe(e).manuel?'durée estimée ':'repère ')+bornesDe(e).min+'-'+bornesDe(e).max+' j</span>':'')+' <span style="color:'+ec.c+';font-weight:700">'+ec.l+'</span>':''):'')+((fenetreTxt(e)&&isAdmin())?'<br><span class="e">Fenêtre estimée : <b>'+fenetreTxt(e)+'</b></span>':'')
-        +(!isAdmin()?'':((e.phase==="attente")?'<br><span class="e">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"Statut à préciser")+(e.rdv?' · RDV le '+frDate(e.rdv):'')+'</span>':'<br><span class="e">Jalons validés '+nOk+'/'+jl.length+'</span>'))+(!isAdmin()?'':(e.medok?' <span style="color:#1C8C5A;font-weight:700">· accord médical OK</span>':((e.phase==="retourp")?' <span style="color:#C32A2A;font-weight:700">· accord médical requis</span>':'')))
-        +((e.note&&isAdmin())?'<br><span class="e">'+esc(e.note)+'</span>':'')+'</div>';
+        +(voitMedical()?((pth||bornesDe(e))?'<br>'+(pth?'<span class="e">'+esc(pth.lab)+'</span>':'')+(bornesDe(e)?' <span class="e">· '+(bornesDe(e).manuel?'durée estimée ':'repère ')+bornesDe(e).min+'-'+bornesDe(e).max+' j</span>':'')+' <span style="color:'+ec.c+';font-weight:700">'+ec.l+'</span>':''):'')+((fenetreTxt(e)&&voitMedical())?'<br><span class="e">Fenêtre estimée : <b>'+fenetreTxt(e)+'</b></span>':'')
+        +(!voitMedical()?'':((e.phase==="attente")?'<br><span class="e">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"Statut à préciser")+(e.rdv?' · RDV le '+frDate(e.rdv):'')+'</span>':'<br><span class="e">Jalons validés '+nOk+'/'+jl.length+'</span>'))+(!voitMedical()?'':(e.medok?' <span style="color:#1C8C5A;font-weight:700">· accord médical OK</span>':((e.phase==="retourp")?' <span style="color:#C32A2A;font-weight:700">· accord médical requis</span>':'')))
+        +((e.note&&voitMedical())?'<br><span class="e">'+esc(e.note)+'</span>':'')+'</div>';
     });
     old.slice().reverse().forEach(e=>{ ehtml+='<div class="tline" style="opacity:.65"><b>Clos</b> — '+esc(e.zone||EPTYPES[e.type])+' <span class="e">'+(e.deb?frDate(e.deb):'?')+' → '+(e.retr?frDate(e.retr):'?')+'</span>'+(closSansDiag(e)?' <span class="nodiag">Retour sans diagnostic</span>':'')+(e.note?' <span class="e">· '+esc(e.note)+'</span>':'')+'</div>'; });
     const nd=eps.filter(closSansDiag).length;
     parts.push('<div class="field"><div class="label">Réathlé · blessures</div>'+(nd?'<div class="nodiag-rap">'+nd+' retour'+(nd>1?'s':'')+' sans diagnostic dans l\'historique — à signaler si la zone se réveille.</div>':'')+'<div class="tests-list">'+ehtml+'</div></div>');
   } }
   const hasAnt=p.ant&&p.ant.trim(),hasAcc=p.acc&&p.acc.trim();
-  if(hasAnt&&isAdmin()) parts.push('<div class="field"><div class="label">Antécédent</div><div class="val">'+esc(p.ant)+'</div></div>');
-  if(hasAcc&&isAdmin()) parts.push('<div class="field"><div class="label">Accent en séance</div><div class="val">'+esc(p.acc)+'</div></div>');
+  if(hasAnt&&voitMedical()) parts.push('<div class="field"><div class="label">Antécédent</div><div class="val">'+esc(p.ant)+'</div></div>');
+  if(hasAcc&&voitMedical()) parts.push('<div class="field"><div class="label">Accent en séance</div><div class="val">'+esc(p.acc)+'</div></div>');
   const stats=[]; const addStat=(l,v)=>{ if(v!==""&&v!=null) stats.push('<div class="stat"><span class="sl">'+l+'</span><span class="sv">'+esc(v)+'</span></div>'); };
   const u=(v,su)=>(v!==""&&v!=null)?(v+su):"";
   addStat("Taille",u(p.taille," cm")); addStat("Poids",u(p.poids," kg")); addStat("Cible",u(p.poidsCible," kg")); addStat("Temps de jeu",u(p.tdj," min")); addStat("10 m",u(p.sprint10," s")); addStat("30 m",u(p.sprint30," s"));
@@ -2106,7 +2116,7 @@ function card(p){
           :((p.cat&&p.cat!=="ESP")?'<span class="catbadge">'+esc(catLabel(p))+'</span>':""));
   const subLine='<div class="cmeta">'+(pi.key!=="none"?esc(pi.label):"&nbsp;")+'</div>';
   const pill=apte?"":'<div class="cetat" style="color:'+darker(e.color)+'">'+esc(e.label)+(e.zone?' · '+esc(e.zone):'')+'</div>';
-  const flag=(p.ant&&p.ant.trim()&&isAdmin())?'<div class="flag"><span>Antécédent</span>'+esc(p.ant)+'</div>':'';
+  const flag=(p.ant&&p.ant.trim()&&voitMedical())?'<div class="flag"><span>Antécédent</span>'+esc(p.ant)+'</div>':'';
   const derniers=matchsPasses().slice(-4).map(function(m){
     const x=(Array.isArray(p.tdjs)?p.tdjs:[]).filter(function(y){ return y.d===m.d; })[0];
     const mn=x?(parseInt(x.min,10)||0):0;
@@ -2544,7 +2554,7 @@ function ficheHTML(p){
   const med=[];
   if(p.ant&&p.ant.trim()) med.push('<div class="pf-block"><span>Antécédent</span><p>'+esc(p.ant)+'</p></div>');
   if(p.acc&&p.acc.trim()) med.push('<div class="pf-block"><span>Accent en séance</span><p>'+esc(p.acc)+'</p></div>');
-  if(med.length&&isAdmin()) R+='<div class="pf-sec">Suivi médical &amp; prévention</div>'+med.join("");
+  if(med.length&&voitMedical()) R+='<div class="pf-sec">Suivi médical &amp; prévention</div>'+med.join("");
 
   { const parts=R.split('<div class="pf-sec">');
     let R1=parts[0], R2="";
@@ -3743,7 +3753,23 @@ $("btnBip").addEventListener("click",async function(){
 })();
 
 $("btnFiches").addEventListener("click",()=>{ printFiches(filteredBase()); });
-$("btnOutils").addEventListener("click",function(e){ e.stopPropagation(); $("menuOutils").classList.toggle("open"); });
+$("btnOutils").addEventListener("click",function(e){
+  e.stopPropagation();
+  const m=$("menuOutils"), b=e.currentTarget;
+  if(m.classList.contains("open")){ m.classList.remove("open"); return; }
+  if(m.parentNode!==document.body) document.body.appendChild(m);
+  m.classList.add("open");
+  const r=b.getBoundingClientRect();
+  const larg=m.offsetWidth||186;
+  let x=r.right-larg; if(x<8) x=8;
+  const maxX=(window.innerWidth||360)-larg-8; if(x>maxX) x=Math.max(8,maxX);
+  m.style.left=x+"px";
+  m.style.top=(r.bottom+6)+"px";
+  const h=m.offsetHeight||0, dispo=(window.innerHeight||600)-r.bottom-12;
+  if(h>dispo && r.top>h+12) m.style.top=(r.top-h-6)+"px";
+});
+window.addEventListener("resize",function(){ const m=$("menuOutils"); if(m) m.classList.remove("open"); });
+window.addEventListener("scroll",function(){ const m=$("menuOutils"); if(m) m.classList.remove("open"); },{passive:true});
 document.addEventListener("click",function(){ const m=$("menuOutils"); if(m) m.classList.remove("open"); });
 $("menuOutils").addEventListener("click",function(){ $("menuOutils").classList.remove("open"); });
 (function(){
@@ -3799,7 +3825,7 @@ function openReathle(){
       const ph=PHASES[e.phase]; const ds=daysSince(e.deb);
       const ef=ecartFourchette(e); const ec=ETATCOL[ef.etat]; const pth=pathoOf(e);
       const jl=jalonsOf(e); const nOk=(e.jal||[]).filter(Boolean).length;
-      rows.push({etat:ef.etat,html:'<tr><td><b>'+esc(p.n)+'</b></td><td>'+esc(e.zone||EPTYPES[e.type])+((pth&&isAdmin())?'<br><span class="sub">'+esc(pth.lab)+'</span>':'')+'</td><td><span style="color:'+ph.color+';font-weight:700">'+ph.label+'</span></td><td>'+(ds!=null?ds+" j":"—")+((isAdmin()&&bornesDe(e))?'<br><span class="sub">'+(bornesDe(e).manuel?'estimé ':'repère ')+bornesDe(e).min+'-'+bornesDe(e).max+' j</span>':'')+'</td>'+(isAdmin()?('<td>'+(fenetreTxt(e)||'<span class="sub">—</span>')+'</td>'+'<td><span style="color:'+ec.c+';font-weight:700">'+ec.l+'</span></td>'+'<td>'+((e.phase==="attente")?('<span class="sub">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"à préciser")+(e.rdv?'<br>RDV '+frDate(e.rdv):'')+'</span>'):(nOk+'/'+jl.length))+'</td>'+'<td>'+(e.medok?'<span style="color:#1C8C5A;font-weight:700">oui</span>':((e.phase==="retourp")?'<span style="color:#C32A2A;font-weight:700">requis</span>':'<span class="sub">—</span>'))+'</td>'):'')+'</tr>'});
+      rows.push({etat:ef.etat,html:'<tr><td><b>'+esc(p.n)+'</b></td><td>'+esc(e.zone||EPTYPES[e.type])+((pth&&voitMedical())?'<br><span class="sub">'+esc(pth.lab)+'</span>':'')+'</td><td><span style="color:'+ph.color+';font-weight:700">'+ph.label+'</span></td><td>'+(ds!=null?ds+" j":"—")+((voitMedical()&&bornesDe(e))?'<br><span class="sub">'+(bornesDe(e).manuel?'estimé ':'repère ')+bornesDe(e).min+'-'+bornesDe(e).max+' j</span>':'')+'</td>'+(voitMedical()?('<td>'+(fenetreTxt(e)||'<span class="sub">—</span>')+'</td>'+'<td><span style="color:'+ec.c+';font-weight:700">'+ec.l+'</span></td>'+'<td>'+((e.phase==="attente")?('<span class="sub">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"à préciser")+(e.rdv?'<br>RDV '+frDate(e.rdv):'')+'</span>'):(nOk+'/'+jl.length))+'</td>'+'<td>'+(e.medok?'<span style="color:#1C8C5A;font-weight:700">oui</span>':((e.phase==="retourp")?'<span style="color:#C32A2A;font-weight:700">requis</span>':'<span class="sub">—</span>'))+'</td>'):'')+'</tr>'});
     });
   });
   const retours=[];
@@ -3836,7 +3862,7 @@ function openReathle(){
     calh+='<div class="rcal-note">Dates théoriques calculées sur la fourchette. Elles ne présument ni de la progression du joueur ni de l accord médical.</div>';
     calh+='</div>';
   }
-  $("reathleBody").innerHTML=calh+(rows.length?'<table class="rtable"><thead><tr><th>Joueur</th><th>Zone</th><th>Phase</th><th>Depuis</th>'+(isAdmin()?'<th>Fenêtre estimée</th><th>Positionnement</th><th>Jalons</th><th>Accord méd.</th>':'')+'</tr></thead><tbody>'+rows.map(r=>r.html).join("")+'</tbody></table>':'<p class="hint">Aucune blessure en cours — tout le monde est apte.</p>')
+  $("reathleBody").innerHTML=calh+(rows.length?'<table class="rtable"><thead><tr><th>Joueur</th><th>Zone</th><th>Phase</th><th>Depuis</th>'+(voitMedical()?'<th>Fenêtre estimée</th><th>Positionnement</th><th>Jalons</th><th>Accord méd.</th>':'')+'</tr></thead><tbody>'+rows.map(r=>r.html).join("")+'</tbody></table>':'<p class="hint">Aucune blessure en cours — tout le monde est apte.</p>')
     ;
   reathleOverlay.classList.add("open");
 }
@@ -4183,9 +4209,15 @@ $("newPassBtn").addEventListener("click",async function(){
 $("btnLogout").addEventListener("click",async function(){ try{ if(sb) await sb.auth.signOut(); }catch(e){} location.reload(); });
 function appliquerRole(){
   if(isAdmin()) return;
-  ["fab","btnImport","btnReset","detailEdit","btnBareme","tdjSaisie"].forEach(function(id){ const el=document.getElementById(id); if(el) el.style.display="none"; });
-  const b=document.getElementById("dataHint"); if(b) b.textContent="Accès consultation — les modifications sont réservées au préparateur physique.";
-  document.body.classList.add("role-coach");
+  const cacher=isStagiaire()
+    ? ["btnImport","btnReset","btnBareme","tdjSaisie","fab"]
+    : ["fab","btnImport","btnReset","detailEdit","btnBareme","tdjSaisie"];
+  cacher.forEach(function(id){ const el=document.getElementById(id); if(el) el.style.display="none"; });
+  const b=document.getElementById("dataHint");
+  if(b) b.textContent=isStagiaire()
+    ? "Accès stagiaire — réathlé et suivi médical modifiables, effectif et matchs en consultation."
+    : "Accès consultation — les modifications sont réservées au préparateur physique.";
+  document.body.classList.add(isStagiaire()?"role-stagiaire":"role-coach");
 }
 function modeRecuperation(){
   const h=String(location.hash||"");
