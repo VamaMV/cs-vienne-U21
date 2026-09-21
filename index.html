@@ -955,6 +955,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
 .bqwrap .sdate{font-family:var(--body);font-size:.72rem;color:#5B7386;border:1.5px solid var(--line);border-radius:7px;padding:3px 5px;background:#fff}
 .bqwrap .sdate:focus{outline:none;border-color:#0F80C4}
 .bqwrap .sct{font-family:var(--body);font-size:.74rem;font-weight:600;color:#5B7386;border:1.5px solid var(--line);border-radius:7px;padding:3px 6px;background:#fff}
+.bqwrap .pdiff{display:block;font-style:normal;font-size:.62rem;font-weight:700;color:#B45309;margin-top:2px}
 .bqwrap .snb{font-family:var(--body);font-size:.72rem;color:#8A9BA8;font-weight:600}
 .bqwrap .sdel{margin-left:auto;font-size:15px;line-height:1;color:#C32A2A;background:#FDF3F3;border:1.5px solid #F0D6D6;border-radius:7px;width:24px;height:24px;cursor:pointer}
 .bqwrap .sdel:hover{background:#F8E4E4}
@@ -1249,7 +1250,7 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h79 — feuille chrono et Excel réparés pour les séances</div>
+    <div style="font-size:.7rem;opacity:.5">h80 — ajout de ballon réparé, croix d'un ballon ne supprime plus la séance</div>
   </footer>
 </div>
 
@@ -3366,13 +3367,13 @@ function sessionHTML(w, key){
       <span class="snb">${sess.balls.length}×${sess.balls[0]?sess.balls[0].length:0}</span>
       <button type="button" class="bqf-btn" data-feuille="${key}">Feuille chrono</button>
       <button type="button" class="bqf-btn bqf-btn2" data-xls="${key}">Excel</button>
-      <button type="button" class="sdel" data-del="${key}" title="Supprimer cette séance">&times;</button></h3>
+      <button type="button" class="sdel" data-delsess="${key}" title="Supprimer cette séance">&times;</button></h3>
     <div class="params">
       <span class="p"><label>Cible BIP (min)</label><input type="text" inputmode="text" class="bqdur" value="${bqShow(sess.target)}" title="Écris 13, 13' ou 13'30" data-p="target" data-k="${key}"></span>
       <span class="p"><label>Récup ballon</label><input type="text" inputmode="text" class="bqdur" value="${bqShow(sess.rec)}" title="Écris 45, 45&quot; ou 1'00" data-p="rec" data-k="${key}"></span>
       <span class="p"><label>Rotation</label><input type="text" inputmode="text" class="bqdur" value="${bqShow(sess.cut)}" title="Écris 120, 2' ou 1'30" data-p="cut" data-k="${key}"></span>
       <span class="p"><label>Blocs</label><input type="number" min="1" max="4" value="${sess.balls.length}" data-p="blocks" data-k="${key}"></span>
-      <span class="p"><label>Ballons / bloc</label><input type="number" min="2" max="12" value="${sess.balls[0]?sess.balls[0].length:5}" data-p="perblock" data-k="${key}"></span>
+      <span class="p"><label>Ballons / bloc</label><input type="number" min="2" max="12" value="${sess.balls[0]?sess.balls[0].length:5}" data-p="perblock" data-k="${key}">${(new Set(sess.balls.map(function(b){return b.length;}))).size>1?`<em class="pdiff">réel : ${sess.balls.map(function(b){return b.length;}).join(" / ")}</em>`:""}</span>
     </div>
     <div class="balls">${ballsHTML}</div>
     <div class="read">
@@ -3648,12 +3649,14 @@ document.getElementById("bq_sessions").addEventListener("click", function(e){
     arr.push(bqNeuve("Séance "+(arr.length+1)));
     render(); return;
   }
-  var dl = e.target.closest ? e.target.closest("[data-del]") : null;
+  var dl = e.target.closest ? e.target.closest("[data-delsess]") : null;
   if(dl){
     const arr=bqSeances(state[sel]);
+    const i=parseInt(dl.dataset.delsess,10);
+    if(isNaN(i)||!arr[i]) return;
     if(arr.length<=1){ toast("Il faut au moins une séance"); return; }
-    if(!confirm("Supprimer cette séance ?")) return;
-    arr.splice(+dl.dataset.del,1); render(); return;
+    if(!confirm("Supprimer la séance « "+(arr[i].day||"")+" » ?")) return;
+    arr.splice(i,1); render(); return;
   }
   var b = e.target.closest ? e.target.closest("[data-feuille]") : null;
   if(b){ bqPrintFeuille(b.dataset.feuille); return; }
@@ -3693,8 +3696,9 @@ document.getElementById("bq_sessions").addEventListener("input", e=>{
 document.getElementById("bq_sessions").addEventListener("click", e=>{
   const w = state[sel];
   const add = e.target.dataset.add, del = e.target.dataset.del;
-  if (add){ const [k,bi] = add.split(":"); w[k].balls[+bi].push(30); render(); }
-  if (del){ const [k,bi,i] = del.split(":"); const a = w[k].balls[+bi]; if (a.length>1){ a.splice(+i,1); render(); } }
+  if (add){ const [k,bi] = add.split(":"); const se=bqSeanceDe(w,k); if(se&&se.balls[+bi]){ se.balls[+bi].push(30); render(); } return; }
+  if (del && del.indexOf(":")>=0){ const [k,bi,i] = del.split(":"); const se=bqSeanceDe(w,k); if(!se) return;
+    const a = se.balls[+bi]; if (a && a.length>1){ a.splice(+i,1); render(); } return; }
 });
 
 document.getElementById("bq_btnGen").addEventListener("click", ()=>{
