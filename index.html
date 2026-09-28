@@ -1501,6 +1501,84 @@ table.fj-t{width:100%;border-collapse:collapse;table-layout:fixed}
 .muwrap .mb-sch{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:.76rem;font-weight:700;color:#0E5E8E;cursor:pointer}
 .muwrap .mb-sch input{width:auto}
 .muwrap .mb-schn{margin-top:6px;padding:8px 10px;background:#F4F9FC;border-radius:8px;font-size:.76rem;color:#5E7E96}
+
+/* ===== tableau de bord « Cette semaine » ===== */
+.sw{margin:10px 0 6px;background:#fff;border:1px solid #DDE8F0;border-radius:14px;padding:12px 14px}
+.sw-h{font-family:var(--display);font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#0E5E8E;margin-bottom:9px}
+.sw-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:9px}
+.sw-b{border-radius:11px;padding:10px 11px;background:#F6F9FC;border:1px solid #E6EEF4}
+.sw-t{display:flex;align-items:center;justify-content:space-between;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#41566A;margin-bottom:6px}
+.sw-t b{font-family:var(--display);font-size:.95rem;color:#12324C}
+.sw-maj{background:#FFF6F4;border-color:#F4D4CC} .sw-maj .sw-t{color:#B3261E}
+.sw-bl .sw-t{color:#B45309}
+.sw-s{font-size:.74rem;color:#6E8AA1;margin:5px 0 4px}
+.sw-v{font-size:.8rem;color:#8FA8BC}
+.sw-ps{display:flex;flex-wrap:wrap;gap:5px}
+.sw-p{font-family:var(--body);font-size:.78rem;font-weight:700;color:#12324C;background:#fff;border:1px solid #D9E5EE;border-radius:99px;padding:4px 10px;cursor:pointer}
+.sw-p i{font-style:normal;font-weight:600;color:#6E8AA1}
+.sw-l{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #F4DCD5}
+.sw-l:last-child{border-bottom:none}
+.sw-l>div{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0}
+.sw-l span{font-size:.76rem;color:#8A3B2E;line-height:1.3}
+.sw-clore{flex:0 0 auto;font-family:var(--body);font-size:.74rem;font-weight:800;color:#fff;background:#12324C;border:none;border-radius:8px;padding:7px 12px;cursor:pointer}
+/* ===== liste compacte ===== */
+.list.list-compacte{display:flex!important;flex-direction:column;gap:5px}
+.lrow{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:#fff;border:1px solid #E1EAF1;border-radius:11px;padding:8px 12px;cursor:pointer;font-family:var(--body)}
+.lr-no{width:30px;height:30px;border-radius:7px;color:#fff;font-family:var(--display);font-weight:800;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.lr-n{flex:1;min-width:0;display:flex;flex-direction:column}
+.lr-n b{font-size:.92rem;color:#12324C;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lr-n i{font-style:normal;font-size:.74rem;font-weight:700}
+.lr-m{font-size:.8rem;color:#6E8AA1;flex:0 0 auto}
+.lr-m b{font-family:var(--display);font-size:.95rem;color:#12324C}
+#dispseg{margin-left:8px}
+/* ===== bandeau de synchro masquable ===== */
+.shared-note{position:relative;padding-right:34px!important}
+.sn-x{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:24px;height:24px;border:none;border-radius:99px;background:rgba(15,128,196,.1);color:#0E5E8E;font-size:1rem;cursor:pointer;line-height:1}
+.fhint{font-size:.74rem;color:#8FA8BC;margin-top:5px;line-height:1.35}
+/* ===== sequenceur empile sur telephone ===== */
+@media(max-width:820px){
+  .bqwrap .bq-shell{grid-template-columns:1fr!important}
+  .bqwrap .bq-shell>*:first-child{max-height:250px;overflow-y:auto;border-bottom:1px solid #DDE8F0}
+}
+/* ===== mode telephone ===== */
+@media(max-width:560px){
+  header .sub{display:none}
+  header h1{font-size:1.5rem!important}
+  .counts{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .counts::-webkit-scrollbar{display:none}
+  .counts .cstat{flex:0 0 auto}
+  .tabs{overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+  .tabs::-webkit-scrollbar{display:none}
+  .seg-wrap{flex-wrap:wrap;row-gap:6px}
+  #dispseg{margin-left:0}
+  .chips{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chips>*{flex:0 0 auto}
+  .sw{padding:10px 11px}
+  .sw-g{grid-template-columns:1fr}
+  /* tableaux larges : ils defilent, et une ombre l indique */
+  .rtable{display:block;overflow-x:auto;white-space:nowrap;
+    background:linear-gradient(90deg,#fff 30%,rgba(255,255,255,0)),linear-gradient(270deg,#fff 30%,rgba(255,255,255,0)) 100% 0,
+      radial-gradient(farthest-side at 0 50%,rgba(18,50,76,.18),transparent),radial-gradient(farthest-side at 100% 50%,rgba(18,50,76,.18),transparent) 100% 0;
+    background-repeat:no-repeat;background-size:40px 100%,40px 100%,14px 100%,14px 100%;background-attachment:local,local,scroll,scroll}
+}
+
+
+.sw-h{display:flex!important;align-items:center;gap:8px;width:100%;border:none;background:none;padding:0;cursor:pointer;text-align:left}
+.sw-r{flex:1;font-family:var(--body);font-size:.72rem;font-weight:600;text-transform:none;letter-spacing:0;color:#8FA8BC;display:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-h i{width:8px;height:8px;border-right:2px solid #8FA8BC;border-bottom:2px solid #8FA8BC;transform:rotate(45deg);margin:-3px 4px 0 auto;transition:transform .2s}
+.sw-plie .sw-g{display:none}
+.sw-plie .sw-r{display:block}
+.sw-plie .sw-h{margin-bottom:0}
+.sw-plie .sw-h i{transform:rotate(-45deg);margin-top:0}
+/* un seul titre dans le sequenceur */
+.bqwrap .bq-top h1,.bqwrap .bq-who{display:none!important}
+/* lisibilite : minutes des cartes, ligne d antecedent, badges */
+.mlg b{font-size:12.5px!important}
+.card .flag{font-size:12.5px!important}
+.catbadge{font-size:10.5px!important}
+.lrow{padding-right:14px}
+.lr-m{min-width:44px;text-align:right}
 </style>
 </head>
 <body>
@@ -1549,13 +1627,14 @@ table.fj-t{width:100%;border-collapse:collapse;table-layout:fixed}
   <div class="top">
     <div id="hello"></div>
     <div id="nextMatch"></div>
+    <div id="semaine"></div>
     <div class="counts" id="counts"></div>
     <nav class="tabs" id="tabs">
       <span class="tab on" id="tabEffectif">Effectif <em id="tabNbEff"></em></span>
       <a class="tab" id="lnkRPE" href="https://script.google.com/macros/s/AKfycbz6b3mjmSCQyU8Uc6B6sbH_DXI5Q3OT6ThXsCwJorncLOypDOdmnJscocnb5isGkOpfEA/exec" target="_blank" rel="noopener">RPE</a>
       <a class="tab" id="lnkWellness" href="https://script.google.com/macros/s/AKfycbxblJZu5Lv4DJWcSsx6-gPBtAlLV39VfIRDlchiCMWCyHIYkVNMbnmrH-6i5I5M289TTA/exec" target="_blank" rel="noopener">Wellness</a>
       <button class="tab" id="btnTdj" type="button">Temps de jeu</button>
-      <button class="tab" id="btnReathle" type="button">Réathlé <em id="tabNbRea"></em></button>
+      <button class="tab" id="btnReathle" type="button">Blessés <em id="tabNbRea"></em></button>
       <button class="tab" id="btnMuscu" type="button">Muscu</button>
       <button class="tab" id="btnBip" type="button">Séquençage</button>
       <span class="tabsp"></span>
@@ -1563,7 +1642,7 @@ table.fj-t{width:100%;border-collapse:collapse;table-layout:fixed}
         <button class="tab gh" id="btnOutils" type="button">Outils ⌄</button>
         <div class="menu" id="menuOutils">
           <button type="button" id="btnReload">Recharger</button>
-          <button type="button" id="btnFiches">Fiches PDF</button>
+          <button type="button" id="btnFiches">Fiches profils PDF</button>
           <button type="button" id="btnBareme">Barème</button>
           <button type="button" id="btnExport">Exporter</button>
           <button type="button" id="btnImport">Importer</button>
@@ -1573,7 +1652,7 @@ table.fj-t{width:100%;border-collapse:collapse;table-layout:fixed}
         </div>
       </div>
     </nav>
-    <div class="shared-note">
+    <div class="shared-note" id="sharedNote"><button type="button" class="sn-x" aria-label="Masquer" onclick="try{localStorage.setItem('hubNoteVue','1')}catch(e){};this.parentNode.style.display='none'">×</button>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 11V7a4 4 0 0 0-8 0v4"/><rect x="5" y="11" width="14" height="10" rx="2"/></svg>
       Données synchronisées dans le cloud — visibles et modifiables par le staff connecté. Touche « Recharger » avant d'éditer pour partir des dernières modifs.
     </div>
@@ -1588,7 +1667,11 @@ table.fj-t{width:100%;border-collapse:collapse;table-layout:fixed}
       <span class="seg-label">Classer :</span>
       <div class="viewseg" id="viewseg" role="group" aria-label="Mode de classement">
         <button type="button" data-view="poste" aria-pressed="true">Par poste</button>
-        <button type="button" data-view="statut" aria-pressed="false">Par statut</button>
+        <button type="button" data-view="statut" aria-pressed="false">Par état</button>
+      </div>
+      <div class="viewseg" id="dispseg" role="group" aria-label="Affichage">
+        <button type="button" data-disp="cartes" aria-pressed="true">Cartes</button>
+        <button type="button" data-disp="liste" aria-pressed="false">Liste</button>
       </div>
     </div>
     <div class="chips" id="chips" role="group" aria-label="Filtres"></div>
@@ -1598,7 +1681,7 @@ table.fj-t{width:100%;border-collapse:collapse;table-layout:fixed}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h90 — liste unique, groupes, préhab perso, adaptation automatique</div>
+    <div style="font-size:.7rem;opacity:.5">h91 — tableau de bord, un seul état, alerte de charge, mode téléphone</div>
   </footer>
 </div>
 
@@ -1638,8 +1721,9 @@ table.fj-t{width:100%;border-collapse:collapse;table-layout:fixed}
       </div>
     </div>
     <div class="frow">
-      <label for="f_s">Statut</label>
-      <select id="f_s"><option value="apte">Apte</option><option value="watch">À surveiller</option><option value="close">À suivre de près</option><option value="indispo">Indisponible</option><option value="confirm">À confirmer</option></select>
+      <label for="f_s">Effectif</label>
+      <select id="f_s"><option value="apte">Dans le groupe</option><option value="parti">A quitté le groupe</option></select>
+      <div class="fhint">Une blessure se déclare dans « Réathlé ». Un joueur qui a quitté le groupe disparaît des listes, son historique est conservé.</div>
     </div>
     <div class="fsub">Mesures</div>
     <div class="frow two">
@@ -1723,7 +1807,7 @@ table.fj-t{width:100%;border-collapse:collapse;table-layout:fixed}
     <div class="muwrap">
     <div class="mu-bar">
       <button type="button" id="mu_print">Imprimer la séance</button>
-      <button type="button" id="mu_printall" onclick="muImprimerTous()">Imprimer les fiches</button>
+      <button type="button" id="mu_printall" onclick="muImprimerTous()">Fiches muscu de tous</button>
       <button type="button" id="mu_dl">Télécharger</button>
       <button type="button" id="mu_grp" onclick="muGroupes()">Groupes</button>
       <button type="button" id="mu_new" onclick="muNouveauCycle()">Nouveau cycle</button>
@@ -1839,7 +1923,7 @@ table.fj-t{width:100%;border-collapse:collapse;table-layout:fixed}
 </div>
 <div class="overlay" id="reathleOverlay">
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="reathleTitle">
-    <h2 id="reathleTitle">Réathlé — blessures en cours</h2>
+    <h2 id="reathleTitle">Blessés — suivi des retours</h2>
     <div id="reathleBody"></div>
     <div class="frow" style="margin-top:12px;gap:8px">
       <button type="button" id="reathleCopy">Copier le point staff</button>
@@ -1896,7 +1980,7 @@ table.fj-t{width:100%;border-collapse:collapse;table-layout:fixed}
 const SEED = [];
 
 const ZONE = {ischios:{label:"Ischios",color:"#D2451E"},epaule:{label:"Épaule",color:"#7A3DB8"},genou:{label:"Genou",color:"#1273A8"},cheville:{label:"Cheville",color:"#1C8C5A"},mollet:{label:"Mollet",color:"#B5791F"},coude:{label:"Coude",color:"#C0397B"},tendon:{label:"Tendon",color:"#4F5FC4"},cervical:{label:"Cervical",color:"#1E8A8A"},charge:{label:"Charge",color:"#8A6A38"},none:{label:"",color:"#7E8B97"}};
-const STATUT = {apte:{label:"Apte",color:"#1C8C5A"},watch:{label:"À surveiller",color:"#B45309"},close:{label:"À suivre de près",color:"#DC2626"},indispo:{label:"Indisponible",color:"#334155"},confirm:{label:"À confirmer",color:"#475569"}};
+const STATUT = {parti:{label:"A quitté le groupe",color:"#94A3B8"},apte:{label:"Apte",color:"#1C8C5A"},watch:{label:"À surveiller",color:"#B45309"},close:{label:"À suivre de près",color:"#DC2626"},indispo:{label:"Indisponible",color:"#334155"},confirm:{label:"À confirmer",color:"#475569"}};
 const CAT = {ESP:{label:"Espoirs"},U19:{label:"U19 partenaire"},EQ1:{label:"Équipier 1ère"},DL:{label:"Double licence"}};
 const POSTES = {
   "1":{label:"Pilier gauche",num:1,g:"avants",o:1},"2":{label:"Talonneur",num:2,g:"avants",o:2},"3":{label:"Pilier droit",num:3,g:"avants",o:3},
@@ -1916,12 +2000,11 @@ const CHIPS = [
   {key:"ph_reathle",label:"Réathlé",color:"#EA580C"},
   {key:"ph_reentrainement",label:"Réentraînement",color:"#B45309"},
   {key:"ph_retourp",label:"Retour partiel",color:"#0F80C4"},
-  {key:"confirm",label:"À confirmer",color:STATUT.confirm.color},
 ];
 const PRIO={close:0,watch:1,indispo:2,confirm:3,apte:4};
-function statutGroupKey(s){ if(s==="close"||s==="watch") return "suivi"; if(s==="indispo") return "indispo"; if(s==="confirm") return "confirm"; return "apte"; }
-const SG_ORDER=["suivi","confirm","indispo","apte"];
-const SG_LABEL={suivi:["À suivre / surveiller","vigilance rapprochée"],confirm:["À confirmer","relance avant la reprise"],indispo:["Indisponible","absent de la prépa"],apte:["Apte","prévention ciblée & charge standard"]};
+function statutGroupKey(p){ return etatDe(p).cle; }
+const SG_ORDER=["attente","soins","reathle","reentrainement","retourp","apte"];
+const SG_LABEL={attente:["En attente de diagnostic","examen ou avis à venir"],soins:["Soins","prise en charge médicale"],reathle:["Réathlé","réathlétisation en cours"],reentrainement:["Réentraînement","reprise progressive avec le groupe"],retourp:["Retour partiel","joue avec des restrictions"],apte:["Aptes","prévention ciblée & charge standard"]};
 
 const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
@@ -2088,7 +2171,7 @@ function weightChartSVG(p,W,H){
   const tline=hasT?'<line x1="'+pL+'" y1="'+Y(tgt).toFixed(1)+'" x2="'+(W-pR)+'" y2="'+Y(tgt).toFixed(1)+'" stroke="#C32A2A" stroke-width="1" stroke-dasharray="4 3" opacity="0.65" vector-effect="non-scaling-stroke"/>':"";
   return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="none" style="display:block">'+band+tline+'<polyline points="'+pts+'" fill="none" stroke="#0F80C4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'+dots+'</svg>';
 }
-function weightCaption(p){ const data=pesWeights(p); if(!data.length) return ""; const ws=data.map(x=>parseFloat(String(x.w).replace(",","."))); const cur=ws[ws.length-1]; let s='<b>'+cur+' kg</b>'; const tgt=parseFloat(String(p.poidsCible).replace(",",".")); if(!isNaN(tgt)&&tgt>0){ s+='<span>cible '+p.poidsCible+' kg</span>'; const ec=Math.round((cur-tgt)*10)/10; const col=Math.abs(ec)<=1?"#1C8C5A":"#B45309"; s+='<span style="color:'+col+';font-weight:600">écart '+(ec>0?"+":"")+ec+' kg</span>'; } if(ws.length>=2){ const dl=Math.round((cur-ws[0])*10)/10; let t; if(dl>0) t="↑ +"+dl+" kg"; else if(dl<0) t="↓ "+dl+" kg"; else t="= stable"; s+='<span>'+t+'</span>'; } return s; }
+function weightCaption(p){ const data=pesWeights(p); if(!data.length) return ""; const ws=data.map(x=>parseFloat(String(x.w).replace(",","."))); const cur=ws[ws.length-1]; let s='<b>'+String(cur).replace(".",",")+' kg</b>'; const tgt=parseFloat(String(p.poidsCible).replace(",",".")); if(!isNaN(tgt)&&tgt>0){ s+='<span>cible '+p.poidsCible+' kg</span>'; const ec=Math.round((cur-tgt)*10)/10; const col=Math.abs(ec)<=1?"#1C8C5A":"#B45309"; s+='<span style="color:'+col+';font-weight:600">écart '+(ec>0?"+":"")+String(ec).replace(".",",")+' kg</span>'; } if(ws.length>=2){ const dl=Math.round((cur-ws[0])*10)/10; let t; if(dl>0) t="↑ +"+String(dl).replace(".",",")+" kg"; else if(dl<0) t="↓ "+String(dl).replace(".",",")+" kg"; else t="= stable"; s+='<span>'+t+'</span>'; } return s; }
 
 /* ---------- Stockage PARTAGÉ ---------- */
 const store={
@@ -2137,7 +2220,7 @@ function joursAvant(iso){
 }
 function joueursDuMatch(d){
   const out=[];
-  players.forEach(function(p){
+  actifs().forEach(function(p){
     (Array.isArray(p.tdjs)?p.tdjs:[]).forEach(function(x){
       if(x&&x.d===d){ const mn=parseInt(x.min,10)||0; out.push({p:p,min:mn,st:x.st||"",mai:x.mai||"",ct:x.ct||""}); }
     });
@@ -2181,6 +2264,14 @@ function tauxTitu(p){
   const j=joues.filter(function(x){ return x.st==="t"; }).length;
   const n=joues.length + nbMatchsHors(p);
   return n?Math.round(j/n*100):0;
+}
+const GROUPES_POSTE=[[["1","3"],"piliers"],[["2"],"talonneurs"],[["4","5"],"2es lignes"],[["6","7","8"],"3es lignes"],
+  [["9"],"demis de mêlée"],[["10"],"ouvreurs"],[["12","13"],"centres"],[["11","14","15"],"ailiers et arrières"]];
+function moyPoste(p){
+  const g=GROUPES_POSTE.find(function(x){ return x[0].indexOf(String(p.poste))>=0; }); if(!g) return null;
+  const l=actifs().filter(function(x){ return g[0].indexOf(String(x.poste))>=0; }).map(totalMin).filter(function(t){ return t>0; });
+  if(l.length<3) return null;
+  return {moy:Math.round(l.reduce(function(a,b){ return a+b; },0)/l.length),lab:g[1],n:l.length};
 }
 function moyEquipe(){
   const l=players.map(totalMin).filter(t=>t>0);
@@ -2235,7 +2326,19 @@ function semPrecedente(cle){
   if(sem>1) return an*100+(sem-1);
   return (an-1)*100+52;
 }
-function serieSemaines(p){
+function weCharges(p){
+  /* week-ends consecutifs a plus de 60 min, toutes competitions ; remis a zero par un week-end sans match ou a moins de 60 min */
+  const sem={};
+  toutesMinutes(p).forEach(function(x){ if((parseInt(x.min,10)||0)>=60){ const k=cleSemaine(x.d); if(k) sem[k]=1; } });
+  const auj=new Date().toISOString().slice(0,10);
+  const dates=matchsPasses().map(function(m){ return m.d; })
+    .concat(toutesMinutes(p).map(function(x){ return x.d; })).filter(function(d){ return d&&d<=auj; }).sort();
+  if(!dates.length) return 0;
+  let cur=cleSemaine(dates[dates.length-1]), n=0;
+  while(cur&&sem[cur]){ n++; cur=semPrecedente(cur); }
+  return n;
+}
+function weCharges(p){
   /* nombre de semaines consecutives avec au moins un match joue, toutes competitions */
   const sem={};
   toutesMinutes(p).forEach(function(x){ if(x.min>0){ const k=cleSemaine(x.d); if(k) sem[k]=1; } });
@@ -2361,7 +2464,7 @@ function normRec(p){
   sprints.sort((a,b)=>(a.d||"").localeCompare(b.d||"")); const _lsp2=sprints.length?sprints[sprints.length-1]:null;
   let episodes=(Array.isArray(p.episodes)?p.episodes.map(e=>({deb:(e&&e.deb)?String(e.deb):"",zone:(e&&e.zone)?String(e.zone):"",type:(e&&e.type&&EPTYPES[e.type])?e.type:"autre",patho:(e&&e.patho&&PATHOS[e.patho])?e.patho:"",diag:(e&&e.diag&&DIAGSTAT[e.diag])?e.diag:"",rdv:(e&&e.rdv)?String(e.rdv):"",dmin:(e&&e.dmin!=null)?String(e.dmin):"",dmax:(e&&e.dmax!=null)?String(e.dmax):"",phase:(e&&e.phase&&PHASES[e.phase])?e.phase:"soins",ret:(e&&e.ret)?String(e.ret):"",retr:(e&&e.retr)?String(e.retr):"",note:(e&&e.note)?String(e.note):"",jal:(e&&Array.isArray(e.jal))?e.jal.map(x=>!!x):[],medok:!!(e&&e.medok)})).filter(e=>e.deb!==""||e.zone!==""||e.note!==""):[]);
   episodes.sort((a,b)=>(a.deb||"").localeCompare(b.deb||""));
-  return {id:p.id||("n"+Date.now()+Math.floor(Math.random()*1000)),n:p.n||"",cat:(p.cat!=null&&p.cat!=="")?p.cat:"ESP",poste:(p.poste!=null&&p.poste!=="")?p.poste:"none",s:STATUT[p.s]?p.s:"apte",z:(p.z!=null&&p.z!=="")?p.z:"none",poids:poids,poidsCible:(p.poidsCible!=null?p.poidsCible:""),pesees:pesees,taille:(p.taille!=null?p.taille:""),tdj:(p.tdj!=null?p.tdj:""),bronco:bronco,broncos:broncos,cmjs:cmjs,cmj:cmj,sprint10:(_lsp2?_lsp2.t10:""),sprint30:(_lsp2?_lsp2.t30:""),sprints:sprints,tests:(Array.isArray(p.tests)?p.tests.map(t=>({d:(t&&t.d)?String(t.d):"",ex:(t&&t.ex)?String(t.ex):"",load:(t&&t.load!=null)?t.load:""})):[]),episodes:episodes,tdjx:(Array.isArray(p.tdjx)?p.tdjx.map(x=>({d:(x&&x.d)?String(x.d):"",club:(x&&x.club)?String(x.club):"",min:(x&&x.min!=null)?String(x.min):""})).filter(x=>x.d):[]).sort((a,b)=>(a.d||"").localeCompare(b.d||"")),tdjs:(Array.isArray(p.tdjs)?p.tdjs.map(x=>({d:(x&&x.d)?String(x.d):"",min:(x&&x.min!=null)?String(x.min):"",st:(x&&x.st&&TDJSTAT[x.st])?x.st:"",mai:(x&&x.mai!=null)?String(x.mai):"",ct:(x&&(x.ct==="J"||x.ct==="R"))?x.ct:""})).filter(x=>x.d):[]).sort((a,b)=>(a.d||"").localeCompare(b.d||"")),ant:p.ant||"",acc:p.acc||""};
+  return {id:p.id||("n"+Date.now()+Math.floor(Math.random()*1000)),n:p.n||"",cat:(p.cat!=null&&p.cat!=="")?p.cat:"ESP",poste:(p.poste!=null&&p.poste!=="")?p.poste:"none",s:(p.s==="parti"||p.s==="indispo")?"parti":"apte",z:(p.z!=null&&p.z!=="")?p.z:"none",poids:poids,poidsCible:(p.poidsCible!=null?p.poidsCible:""),pesees:pesees,taille:(p.taille!=null?p.taille:""),tdj:(p.tdj!=null?p.tdj:""),bronco:bronco,broncos:broncos,cmjs:cmjs,cmj:cmj,sprint10:(_lsp2?_lsp2.t10:""),sprint30:(_lsp2?_lsp2.t30:""),sprints:sprints,tests:(Array.isArray(p.tests)?p.tests.map(t=>({d:(t&&t.d)?String(t.d):"",ex:(t&&t.ex)?String(t.ex):"",load:(t&&t.load!=null)?t.load:""})):[]),episodes:episodes,tdjx:(Array.isArray(p.tdjx)?p.tdjx.map(x=>({d:(x&&x.d)?String(x.d):"",club:(x&&x.club)?String(x.club):"",min:(x&&x.min!=null)?String(x.min):""})).filter(x=>x.d):[]).sort((a,b)=>(a.d||"").localeCompare(b.d||"")),tdjs:(Array.isArray(p.tdjs)?p.tdjs.map(x=>({d:(x&&x.d)?String(x.d):"",min:(x&&x.min!=null)?String(x.min):"",st:(x&&x.st&&TDJSTAT[x.st])?x.st:"",mai:(x&&x.mai!=null)?String(x.mai):"",ct:(x&&(x.ct==="J"||x.ct==="R"))?x.ct:""})).filter(x=>x.d):[]).sort((a,b)=>(a.d||"").localeCompare(b.d||"")),ant:p.ant||"",acc:p.acc||""};
 }
 
 let players=[]; let activeFilter="all"; let query=""; let editingId=null; let viewMode="poste";
@@ -2379,14 +2482,14 @@ function matchesFilter(p){ if(activeFilter==="all") return true; if(activeFilter
   if(activeFilter.indexOf("ph_")===0) return etatDe(p).cle===activeFilter.slice(3);
   if(STATUT[activeFilter]) return etatDe(p).cle===activeFilter;
   if(activeFilter==="autres") return ["mollet","coude","tendon","cervical","charge"].includes(p.z); return p.z===activeFilter; }
-function filteredBase(){ const q=norm(query); return players.filter(p=>matchesFilter(p) && (q==="" || norm(p.n).includes(q))); }
+function filteredBase(){ const q=norm(query); return actifs().filter(p=>matchesFilter(p) && (q==="" || norm(p.n).includes(q))); }
 function majOnglets(){
-  const e=$("tabNbEff"); if(e) e.textContent=players.length;
-  const r=$("tabNbRea"); if(r){ const n=players.filter(function(p){ return activeEpisode(p); }).length;
+  const e=$("tabNbEff"); if(e) e.textContent=actifs().length;
+  const r=$("tabNbRea"); if(r){ const n=actifs().filter(function(p){ return activeEpisode(p); }).length;
     r.textContent=n||""; r.style.display=n?"":"none"; }
 }
-function renderCounts(){ majOnglets(); const order=["apte","attente","soins","reathle","reentrainement","retourp","confirm","indispo"]; elCounts.innerHTML='<span class="cstat"><b>'+players.length+'</b> joueurs</span>'+order.map(s=>{
-  const k=players.filter(p=>etatDe(p).cle===s).length;
+function renderCounts(){ majOnglets(); const order=["apte","attente","soins","reathle","reentrainement","retourp"]; elCounts.innerHTML='<span class="cstat"><b>'+actifs().length+'</b> joueurs</span>'+order.map(s=>{
+  const k=actifs().filter(p=>etatDe(p).cle===s).length;
   if(k===0) return "";
   const c=(s==="apte")?"#1C8C5A":(PHASES[s]?PHASES[s].color:(STATUT[s]?STATUT[s].color:"#6B7280"));
   const l=(s==="apte")?"aptes":(PHASES[s]?PHASES[s].label:(STATUT[s]?STATUT[s].label:s));
@@ -2396,8 +2499,7 @@ function etatDe(p){
   /* un seul etat : la phase de reathle si episode en cours, sinon apte */
   const ep=activeEpisode(p);
   if(ep){ const ph=PHASES[ep.phase]; return {cle:ep.phase,label:ph.label,color:ph.color,zone:ep.zone||"",ep:ep}; }
-  if(p.s==="indispo") return {cle:"indispo",label:STATUT.indispo.label,color:STATUT.indispo.color,zone:"",ep:null};
-  if(p.s==="confirm") return {cle:"confirm",label:STATUT.confirm.label,color:STATUT.confirm.color,zone:"",ep:null};
+  if(p.s==="parti") return {cle:"parti",label:STATUT.parti.label,color:STATUT.parti.color,zone:"",ep:null};
   return {cle:"apte",label:"Apte",color:"#1C8C5A",zone:"",ep:null};
 }
 function metaHTML(p){
@@ -2407,8 +2509,8 @@ function metaHTML(p){
   if(catLabel(p)) meta+='<span class="cat">'+esc(catLabel(p))+'</span>';
   { const _tot=totalMin(p), _nb=nbMatchs(p);
     if(_nb>0) meta+='<span class="tag tdjtag">'+_tot+' min · '+_nb+' match'+(_nb>1?'s':'')+'</span>';
-    const _sw=Math.max(serieSemaines(p),serieConsecutive(p));
-    if(_sw>=3) meta+='<span class="tag surtag" title="Week-ends consécutifs avec un match, toutes compétitions">'+_sw+' week-ends d\'affilée</span>'; }
+    const _sw=weCharges(p);
+    if(_sw>=3) meta+='<span class="tag surtag" title="Week-ends consécutifs à plus de 60 minutes, toutes compétitions">'+_sw+' week-ends à +60′</span>'; }
   meta+='<span class="pill" style="background:'+hexRgba(e.color,.13)+';color:'+darker(e.color)+'"><span class="pdot" style="background:'+e.color+'"></span>'+esc(e.label)+(e.zone?' · '+esc(e.zone):'')+'</span>';
   return meta;
 }
@@ -2416,7 +2518,7 @@ function richParts(p){
   const parts=[];
   { const mj=minutesDe(p); if(mj.length){
     const tot=totalMin(p), nb=nbMatchs(p), moy=moyMin(p), m21=minSurJours(p,21), serie=serieConsecutive(p);
-    const sw=serieSemaines(p);
+    const sw=weCharges(p);
     let th='<div class="tdj-kpi">'
       +'<div><b>'+tot+'</b><span>min jouées</span></div>'
       +'<div><b>'+nb+'</b><span>match'+(nb>1?'s':'')+'</span></div>'
@@ -2425,8 +2527,8 @@ function richParts(p){
     const det=[];
     if(m21>0) det.push('<b>'+m21+'</b> min sur 21 jours');
     if(tauxTitu(p)>0) det.push('<b>'+tauxTitu(p)+'%</b> de titularisations');
-    if(serie>1) det.push('<b>'+serie+'</b> matchs CS Vienne d\'affilée');
-    if(sw>1) det.push('<b>'+sw+'</b> week-ends d\'affilée'+(sw>=3?' <em class="al">à surveiller</em>':''));
+    if(serie>1) det.push('<b>'+serie+'</b> matchs de suite');
+    if(sw>1) det.push('<b>'+sw+'</b> week-ends d\'affilée à +60′'+(sw>=3?' <em class="al">à surveiller</em>':''));
     if(det.length) th+='<div class="tdj-det">'+det.join('<i>·</i>')+'</div>';
     const lignes=toutesMinutes(p).slice().sort((a,b)=>b.d.localeCompare(a.d)).slice(0,8).map(x=>{
       if(x.hors) return '<div class="tline"><span class="dltag">Double licence</span> '+(x.club?esc(x.club)+' ':'')+'<span class="e">'+frDate(x.d)+'</span> — <b>'+x.min+' min</b></div>';
@@ -2434,10 +2536,10 @@ function richParts(p){
       const st=x.st&&TDJSTAT[x.st]?' <span class="e">'+TDJSTAT[x.st]+'</span>':'';
       return '<div class="tline">'+lab+' — <b>'+x.min+' min</b>'+st+'</div>';
     });
-    const titu=tauxTitu(p), me=moyEquipe();
+    const titu=tauxTitu(p), mp=moyPoste(p), me=mp?mp.moy:0;
     let extra='<div class="tdj-sum2">';
     extra+='<span>Titularisations <b>'+titu+'%</b></span>';
-    if(me) extra+='<span>Moyenne équipe <b>'+me+'</b> min '+(tot>me?'<i class="up">+'+(tot-me)+'</i>':(tot<me?'<i class="dn">'+(tot-me)+'</i>':''))+'</span>';
+    if(me) extra+='<span>Moyenne des '+mp.lab+' <b>'+me+'</b> min '+(tot>me?'<i class="up">+'+(tot-me)+'</i>':(tot<me?'<i class="dn">'+(tot-me)+'</i>':''))+'</span>';
     const manq=tdjParMatch(p).filter(a=>a.min===0);
     if(manq.length) extra+='<span>Matchs sans jeu <b>'+manq.length+'</b></span>';
     { const th=totalMinHors(p); if(th) extra+='<span>Dont double licence <b>'+th+'</b> min ('+nbMatchsHors(p)+')</span>'; }
@@ -2463,7 +2565,7 @@ function richParts(p){
   if(hasAnt&&voitMedical()) parts.push('<div class="field"><div class="label">Antécédent</div><div class="val">'+esc(p.ant)+'</div></div>');
   if(hasAcc&&voitMedical()) parts.push('<div class="field"><div class="label">Accent en séance</div><div class="val">'+esc(p.acc)+'</div></div>');
   const stats=[]; const addStat=(l,v)=>{ if(v!==""&&v!=null) stats.push('<div class="stat"><span class="sl">'+l+'</span><span class="sv">'+esc(v)+'</span></div>'); };
-  const u=(v,su)=>(v!==""&&v!=null)?(v+su):"";
+  const u=(v,su)=>(v!==""&&v!=null)?(String(v).replace(".",",")+su):"";
   addStat("Taille",u(p.taille," cm")); addStat("Poids",u(p.poids," kg")); addStat("Cible",u(p.poidsCible," kg")); addStat("Temps de jeu",u(p.tdj," min")); addStat("10 m",u(p.sprint10," s")); addStat("30 m",u(p.sprint30," s"));
   if(stats.length) parts.push('<div class="field"><div class="label">Mesures &amp; perfs</div><div class="stats">'+stats.join("")+'</div></div>');
   { const wsvg=weightChartSVG(p,320,64); if(wsvg){ parts.push('<div class="field"><div class="label">Suivi du poids</div><div class="wchart">'+wsvg+'<div class="wcap">'+weightCaption(p)+'</div></div></div>'); } }
@@ -2509,11 +2611,11 @@ function groupEl(label,count){ const h=document.createElement("div"); h.classNam
 
 function renderHello(){
   const el=document.getElementById("hello"); if(!el) return;
-  const nb=players.length;
+  const nb=actifs().length;
   let ctx="";
   if(isAdmin()){
-    const bl=players.filter(function(p){ return activeEpisode(p); }).length;
-    ctx=nb+" joueurs"+(bl?" · "+bl+" en réathlé":"");
+    const bl=actifs().filter(function(p){ return activeEpisode(p); }).length;
+    ctx=nb+" joueurs"+(bl?" · "+bl+" blessé"+(bl>1?"s":""):"");
   } else {
     ctx=(UFONC?UFONC+" · ":"")+"Accès consultation";
   }
@@ -2535,25 +2637,99 @@ function renderNextMatch(){
     +'<div class="nm-l2">'+esc(m.adv)+' <span class="nm-lieu">'+labLieu(m)+'</span></div></div>'
     +'<div class="nm-cd"><b>'+cd+'</b><span>'+frDate(m.d)+'</span></div></div>';
 }
+function renderSemaine(){
+  const el=document.getElementById("semaine"); if(!el) return;
+  if(!(typeof voitMedical==="function"&&voitMedical())){ el.innerHTML=""; return; }
+  const auj=new Date().toISOString().slice(0,10), A=actifs();
+  const puce=function(p,extra){ return '<button type="button" class="sw-p" data-open="'+esc(p.id)+'">'+esc(p.n)+(extra?' <i>'+extra+'</i>':'')+'</button>'; };
+  /* 1. ce qui a vieilli */
+  const maj=[];
+  A.forEach(function(p){ const e=activeEpisode(p); if(!e) return;
+    const joue=(Array.isArray(p.tdjs)?p.tdjs:[]).concat(Array.isArray(p.tdjx)?p.tdjx:[])
+      .filter(function(x){ return x.d>(e.deb||"") && (parseInt(x.min,10)||0)>0; }).sort(function(a,b){ return String(a.d).localeCompare(String(b.d)); });
+    let txt="";
+    if(joue.length){ const x=joue[joue.length-1]; txt="a joué "+x.min+"′ le "+frDate(x.d)+" alors qu’il est en "+PHASES[e.phase].label.toLowerCase(); }
+    else { const f=ecartFourchette(e); if(f&&f.etat==="depasse") txt="au-delà de la fourchette de retour ("+f.j+" j)"; else if(f&&f.etat==="attente_long") txt="sans diagnostic depuis "+f.j+" jours"; }
+    if(txt) maj.push({p:p,e:e,txt:txt});
+  });
+  /* 2. charge */
+  const mp=matchsPasses(); const der=mp.length?mp[mp.length-1]:null;
+  const plus60=der?A.filter(function(p){ if(p.cat==="EQ1") return false; const x=(p.tdjs||[]).find(function(t){ return t.d===der.d; }); return x&&(parseInt(x.min,10)||0)>60; }):[];
+  const series=A.filter(function(p){ return weCharges(p)>=3; });
+  /* 3. blesses */
+  const bl=A.filter(function(p){ return activeEpisode(p); });
+  /* 4. donnees manquantes */
+  const lim=new Date(Date.now()-10*864e5).toISOString().slice(0,10);
+  const vides=A.filter(function(p){ return p.cat!=="EQ1"&&!(p.pesees||[]).length&&!(p.tests||[]).length; });
+  const nonPeses=A.filter(function(p){ if(p.cat==="EQ1"||vides.indexOf(p)>=0) return false; const ep=activeEpisode(p); if(ep&&(ep.phase==="soins"||ep.phase==="attente")) return false; const pe=p.pesees||[]; const d=pe.length?pe[pe.length-1].d:""; return !d||d<lim; });
+  const bloc=function(cls,titre,nb,corps){ return '<div class="sw-b '+cls+'"><div class="sw-t">'+titre+'<b>'+nb+'</b></div>'+corps+'</div>'; };
+  let h='';
+  if(maj.length) h+=bloc("sw-maj","À mettre à jour",maj.length,maj.map(function(x){
+      return '<div class="sw-l"><div>'+puce(x.p)+'<span>'+esc(x.txt)+'</span></div><button type="button" class="sw-clore" data-clore="'+esc(x.p.id)+'">Clore</button></div>'; }).join(""));
+  h+=bloc("sw-bl","Blessés",bl.length,bl.length?'<div class="sw-ps">'+bl.map(function(p){ const e=activeEpisode(p); return puce(p,PHASES[e.phase].label+(e.zone?" · "+e.zone:"")); }).join("")+'</div>':'<div class="sw-v">Aucun</div>');
+  h+=bloc("sw-ch","Charge",plus60.length+series.length,
+     (plus60.length?'<div class="sw-s">Plus de 60′ '+(der?"le "+frDate(der.d):"")+' · une série de moins au A1 du mardi</div><div class="sw-ps">'+plus60.map(function(p){ const x=(p.tdjs||[]).find(function(t){ return t.d===der.d; }); return puce(p,x.min+"′"); }).join("")+'</div>':'')
+    +(series.length?'<div class="sw-s">3 week-ends ou plus d’affilée à +60′</div><div class="sw-ps">'+series.map(function(p){ return puce(p,weCharges(p)+" W-E"); }).join("")+'</div>':'')
+    +(!plus60.length&&!series.length?'<div class="sw-v">Rien à signaler</div>':''));
+  h+=bloc("sw-mq","Données manquantes",vides.length+nonPeses.length,
+     (vides.length?'<div class="sw-s">Aucune pesée ni aucun test</div><div class="sw-ps">'+vides.map(function(p){ return puce(p); }).join("")+'</div>':'')
+    +(nonPeses.length?'<div class="sw-s">Pas pesés depuis plus de 10 jours</div><div class="sw-ps">'+nonPeses.map(function(p){ return puce(p); }).join("")+'</div>':'')
+    +(!vides.length&&!nonPeses.length?'<div class="sw-v">Tout est à jour</div>':''));
+  let plie=false; try{ plie=localStorage.getItem("hubSemPlie")==="1"; }catch(e){}
+  const resume=[maj.length?maj.length+" à mettre à jour":"",bl.length+" blessé"+(bl.length>1?"s":""),(plus60.length+series.length)?(plus60.length+series.length)+" en charge":"",(vides.length+nonPeses.length)?(vides.length+nonPeses.length)+" données manquantes":""].filter(Boolean).join(" · ");
+  el.innerHTML='<div class="sw'+(plie?' sw-plie':'')+'"><button type="button" class="sw-h" data-plier="1">Cette semaine<span class="sw-r">'+resume+'</span><i></i></button><div class="sw-g">'+h+'</div></div>';
+  el.onclick=function(ev){
+    if(ev.target.closest("[data-plier]")){ const sw=el.querySelector(".sw"); sw.classList.toggle("sw-plie");
+      try{ localStorage.setItem("hubSemPlie",sw.classList.contains("sw-plie")?"1":"0"); }catch(e){} return; }
+    const o=ev.target.closest("[data-open]"); if(o){ openDetail(o.dataset.open); return; }
+    const c=ev.target.closest("[data-clore]"); if(!c) return;
+    const p=players.find(function(x){ return x.id===c.dataset.clore; }); const e=p&&activeEpisode(p); if(!e) return;
+    if(!confirm("Clore l’épisode « "+(e.zone||"blessure")+" » de "+p.n+" ? Il repassera apte.")) return;
+    e.phase="clos"; e.retr=auj; persist(); render(); toast("Épisode clos : "+p.n+" est apte");
+  };
+}
+let MODE_LISTE=false;
+try{ MODE_LISTE=localStorage.getItem("hubListe")==="1"; }catch(e){}
+function ligneJoueur(p){
+  const et=etatDe(p), tot=totalMin(p);
+  const d=document.createElement("button"); d.type="button"; d.className="lrow";
+  d.innerHTML='<span class="lr-no" style="background:'+(et.cle==="apte"?"linear-gradient(160deg,#A8CCE6,#7AAADB)":et.color)+'">'+esc(String(p.poste==="none"?"—":p.poste))+'</span>'
+    +'<span class="lr-n"><b>'+esc(p.n)+'</b>'+(et.cle!=="apte"?'<i style="color:'+et.color+'">'+esc(et.label)+(et.zone?' · '+esc(et.zone):'')+'</i>':'')+'</span>'
+    +'<span class="lr-m">'+(tot?'<b>'+tot+'</b>′':'—')+'</span>';
+  d.addEventListener("click",function(){ openDetail(p.id); });
+  return d;
+}
+function carteOuLigne(p){ return MODE_LISTE?ligneJoueur(p):card(p); }
+document.addEventListener("DOMContentLoaded",function(){
+  try{ if(localStorage.getItem("hubNoteVue")==="1"){ const n=document.getElementById("sharedNote"); if(n) n.style.display="none"; } }catch(e){}
+  const seg=document.getElementById("dispseg"); if(!seg) return;
+  const maj=function(){ [...seg.children].forEach(function(b){ b.setAttribute("aria-pressed",String((b.dataset.disp==="liste")===MODE_LISTE)); });
+    const l=document.getElementById("list"); if(l) l.classList.toggle("list-compacte",MODE_LISTE); };
+  maj();
+  seg.addEventListener("click",function(ev){ const b=ev.target.closest("[data-disp]"); if(!b) return;
+    MODE_LISTE=(b.dataset.disp==="liste"); try{ localStorage.setItem("hubListe",MODE_LISTE?"1":"0"); }catch(e){} maj(); render(); });
+});
+function actifs(){ return players.filter(function(p){ return p.s!=="parti"; }); }
 function render(){
   renderHello();
   renderNextMatch();
+  try{ renderSemaine(); }catch(e){}
   renderCounts();
   const rows=filteredBase();
   elCount.textContent=rows.length+(rows.length>1?" joueurs":" joueur");
-  { const bf=document.getElementById("btnFiches"); if(bf) bf.textContent="Fiches PDF ("+rows.length+")"; }
+  { const bf=document.getElementById("btnFiches"); if(bf) bf.textContent="Fiches profils PDF ("+rows.length+")"; }
   elList.innerHTML="";
   if(rows.length===0){ const e=document.createElement("div"); e.className="empty"; e.innerHTML='<p>Aucun joueur ne correspond.</p><button class="btn" type="button">Tout afficher</button>'; e.querySelector("button").addEventListener("click",()=>{ elQ.value=""; query=""; elClear.classList.remove("show"); activeFilter="all"; [...elChips.children].forEach(x=>x.setAttribute("aria-pressed",x.dataset.key==="all"?"true":"false")); render(); }); elList.appendChild(e); return; }
   const showGroups=(query==="");
-  if(!showGroups){ rows.forEach(p=>elList.appendChild(card(p))); return; }
+  if(!showGroups){ rows.forEach(p=>elList.appendChild(carteOuLigne(p))); return; }
   if(viewMode==="poste"){
     const counts={}; rows.forEach(p=>{ const k=posteInfo(p).key; counts[k]=(counts[k]||0)+1; });
     rows.sort((a,b)=>{ const A=posteInfo(a),B=posteInfo(b); return (GRANK[A.g]-GRANK[B.g])||(A.o-B.o)||(PRIO[a.s]-PRIO[b.s])||a.n.localeCompare(b.n,"fr"); });
     let curG=null,curP=null;
-    rows.forEach(p=>{ const pi=posteInfo(p); if(pi.g!==curG){ curG=pi.g; elList.appendChild(sectionEl(SECTION_LABEL[curG])); curP=null; } if(pi.key!==curP){ curP=pi.key; if(pi.key!=="none") elList.appendChild(groupEl(posteDisplay(pi),counts[pi.key])); } elList.appendChild(card(p)); });
+    rows.forEach(p=>{ const pi=posteInfo(p); if(pi.g!==curG){ curG=pi.g; elList.appendChild(sectionEl(SECTION_LABEL[curG])); curP=null; } if(pi.key!==curP){ curP=pi.key; if(pi.key!=="none") elList.appendChild(groupEl(posteDisplay(pi),counts[pi.key])); } elList.appendChild(carteOuLigne(p)); });
   } else {
     rows.sort((a,b)=> (PRIO[a.s]-PRIO[b.s])||((a.z!=="none")===(b.z!=="none")?0:(a.z!=="none"?-1:1))||a.n.localeCompare(b.n,"fr"));
-    SG_ORDER.forEach(g=>{ const items=rows.filter(p=>statutGroupKey(p.s)===g); if(!items.length) return; const h=document.createElement("div"); h.className="group"; h.innerHTML=SG_LABEL[g][0]+' <span>· '+items.length+' · '+SG_LABEL[g][1]+'</span>'; elList.appendChild(h); items.forEach(p=>elList.appendChild(card(p))); });
+    SG_ORDER.forEach(g=>{ const items=rows.filter(p=>statutGroupKey(p)===g); if(!items.length) return; const h=document.createElement("div"); h.className="group"; h.innerHTML=SG_LABEL[g][0]+' <span>· '+items.length+' · '+SG_LABEL[g][1]+'</span>'; elList.appendChild(h); items.forEach(p=>elList.appendChild(carteOuLigne(p))); });
   }
 }
 
@@ -2892,8 +3068,8 @@ function ficheHTML(p){
       const th=totalMinHors(p);
       let note="";
       if(th) note+='<div class="pf-tdjnote">Dont '+th+' min en double licence ('+nbMatchsHors(p)+' match'+(nbMatchsHors(p)>1?'s':'')+')</div>';
-      const sw=serieSemaines(p);
-      if(sw>=3) note+='<div class="pf-tdjnote alerte">'+sw+' week-ends d activite consecutifs</div>';
+      const sw=weCharges(p);
+      if(sw>=3) note+='<div class="pf-tdjnote alerte">'+sw+' week-ends consécutifs à +60′</div>';
       const maxi=Math.max(1,...toutesMinutes(p).map(function(x){ return x.min; }));
       const lignes=toutesMinutes(p).slice().sort(function(a,b){ return b.d.localeCompare(a.d); }).slice(0,6).map(function(x){
         const m=matchDe(x.d), lg=m?logoClub(m.adv):"";
@@ -2944,7 +3120,7 @@ function ficheHTML(p){
 }
 function blocSansDiag(){
   const nd=[];
-  players.slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
+  actifs().slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
     (Array.isArray(p.episodes)?p.episodes:[]).filter(closSansDiag).forEach(e=>{ nd.push({p:p,e:e}); });
   });
   if(!nd.length) return "";
@@ -2958,7 +3134,7 @@ function blocSansDiag(){
 function reathleFicheHTML(){
   const auj=new Date().toISOString().slice(0,10);
   const grp={attente_long:[],attente:[],depasse:[],fin:[],dans:[],avant:[],inconnu:[]};
-  players.slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
+  actifs().slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
     (Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e.phase!=="clos").forEach(e=>{
       grp[ecartFourchette(e).etat].push({p:p,e:e});
     });
@@ -3014,7 +3190,7 @@ function reathleFicheHTML(){
 function tdjFicheHTML(){
   const auj=new Date().toISOString().slice(0,10);
   const joues=CALENDRIER.filter(m=>m.d<=auj);
-  const rows=players.slice().map(p=>({p:p,tot:totalMin(p),nb:nbMatchs(p),moy:moyMin(p),m21:minSurJours(p,21),serie:serieConsecutive(p),titu:tauxTitu(p)}))
+  const rows=actifs().slice().map(p=>({p:p,tot:totalMin(p),nb:nbMatchs(p),moy:moyMin(p),m21:minSurJours(p,21),serie:serieConsecutive(p),titu:tauxTitu(p)}))
     .filter(r=>r.nb>0||r.tot>0).sort((a,b)=>b.tot-a.tot);
   let h='<div class="pf">';
   h+='<div class="pf-head"><div class="pf-crest"></div><div><div class="pf-club">CS Vienne Rugby · Espoirs Reichel Accession U21</div><div class="pf-title">Temps de jeu · staff</div></div></div>';
@@ -3049,7 +3225,7 @@ function tdjFicheHTML(){
 function printTdj(){ document.getElementById("printArea").innerHTML=tdjFicheHTML(); if(window.print){ window.print(); } else { toast("Ouvre le fichier dans un navigateur pour le PDF"); } }
 function feuilleMatchHTML(d){
   const m=matchDe(d);
-  const liste=players.slice().sort(ordrePoste);
+  const liste=actifs().slice().sort(ordrePoste);
   const moitie=Math.ceil(liste.length/2);
   function ligne(p){
     const pi=posteInfo(p); const ep=activeEpisode(p);
@@ -3112,7 +3288,7 @@ function bilanMatchHTML(d){
   const n80=joues.filter(function(x){ return x.min>=80; }).length;
   const nct=joues.filter(function(x){ return x.ct; }).length;
   const trois=matchsPasses().filter(function(x){ return x.d<=d; }).slice(-3).map(function(x){ return x.d; });
-  const acc=players.filter(function(p){
+  const acc=actifs().filter(function(p){
       if(trois.length<3) return false;
       return trois.every(function(dd){
         const e=(Array.isArray(p.tdjs)?p.tdjs:[]).filter(function(x){ return x.d===dd; })[0];
@@ -3157,7 +3333,7 @@ function printBilanMatch(){
 function csvTdj(){
   const sep=";";
   const L=["Joueur"+sep+"Poste"+sep+"Journee"+sep+"Adversaire"+sep+"Date"+sep+"Lieu"+sep+"Statut"+sep+"Minutes"+sep+"Competition"];
-  players.slice().sort(ordrePoste).forEach(function(p){
+  actifs().slice().sort(ordrePoste).forEach(function(p){
     const po=posteInfo(p).num!=null?posteInfo(p).num:"";
     (Array.isArray(p.tdjs)?p.tdjs:[]).forEach(function(x){
       const m=matchDe(x.d);
@@ -3226,7 +3402,12 @@ function openExport(){ $("dataTitle").textContent="Exporter (sauvegarde)"; $("da
 function openImport(){ $("dataTitle").textContent="Importer"; $("dataHint").textContent="Choisis ton fichier JSON (bouton ci-dessous) ou colle une sauvegarde. Cela remplace les données."; $("dataText").value=""; $("dataText").readOnly=false; $("dataText").placeholder="Colle le JSON ici…"; const a=$("dataActions"); a.innerHTML=""; a.style.flexDirection="row"; const load=document.createElement("button"); load.className="btn"; load.textContent="Charger"; load.onclick=()=>{ try{ const arr=JSON.parse($("dataText").value); if(!Array.isArray(arr)) throw 0; players=arr.map(normRec); persist(); render(); closeData(); toast("Données importées"); }catch(e){ toast("JSON invalide"); } }; const file=document.createElement("button"); file.className="btn ghost"; file.textContent="Choisir un fichier"; const inp=document.createElement("input"); inp.type="file"; inp.accept=".json,application/json"; inp.style.display="none"; inp.onchange=()=>{ const ff=inp.files&&inp.files[0]; if(!ff) return; const r=new FileReader(); r.onload=()=>{ try{ const arr=JSON.parse(r.result); if(!Array.isArray(arr)) throw 0; players=arr.map(normRec); persist(); render(); closeData(); toast("Données importées"); }catch(e){ toast("Fichier JSON invalide"); } }; r.readAsText(ff); }; file.onclick=()=>inp.click(); const close=document.createElement("button"); close.className="btn ghost"; close.textContent="Annuler"; close.onclick=closeData; a.append(load,file,close); a.appendChild(inp); dataOverlay.classList.add("open"); }
 $("btnExport").addEventListener("click",openExport);
 $("btnImport").addEventListener("click",openImport);
-$("btnReset").addEventListener("click",()=>{ if(confirm("Réinitialiser à l'effectif d'origine ? Les données partagées seront remplacées.")){ players=SEED.map(normRec); persist(); render(); toast("Effectif réinitialisé"); } });
+$("btnReset").addEventListener("click",async()=>{
+  const r=prompt("Cette action remplace TOUTES les données partagées (temps de jeu, tests, pesées, blessures) par l’effectif de juillet, pour tout le staff.\n\nPour confirmer, tape : RÉINITIALISER");
+  if(r!=="RÉINITIALISER"){ if(r!==null) toast("Réinitialisation annulée"); return; }
+  try{ await sb.from("app_data").upsert({id:"sauvegarde_avant_reinit",data:{players:players,date:new Date().toISOString()},updated_at:new Date().toISOString()}); }catch(e){}
+  players=SEED.map(normRec); persist(); render(); toast("Effectif réinitialisé — sauvegarde conservée");
+});
 $("btnReload").addEventListener("click",async()=>{ const s=await store.load(); if(s&&Array.isArray(s)&&s.length){ players=s.map(normRec); render(); toast("Données rechargées"); } else { toast("Rien à recharger"); } });
 
 const baremeOverlay=$("baremeOverlay");
@@ -3666,7 +3847,7 @@ function muSyncJoueurs(){
   if(typeof players==="undefined"||!Array.isArray(players)||!players.length) return;
   const par={}; P.forEach(function(p){ par[p.n]=p; });
   const out=[];
-  players.filter(function(h){ return h.cat!=="EQ1"; }).forEach(function(h){
+  players.filter(function(h){ return h.cat!=="EQ1"&&h.s!=="parti"; }).forEach(function(h){
     const po=parseInt(h.poste,10)||0;
     const p=par[h.n]||{n:h.n,prof:"socle"};
     if(po){ p.poste=po; p.av=po<=8; p.pl=MU_POSTES[po]||p.pl||""; }
@@ -4057,7 +4238,7 @@ function open_(n){
     : "Socle commun. Plus de 60 min jouées au dernier match → une série en moins sur le A1 du mardi, appliquée automatiquement.";
   S.innerHTML=`<div class="mu-sh"><button class="mu-close" onclick="document.getElementById('mu_sheet').classList.remove('on')">×</button>
     <h2>${p.n}</h2><p>${p.pl} · poste ${p.poste} · ${CY[ci].n} · ${CY[ci].wk[wi][0]} · ${CY[ci].d[di][0]}</p>
-    <div class="mu-acts"><button type="button" class="mu-prj" onclick='muImprimerJoueur(${JSON.stringify(p.n)})'>Imprimer sa fiche</button>
+    <div class="mu-acts"><button type="button" class="mu-prj" onclick='muImprimerJoueur(${JSON.stringify(p.n)})'>Fiche muscu du cycle</button>
     ${(typeof ROLE!=="undefined"&&ROLE==="admin")?`<button type="button" class="mu-prj mu-mod" onclick='muEditer(${JSON.stringify(p.n)})'>Modifier la séance</button>`:""}</div></div>
     <div class="mu-stats">
       <div><b>${p.w!=null?String(p.w).replace(".",","):"—"}</b><span>Poids kg</span></div>
@@ -4598,7 +4779,7 @@ function render(){
   document.getElementById("bq_sessions").innerHTML = w.rest ? "" :
     (bqSeances(w).map(function(se,i){ return sessionHTML(w,i); }).join("")
      + '<div class="sess sess-add"><button type="button" id="bq_addSess">+ Ajouter une séance</button></div>');
-  drawRail(); drawChart(); save();
+  drawRail(); drawChart(); bqSauverSiChange();
 }
 
 
@@ -4706,7 +4887,7 @@ function bqFeuilleHTML(wi, key){
                    .map(function(x){ return esc(x.n.split(" ")[0]); });
     return '<td><div class="bqf-po">'+p+'</div>'+(l.length?l.join("<br>"):"<span class=\"bqf-vide\">—</span>")+'</td>';
   }).join("");
-  var bl = players.filter(function(x){ return activeEpisode(x); })
+  var bl = actifs().filter(function(x){ return activeEpisode(x); })
     .map(function(x){ var e=activeEpisode(x); return esc(x.n)+' <span class="bqf-ph">'+esc(PHASES[e.phase].label)+'</span>'; });
   var h = '<div class="pf bqf">';
   h += '<div class="bqf-hd"><div class="bqf-crest"></div><div><div class="bqf-club">CS Vienne Rugby · Espoirs Reichel Accession U21'+((w.adv&&w.adv!=="\u2014"&&w.adv!=="Vacances"&&w.adv!=="Sans match")?" · semaine de "+esc(w.adv)+(w.lieu?" ("+esc(w.lieu)+")":""):"")+'</div>'
@@ -4777,11 +4958,11 @@ function bqXlsSeance(key){
   var ORD=["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"];
   L(ORD.map(bqCellH).join(""));
   var maxn=0, cols=ORD.map(function(p){
-    var l=players.filter(function(x){ return String(x.poste)===p && !activeEpisode(x); }).map(function(x){ return x.n; });
+    var l=actifs().filter(function(x){ return String(x.poste)===p && !activeEpisode(x); }).map(function(x){ return x.n; });
     if(l.length>maxn) maxn=l.length; return l;
   });
   for(var i=0;i<maxn;i++) L(cols.map(function(c){ return bqCellT(c[i]||""); }).join(""));
-  var bl=players.filter(function(x){ return activeEpisode(x); });
+  var bl=actifs().filter(function(x){ return activeEpisode(x); });
   if(bl.length){ L(""); L(bqCellH("Am\u00e9nag\u00e9 / indisponible"));
     bl.forEach(function(x){ var e=activeEpisode(x); L(bqCellT(x.n)+bqCellT(PHASES[e.phase].label)+bqCellT(e.zone||"")); }); }
   var xml='<?xml version="1.0"?>\n<?mso-application progid="Excel.Sheet"?>\n'
@@ -4928,6 +5109,14 @@ document.getElementById("bq_file").addEventListener("change", ev=>{
 });
 
 /* ---------------- persistance douce ---------------- */
+let BQ_DERNIER=null;
+function bqSauverSiChange(){
+  /* n enregistre que si la saison a vraiment change : ouvrir ou parcourir le sequenceur n ecrit plus rien */
+  const j=JSON.stringify(state);
+  if(BQ_DERNIER===null){ BQ_DERNIER=j; return; }
+  if(j===BQ_DERNIER) return;
+  BQ_DERNIER=j; save();
+}
 async function save(){
   try { const r = await sb.from("app_data").upsert({id:"bip",data:state,updated_at:new Date().toISOString()}); toast(r&&r.error?"Séquençage : sauvegarde impossible":"Séquençage enregistré"); } catch(_){ toast("Séquençage : sauvegarde impossible"); }
 }
@@ -5017,7 +5206,7 @@ function reathleTexte(){
   L.push("Au "+frDate(auj));
   L.push("");
   const grp={attente_long:[],attente:[],depasse:[],fin:[],dans:[],avant:[],inconnu:[]};
-  players.slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
+  actifs().slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
     (Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e.phase!=="clos").forEach(e=>{
       const ef=ecartFourchette(e); const pth=pathoOf(e); const jl=jalonsOf(e); const nOk=(e.jal||[]).filter(Boolean).length;
       const ds=daysSince(e.deb);
@@ -5045,7 +5234,7 @@ function reathleTexte(){
 }
 function openReathle(){
   const rows=[];
-  players.slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
+  actifs().slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
     (Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e.phase!=="clos").forEach(e=>{
       const ph=PHASES[e.phase]; const ds=daysSince(e.deb);
       const ef=ecartFourchette(e); const ec=ETATCOL[ef.etat]; const pth=pathoOf(e);
@@ -5054,7 +5243,7 @@ function openReathle(){
     });
   });
   const retours=[];
-  players.slice().forEach(p=>{
+  actifs().slice().forEach(p=>{
     (Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e.phase!=="clos").forEach(e=>{
       const f=fenetreRetour(e); if(f) retours.push({n:p.n,zone:e.zone||EPTYPES[e.type]||"",min:f.min,max:f.max,ph:e.phase,medok:!!e.medok});
     });
@@ -5101,7 +5290,7 @@ function ordrePoste(a,b){
 function remplirSaisie(){
   const d=$("saisieMatch").value; const box=$("saisieBody");
   if(!d){ box.innerHTML='<p class="hint">Aucun match disponible.</p>'; return; }
-  const liste=players.slice().sort(ordrePoste);
+  const liste=actifs().slice().sort(ordrePoste);
   let h="";
   liste.forEach(function(p){
     const ex=(Array.isArray(p.tdjs)?p.tdjs:[]).filter(function(x){ return x&&x.d===d; })[0]||null;
@@ -5236,12 +5425,12 @@ const tdjOverlay=$("tdjOverlay");
 function openTdj(){
   const auj=new Date().toISOString().slice(0,10);
   const joues=CALENDRIER.filter(m=>m.d<=auj).length;
-  const rows=players.slice().map(p=>({p:p,tot:totalMin(p),nb:nbMatchs(p),moy:moyMin(p),m21:minSurJours(p,21),serie:serieConsecutive(p),sw:serieSemaines(p)}))
+  const rows=actifs().slice().map(p=>({p:p,tot:totalMin(p),nb:nbMatchs(p),moy:moyMin(p),m21:minSurJours(p,21),serie:serieConsecutive(p),sw:weCharges(p)}))
     .filter(r=>r.nb>0||r.tot>0).sort((a,b)=>b.tot-a.tot);
   if(!rows.length){ $("tdjBody").innerHTML='<p class="hint">Aucune minute saisie pour l\'instant. '+(joues?joues+' match'+(joues>1?'s':'')+' déjà joué'+(joues>1?'s':'')+' — renseigne les minutes sur les fiches joueurs.':'La saison démarre le 05/09/2026.')+'</p>'; tdjOverlay.classList.add("open"); return; }
   const maxi=rows[0].tot||1;
   let h='<div class="hint" style="margin-bottom:9px">'+joues+' match'+(joues>1?'s':'')+' disputé'+(joues>1?'s':'')+' · '+rows.length+' joueur'+(rows.length>1?'s':'')+' avec du temps de jeu</div>';
-  h+='<table class="rtable"><thead><tr><th>Joueur</th><th>Total</th><th>Matchs</th><th>Moy.</th><th>21 j</th><th title="Matchs CS Vienne consécutifs">Série CSV</th><th title="Week-ends consécutifs avec un match, toutes compétitions">W-E d\'affilée</th></tr></thead><tbody>';
+  h+='<table class="rtable"><thead><tr><th>Joueur</th><th>Total</th><th>Matchs</th><th>Moy.</th><th>21 j</th><th title="Matchs joués de suite">Matchs de suite</th><th title="Week-ends consécutifs à plus de 60 minutes, toutes compétitions">W-E +60′</th></tr></thead><tbody>';
   rows.forEach(r=>{
     const pc=Math.round(r.tot/maxi*100);
     const th=totalMinHors(r.p);
@@ -5301,8 +5490,8 @@ function openTdj(){
     const box=document.getElementById("tdjFocusBody");
     if(!p){ box.innerHTML=""; return; }
     const tot=totalMin(p), nb=nbMatchs(p), moy=moyMin(p), m21=minSurJours(p,21), serie=serieConsecutive(p), titu=tauxTitu(p), me=moyEquipe();
-    let b='<div class="tdj-sum"><span><b>'+tot+'</b> min</span><span><b>'+nb+'</b> match'+(nb>1?'s':'')+'</span><span><b>'+moy+'</b> min/match</span><span><b>'+m21+'</b> min / 21 j</span><span><b>'+titu+'%</b> titulaire</span>'+(serie>=3?'<span class="surtag" title="Matchs CS Vienne consécutifs"><b>'+serie+'</b> matchs CSV d\'affilée</span>':'')
-      +(function(){ const w=serieSemaines(p); return w>=3?'<span class="surtag" title="Toutes compétitions"><b>'+w+'</b> week-ends d\'affilée</span>':''; })()+'</div>';
+    let b='<div class="tdj-sum"><span><b>'+tot+'</b> min</span><span><b>'+nb+'</b> match'+(nb>1?'s':'')+'</span><span><b>'+moy+'</b> min/match</span><span><b>'+m21+'</b> min / 21 j</span><span><b>'+titu+'%</b> titulaire</span>'+(serie>=3?'<span class="surtag" title="Matchs CS Vienne consécutifs"><b>'+serie+'</b> matchs de suite</span>':'')
+      +(function(){ const w=weCharges(p); return w>=3?'<span class="surtag" title="Week-ends consécutifs à plus de 60 minutes, toutes compétitions"><b>'+w+'</b> week-ends à +60′</span>':''; })()+'</div>';
     if(me) b+='<div class="hint" style="margin:4px 0 8px">Moyenne équipe : '+me+' min — '+(tot>me?'<b style="color:#C32A2A">+'+(tot-me)+' min</b>':(tot<me?'<b style="color:#0E5E8E">'+(tot-me)+' min</b>':'au niveau'))+'</div>';
     b+=barresTdj(p,false);
     const det=tdjParMatch(p).slice().reverse().map(a=>{
@@ -5319,7 +5508,7 @@ $("btnTdj").addEventListener("click",openTdj);
 function tdjTexte(){
   const auj=new Date().toISOString().slice(0,10);
   const joues=CALENDRIER.filter(m=>m.d<=auj).length;
-  const rows=players.slice().map(p=>({p:p,tot:totalMin(p),nb:nbMatchs(p),moy:moyMin(p),m21:minSurJours(p,21),serie:serieConsecutive(p),titu:tauxTitu(p)}))
+  const rows=actifs().slice().map(p=>({p:p,tot:totalMin(p),nb:nbMatchs(p),moy:moyMin(p),m21:minSurJours(p,21),serie:serieConsecutive(p),titu:tauxTitu(p)}))
     .filter(r=>r.nb>0||r.tot>0).sort((a,b)=>b.tot-a.tot);
   if(!rows.length) return "TEMPS DE JEU — CS Vienne U21\nAu "+frDate(auj)+"\n\nAucune minute saisie.";
   const L=["TEMPS DE JEU — CS Vienne U21","Au "+frDate(auj)+" · "+joues+" match"+(joues>1?"s":"")+" disputé"+(joues>1?"s":""),""];
