@@ -1675,7 +1675,6 @@ table.cr-t{width:100%;border-collapse:collapse}
         <div class="menu" id="menuOutils">
           <button type="button" id="btnReload">Recharger</button>
           <button type="button" id="btnFiches">Fiches profils PDF</button>
-          <button type="button" id="btnCel">Point infirmerie CEL</button>
           <button type="button" id="btnBareme">Barème</button>
           <button type="button" id="btnExport">Exporter</button>
           <button type="button" id="btnImport">Importer</button>
@@ -1714,7 +1713,7 @@ table.cr-t{width:100%;border-collapse:collapse}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h93 — CEL : point infirmerie, badge bleu marine</div>
+    <div style="font-size:.7rem;opacity:.5">h94 — point infirmerie CEL dans l’onglet Blessés</div>
   </footer>
 </div>
 
@@ -1961,6 +1960,7 @@ table.cr-t{width:100%;border-collapse:collapse}
     <div id="reathleBody"></div>
     <div class="frow" style="margin-top:12px;gap:8px">
       <button type="button" id="reathleCopy">Copier le point staff</button>
+      <button type="button" id="btnCel">Point infirmerie CEL</button>
       <button type="button" id="reathleFiche">Fiche PDF</button>
       <button type="button" id="reathleClose">Fermer</button>
     </div>
@@ -3463,6 +3463,7 @@ function openExport(){ $("dataTitle").textContent="Exporter (sauvegarde)"; $("da
 function openImport(){ $("dataTitle").textContent="Importer"; $("dataHint").textContent="Choisis ton fichier JSON (bouton ci-dessous) ou colle une sauvegarde. Cela remplace les données."; $("dataText").value=""; $("dataText").readOnly=false; $("dataText").placeholder="Colle le JSON ici…"; const a=$("dataActions"); a.innerHTML=""; a.style.flexDirection="row"; const load=document.createElement("button"); load.className="btn"; load.textContent="Charger"; load.onclick=()=>{ try{ const arr=JSON.parse($("dataText").value); if(!Array.isArray(arr)) throw 0; players=arr.map(normRec); persist(); render(); closeData(); toast("Données importées"); }catch(e){ toast("JSON invalide"); } }; const file=document.createElement("button"); file.className="btn ghost"; file.textContent="Choisir un fichier"; const inp=document.createElement("input"); inp.type="file"; inp.accept=".json,application/json"; inp.style.display="none"; inp.onchange=()=>{ const ff=inp.files&&inp.files[0]; if(!ff) return; const r=new FileReader(); r.onload=()=>{ try{ const arr=JSON.parse(r.result); if(!Array.isArray(arr)) throw 0; players=arr.map(normRec); persist(); render(); closeData(); toast("Données importées"); }catch(e){ toast("Fichier JSON invalide"); } }; r.readAsText(ff); }; file.onclick=()=>inp.click(); const close=document.createElement("button"); close.className="btn ghost"; close.textContent="Annuler"; close.onclick=closeData; a.append(load,file,close); a.appendChild(inp); dataOverlay.classList.add("open"); }
 $("btnExport").addEventListener("click",openExport);
 $("btnImport").addEventListener("click",openImport);
+function majBoutonCel(){ const b=document.getElementById("btnCel"); if(b) b.style.display=actifs().some(function(p){ return p.cel; })?"":"none"; }
 $("btnCel").addEventListener("click",function(){
   const h=retourCelHTML();
   if(!h){ toast("Aucun joueur marqué CEL — coche la case dans sa fiche"); return; }
@@ -5300,13 +5301,14 @@ function reathleTexte(){
   return L.join("\n");
 }
 function openReathle(){
+  try{ majBoutonCel(); }catch(e){}
   const rows=[];
   actifs().slice().sort((a,b)=>a.n.localeCompare(b.n)).forEach(p=>{
     (Array.isArray(p.episodes)?p.episodes:[]).filter(e=>e.phase!=="clos").forEach(e=>{
       const ph=PHASES[e.phase]; const ds=daysSince(e.deb);
       const ef=ecartFourchette(e); const ec=ETATCOL[ef.etat]; const pth=pathoOf(e);
       const jl=jalonsOf(e); const nOk=(e.jal||[]).filter(Boolean).length;
-      rows.push({etat:ef.etat,html:'<tr><td><b>'+esc(p.n)+'</b></td><td>'+esc(e.zone||EPTYPES[e.type])+((pth&&voitMedical())?'<br><span class="sub">'+esc(pth.lab)+'</span>':'')+'</td><td><span style="color:'+ph.color+';font-weight:700">'+ph.label+'</span></td><td>'+(ds!=null?ds+" j":"—")+((voitMedical()&&bornesDe(e))?'<br><span class="sub">'+(bornesDe(e).manuel?'estimé ':'repère ')+bornesDe(e).min+'-'+bornesDe(e).max+' j</span>':'')+'</td>'+(voitMedical()?('<td>'+(fenetreTxt(e)||'<span class="sub">—</span>')+'</td>'+'<td><span style="color:'+ec.c+';font-weight:700">'+ec.l+'</span></td>'+'<td>'+((e.phase==="attente")?('<span class="sub">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"à préciser")+(e.rdv?'<br>RDV '+frDate(e.rdv):'')+'</span>'):(nOk+'/'+jl.length))+'</td>'+'<td>'+(e.medok?'<span style="color:#1C8C5A;font-weight:700">oui</span>':((e.phase==="retourp")?'<span style="color:#C32A2A;font-weight:700">requis</span>':'<span class="sub">—</span>'))+'</td>'):'')+'</tr>'});
+      rows.push({etat:ef.etat,html:'<tr><td><b>'+esc(p.n)+'</b>'+(p.cel?' <span class="celtag">CEL</span>':'')+'</td><td>'+esc(e.zone||EPTYPES[e.type])+((pth&&voitMedical())?'<br><span class="sub">'+esc(pth.lab)+'</span>':'')+'</td><td><span style="color:'+ph.color+';font-weight:700">'+ph.label+'</span></td><td>'+(ds!=null?ds+" j":"—")+((voitMedical()&&bornesDe(e))?'<br><span class="sub">'+(bornesDe(e).manuel?'estimé ':'repère ')+bornesDe(e).min+'-'+bornesDe(e).max+' j</span>':'')+'</td>'+(voitMedical()?('<td>'+(fenetreTxt(e)||'<span class="sub">—</span>')+'</td>'+'<td><span style="color:'+ec.c+';font-weight:700">'+ec.l+'</span></td>'+'<td>'+((e.phase==="attente")?('<span class="sub">'+(e.diag&&DIAGSTAT[e.diag]?esc(DIAGSTAT[e.diag]):"à préciser")+(e.rdv?'<br>RDV '+frDate(e.rdv):'')+'</span>'):(nOk+'/'+jl.length))+'</td>'+'<td>'+(e.medok?'<span style="color:#1C8C5A;font-weight:700">oui</span>':((e.phase==="retourp")?'<span style="color:#C32A2A;font-weight:700">requis</span>':'<span class="sub">—</span>'))+'</td>'):'')+'</tr>'});
     });
   });
   const retours=[];
@@ -5336,7 +5338,7 @@ function openReathle(){
         if(mTard&&mTard.d!==mTot.d) txt+='<br><span class="rcal-sub"><b>Réaliste</b> '+labJ(mTard)+' '+esc(mTard.adv)+' ('+frDate(mTard.d)+')</span>';
         else if(!mTard) txt+='<br><span class="rcal-sub">borne haute hors calendrier</span>';
       }
-      calh+='<div class="rcal-l"><div class="rcal-n"><b>'+esc(r.n)+'</b><span>'+esc(r.zone)+' · '+esc(PHASES[r.ph].label)+'</span></div>'
+      calh+='<div class="rcal-l"><div class="rcal-n"><b>'+esc(r.n)+'</b>'+((players.find(function(x){ return x.n===r.n; })||{}).cel?' <span class="celtag">CEL</span>':'')+'<span>'+esc(r.zone)+' · '+esc(PHASES[r.ph].label)+'</span></div>'
         +'<div class="rcal-w">'+frDate(r.min)+' – '+frDate(r.max)+'</div>'
         +'<div class="rcal-m">'+txt+'</div></div>';
     });
