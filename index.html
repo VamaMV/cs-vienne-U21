@@ -1713,7 +1713,7 @@ table.cr-t{width:100%;border-collapse:collapse}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h94 — point infirmerie CEL dans l’onglet Blessés</div>
+    <div style="font-size:.7rem;opacity:.5">h95 — point infirmerie CEL sans les équipiers première</div>
   </footer>
 </div>
 
@@ -2744,7 +2744,8 @@ document.addEventListener("DOMContentLoaded",function(){
     MODE_LISTE=(b.dataset.disp==="liste"); try{ localStorage.setItem("hubListe",MODE_LISTE?"1":"0"); }catch(e){} maj(); render(); });
 });
 function retourCelHTML(){
-  const L=actifs().filter(function(p){ return p.cel; }).sort(ordrePoste);
+  /* les equipiers premiere sont suivis par le staff de l equipe premiere : hors du point infirmerie */
+  const L=actifs().filter(function(p){ return p.cel&&p.cat!=="EQ1"; }).sort(ordrePoste);
   if(!L.length) return "";
   const auj=new Date(), dj=auj.toISOString().slice(0,10);
   const fd=function(d){ return d?d.split("-").reverse().join("/"):""; };
@@ -3463,10 +3464,10 @@ function openExport(){ $("dataTitle").textContent="Exporter (sauvegarde)"; $("da
 function openImport(){ $("dataTitle").textContent="Importer"; $("dataHint").textContent="Choisis ton fichier JSON (bouton ci-dessous) ou colle une sauvegarde. Cela remplace les données."; $("dataText").value=""; $("dataText").readOnly=false; $("dataText").placeholder="Colle le JSON ici…"; const a=$("dataActions"); a.innerHTML=""; a.style.flexDirection="row"; const load=document.createElement("button"); load.className="btn"; load.textContent="Charger"; load.onclick=()=>{ try{ const arr=JSON.parse($("dataText").value); if(!Array.isArray(arr)) throw 0; players=arr.map(normRec); persist(); render(); closeData(); toast("Données importées"); }catch(e){ toast("JSON invalide"); } }; const file=document.createElement("button"); file.className="btn ghost"; file.textContent="Choisir un fichier"; const inp=document.createElement("input"); inp.type="file"; inp.accept=".json,application/json"; inp.style.display="none"; inp.onchange=()=>{ const ff=inp.files&&inp.files[0]; if(!ff) return; const r=new FileReader(); r.onload=()=>{ try{ const arr=JSON.parse(r.result); if(!Array.isArray(arr)) throw 0; players=arr.map(normRec); persist(); render(); closeData(); toast("Données importées"); }catch(e){ toast("Fichier JSON invalide"); } }; r.readAsText(ff); }; file.onclick=()=>inp.click(); const close=document.createElement("button"); close.className="btn ghost"; close.textContent="Annuler"; close.onclick=closeData; a.append(load,file,close); a.appendChild(inp); dataOverlay.classList.add("open"); }
 $("btnExport").addEventListener("click",openExport);
 $("btnImport").addEventListener("click",openImport);
-function majBoutonCel(){ const b=document.getElementById("btnCel"); if(b) b.style.display=actifs().some(function(p){ return p.cel; })?"":"none"; }
+function majBoutonCel(){ const b=document.getElementById("btnCel"); if(b) b.style.display=actifs().some(function(p){ return p.cel&&p.cat!=="EQ1"; })?"":"none"; }
 $("btnCel").addEventListener("click",function(){
   const h=retourCelHTML();
-  if(!h){ toast("Aucun joueur marqué CEL — coche la case dans sa fiche"); return; }
+  if(!h){ toast("Aucun joueur CEL hors équipe première"); return; }
   document.getElementById("printArea").innerHTML=h;
   if(window.print) setTimeout(function(){ window.print(); },150);
 });
