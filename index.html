@@ -1611,6 +1611,47 @@ table.cr-t{width:100%;border-collapse:collapse}
 .cr-t td span{display:block}
 .cr-v{font-size:10px;color:#1C8C5A;font-weight:700;padding:8px 2px}
 .cr-ok2{font-size:9.4px;color:#41566A;line-height:1.6}
+
+/* point infirmerie CEL : cartes des blesses + grille des postes */
+.cr-hd{gap:12px}
+.pi-hm{flex:1}
+.pi-kp{text-align:center;background:rgba(255,255,255,.14);border-radius:8px;padding:5px 11px;min-width:58px;color:#fff}
+.pi-kp b{display:block;font-family:var(--display);font-size:19px;font-weight:800;line-height:1}
+.pi-kp span{font-size:7.6px;text-transform:uppercase;letter-spacing:.06em;color:#D6E8F6}
+.pi-st{font-size:9.6px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#0E5E8E;margin:9px 0 6px;padding-bottom:3px;border-bottom:1.5px solid #D7E4EE}
+.pi-cas{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pi-ca{border:1px solid #DDE8F0;border-left:5px solid;border-radius:11px;padding:12px 14px;break-inside:avoid}
+.pi-h{display:flex;align-items:center;gap:9px}
+.pi-no{width:32px;height:32px;border-radius:7px;background:#12324C;color:#fff;font-family:var(--display);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.pi-nm{flex:1;font-size:14px} .pi-nm b{font-weight:800} .pi-nm span{display:block;font-size:9px;color:#8FA8BC}
+.pi-ph{font-size:8.6px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.pi-z{font-size:10.4px;color:#41566A;margin:9px 0}
+.pi-r{display:flex;gap:6px;margin-bottom:7px}
+.pi-r div{flex:1;background:#F4F8FB;border-radius:8px;padding:7px 9px}
+.pi-r span{display:block;font-size:7.6px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#8FA8BC}
+.pi-r b{font-size:12px} .pi-r em{font-style:normal;font-size:8.6px;color:#6E8AA1;margin-left:4px}
+.pi-ok{color:#1C8C5A} .pi-ko{color:#B3261E}
+.pi-tb{position:relative;height:10px;background:#EEF3F7;border-radius:99px;overflow:hidden}
+.pi-w{position:absolute;top:0;bottom:0;background:#D6E8F6}
+.pi-p{position:absolute;left:0;top:2.5px;height:5px;border-radius:99px}
+.pi-tlab{position:relative;height:12px;font-size:8px;color:#8FA8BC;margin-top:2px}
+.pi-tlab span{position:absolute;top:0;white-space:nowrap}
+.pi-ja{display:flex;align-items:center;gap:9px;margin-top:6px;font-size:9.4px}
+.pi-d{display:flex;gap:3px}
+.pi-d i{width:11px;height:11px;border-radius:99px;border:1.4px solid #B9CCDA}
+.pi-d i.on{background:#1C8C5A;border-color:#1C8C5A}
+.pi-nx{margin-left:auto;color:#6E8AA1;text-align:right}
+.pi-gt{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#8FA8BC;margin:5px 0 4px}
+.pi-g8{display:grid;grid-template-columns:repeat(8,1fr);gap:5px}
+.pi-g7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.pi-gp{background:#F4F8FB;border:1px solid #E6EEF4;border-radius:9px;padding:7px 8px 8px;min-height:74px}
+.pi-gp.vide{background:#FBFCFD;opacity:.6}
+.pi-gh{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.pi-gn{flex:0 0 auto;width:25px;height:25px;border-radius:6px;background:linear-gradient(160deg,#A8CCE6,#7AAADB);color:#fff;font-family:var(--display);font-weight:800;font-size:11.5px;display:flex;align-items:center;justify-content:center}
+.pi-gl{font-size:7.4px;font-weight:700;text-transform:uppercase;color:#8FA8BC;line-height:1.1}
+.pi-gj{font-size:9.8px;line-height:1.3;margin-bottom:3px} .pi-gj b{font-weight:800}
+.pi-gv{font-size:9.8px;color:#C7D4DD}
+
 </style>
 </head>
 <body>
@@ -1713,7 +1754,7 @@ table.cr-t{width:100%;border-collapse:collapse}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h95 — point infirmerie CEL sans les équipiers première</div>
+    <div style="font-size:.7rem;opacity:.5">h96 — point infirmerie CEL : cartes des blessés, grille des postes</div>
   </footer>
 </div>
 
@@ -2748,27 +2789,49 @@ function retourCelHTML(){
   const L=actifs().filter(function(p){ return p.cel&&p.cat!=="EQ1"; }).sort(ordrePoste);
   if(!L.length) return "";
   const auj=new Date(), dj=auj.toISOString().slice(0,10);
-  const fd=function(d){ return d?d.split("-").reverse().join("/"):""; };
+  const fd=function(d){ return d?d.split("-").reverse().slice(0,2).join("/"):""; };
   const plus=function(d,n){ const x=new Date(d+"T00:00:00Z"); x.setUTCDate(x.getUTCDate()+n); return x.toISOString().slice(0,10); };
+  const nomPre=function(n){ const w=String(n).split(" "); const nom=w.filter(function(x){ return x===x.toUpperCase(); }).join(" "); return [nom,w.slice(nom.split(" ").length).join(" ")]; };
+  const POS={1:"Pilier gauche",2:"Talonneur",3:"Pilier droit",4:"2e ligne",5:"2e ligne",6:"3e ligne aile",7:"3e ligne aile",8:"N°8",
+    9:"Demi de mêlée",10:"Ouvreur",11:"Ailier",12:"Centre",13:"Centre",14:"Ailier",15:"Arrière"};
   const bl=L.filter(function(p){ return activeEpisode(p); }), ok=L.filter(function(p){ return !activeEpisode(p); });
-  const lignes=bl.map(function(p){
-    const ep=activeEpisode(p), pa=pathoOf(ep), b=bornesDe(ep), jal=jalonsOf(ep), pi=posteInfo(p);
-    const nbj=Array.isArray(ep.jal)?ep.jal.filter(Boolean).length:0;
-    const j=ep.deb?Math.round((new Date(dj)-new Date(ep.deb))/864e5):null;
-    const fen=(b&&ep.deb)?fd(plus(ep.deb,b.min)).slice(0,5)+" → "+fd(plus(ep.deb,b.max)).slice(0,5):"—";
-    return '<tr><td class="cr-n">'+esc(String(pi.num!=null?pi.num:"—"))+'</td>'
-      +'<td class="cr-j"><b>'+esc(p.n)+'</b><span>'+esc(pi.key!=="none"?pi.label:"")+'</span></td>'
-      +'<td><b class="cr-ph">'+esc(PHASES[ep.phase].label)+'</b><span>'+esc(ep.zone||"")+(pa?' · '+esc(pa.lab):'')+'</span></td>'
-      +'<td>'+(ep.deb?fd(ep.deb):"—")+(j!=null?'<span>J+'+j+'</span>':'')+'</td>'
-      +'<td>'+fen+(b?'<span>'+b.min+' à '+b.max+' j</span>':'')+'</td>'
-      +'<td>'+nbj+' / '+jal.length+'</td>'
-      +'<td>'+(ep.medok?'oui':'non')+'</td></tr>';
+  /* blesses : une carte chacun */
+  const cartes=bl.map(function(p){
+    const ep=activeEpisode(p), ph=PHASES[ep.phase]||{label:ep.phase,color:"#6B7280"}, pa=pathoOf(ep), b=bornesDe(ep), J=jalonsOf(ep);
+    const nj=Array.isArray(ep.jal)?ep.jal.filter(Boolean).length:0, pi=posteInfo(p), np=nomPre(p.n);
+    const j=ep.deb?Math.round((new Date(dj)-new Date(ep.deb))/864e5):0;
+    const mx=b&&b.max?b.max:Math.max(j,1), mn=b&&b.min!=null?b.min:0;
+    const pc=Math.min(100,j/mx*100), pm=mn/mx*100;
+    let prochain=""; for(let k=0;k<J.length;k++){ if(!(ep.jal||[])[k]){ prochain=J[k]; break; } }
+    const dots=J.map(function(_,k){ return '<i class="'+((ep.jal||[])[k]?"on":"")+'"></i>'; }).join("");
+    return '<div class="pi-ca" style="border-left-color:'+ph.color+'">'
+      +'<div class="pi-h"><span class="pi-no">'+esc(String(pi.num!=null?pi.num:"—"))+'</span><div class="pi-nm"><b>'+esc(np[0])+'</b> '+esc(np[1])+'<span>'+esc(pi.key!=="none"?pi.label:"")+'</span></div>'
+      +'<span class="pi-ph" style="color:'+ph.color+';background:'+ph.color+'1A">'+esc(ph.label)+'</span></div>'
+      +'<div class="pi-z"><b>'+esc(ep.zone||"")+'</b>'+(pa?' · '+esc(pa.lab):'')+'</div>'
+      +'<div class="pi-r"><div><span>Depuis</span><b>'+fd(ep.deb)+'</b><em>J+'+j+'</em></div>'
+      +'<div><span>Retour estimé</span><b>'+(b&&ep.deb?fd(plus(ep.deb,mn))+' → '+fd(plus(ep.deb,mx)):'—')+'</b>'+(b?'<em>'+mn+' à '+mx+' j</em>':'')+'</div>'
+      +'<div><span>Accord médical</span><b class="'+(ep.medok?"pi-ok":"pi-ko")+'">'+(ep.medok?"oui":"non")+'</b></div></div>'
+      +'<div class="pi-tl"><div class="pi-tb"><i class="pi-w" style="left:'+pm.toFixed(1)+'%;width:'+(100-pm).toFixed(1)+'%"></i><i class="pi-p" style="width:'+pc.toFixed(1)+'%;background:'+ph.color+'"></i></div>'
+      +'<div class="pi-tlab"><span style="left:0">blessure</span>'+(b?'<span style="left:'+pm.toFixed(1)+'%">J+'+mn+'</span><span style="right:0">J+'+mx+'</span>':'')+'</div></div>'
+      +(J.length?'<div class="pi-ja"><b>Jalons '+nj+' / '+J.length+'</b><span class="pi-d">'+dots+'</span>'+(prochain?'<span class="pi-nx">Prochain : '+esc(prochain)+'</span>':'')+'</div>':'')
+      +'</div>';
   }).join("");
-  return '<div class="celr"><div class="cr-hd"><span class="cr-cr"></span><div><div class="cr-cp">CS Vienne · Espoirs U21</div>'
-    +'<h1>Point infirmerie CEL</h1><div class="cr-dt">'+auj.toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})+' · '+L.length+' joueurs CEL · '+bl.length+' blessé'+(bl.length>1?"s":"")+'</div></div></div>'
-    +(bl.length?'<table class="cr-t"><thead><tr><th></th><th>Joueur</th><th>Blessure</th><th>Depuis</th><th>Retour estimé</th><th>Jalons</th><th>Accord médical</th></tr></thead><tbody>'+lignes+'</tbody></table>'
-      :'<div class="cr-v">Aucun joueur CEL blessé.</div>')
-    +(ok.length?'<div class="cr-st">Aptes</div><div class="cr-ok2">'+ok.map(function(p){ return esc(p.n); }).join(" · ")+'</div>':'')
+  /* aptes : la grille des quinze postes */
+  const gp=function(n){
+    const ls=ok.filter(function(p){ const pi=posteInfo(p); return pi.num===n; });
+    return '<div class="pi-gp'+(ls.length?"":" vide")+'"><div class="pi-gh"><span class="pi-gn">'+n+'</span><span class="pi-gl">'+POS[n]+'</span></div>'
+      +(ls.length?ls.map(function(p){ const np=nomPre(p.n); return '<div class="pi-gj"><b>'+esc(np[0])+'</b> '+esc(np[1])+'</div>'; }).join(""):'<div class="pi-gv">—</div>')+'</div>';
+  };
+  const sansPoste=ok.filter(function(p){ const pi=posteInfo(p); return !(pi.num>=1&&pi.num<=15); });
+  return '<div class="celr">'
+    +'<div class="cr-hd"><span class="cr-cr"></span><div class="pi-hm"><div class="cr-cp">CS Vienne · Espoirs U21</div><h1>Point infirmerie CEL</h1>'
+    +'<div class="cr-dt">'+auj.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+'</div></div>'
+    +'<div class="pi-kp"><b>'+bl.length+'</b><span>blessé'+(bl.length>1?"s":"")+'</span></div><div class="pi-kp"><b>'+ok.length+'</b><span>apte'+(ok.length>1?"s":"")+'</span></div></div>'
+    +'<div class="pi-st">Blessés</div>'+(bl.length?'<div class="pi-cas">'+cartes+'</div>':'<div class="cr-v">Aucun joueur CEL blessé.</div>')
+    +'<div class="pi-st">Aptes, par poste</div>'
+    +'<div class="pi-gt">Avants</div><div class="pi-g8">'+[1,2,3,4,5,6,7,8].map(gp).join("")+'</div>'
+    +'<div class="pi-gt">Trois-quarts</div><div class="pi-g7">'+[9,10,11,12,13,14,15].map(gp).join("")+'</div>'
+    +(sansPoste.length?'<div class="pi-gt">Sans poste renseigné</div><div class="cr-ok2">'+sansPoste.map(function(p){ return esc(p.n); }).join(" · ")+'</div>':'')
     +'</div>';
 }
 function actifs(){ return players.filter(function(p){ return p.s!=="parti"; }); }
