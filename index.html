@@ -1460,6 +1460,27 @@ table.fj-t{width:100%;border-collapse:collapse;table-layout:fixed}
 .muwrap .mu-etat-bl b{color:#B3261E}
 .muwrap .mu-etat-tdj{background:#EEF6FB;border:1px solid #CFE3F1}
 .muwrap .mu-etat-tdj b{color:#0E5E8E}
+.mu-badge{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:99px;margin-left:6px;white-space:nowrap}
+.mx-t td.mx-adapt{background:#FDF0EE;color:#B3261E;font-style:italic} .mx-t td.mx-tdj{background:#EEF6FB;color:#0E5E8E}
+.mu-ex.tdj .mu-v b,.mu-ex.tdj .mu-v span,.mu-ex.tdj .mu-t span{color:#0E5E8E!important;font-weight:700}
+@media (max-width:640px){
+  .muwrap .mu-bar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+  .muwrap .mu-bar::-webkit-scrollbar{display:none}
+  .muwrap .mu-bar button{flex:0 0 auto;white-space:nowrap}
+  .muwrap .mu-bar>*:not(button){flex:0 0 auto;white-space:nowrap}
+}
+.ml-info{font-size:.8rem;color:#41566A;background:#fff;border:1px solid #E1E8EF;border-radius:10px;padding:10px 12px;margin:4px 0 12px;line-height:1.45}
+.ml-r{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #E6EDF3;border-radius:10px;padding:8px 10px;margin-bottom:6px}
+.ml-n{flex:1;min-width:0} .ml-n b{display:block;font-size:.86rem} .ml-n span{font-size:.7rem;color:#8A9BA8}
+.ml-r button{font:inherit;font-size:.74rem;font-weight:700;padding:7px 10px;border-radius:8px;border:1px solid #CFE3F1;background:#EEF6FB;color:#0E5E8E;cursor:pointer;white-space:nowrap}
+.ml-r button.ml-x{background:#fff;color:#6B7C8C;border-color:#E1E8EF}
+.mu-b-v{background:#FDF0EE;color:#B3261E;border:1px solid #F4CFC9} .mu-b-a{background:#EEF6FB;color:#0E5E8E;border:1px solid #CFE3F1}
+.mu-res{margin:4px 0 10px;display:flex;flex-direction:column;gap:6px}
+.mu-res>div{padding:8px 11px;border-radius:10px;font-size:.8rem;line-height:1.5}
+.mu-res b{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em}
+.mu-res a{cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.mu-res-v{background:#FDF0EE;border:1px solid #F4CFC9;color:#41566A} .mu-res-v b{color:#B3261E}
+.mu-res-a{background:#EEF6FB;border:1px solid #CFE3F1;color:#41566A} .mu-res-a b{color:#0E5E8E}
 .muwrap .mu-acc{font-size:.74rem;color:#5B4A2E;padding:6px 14px;line-height:1.4;border-bottom:1px solid #F1E7D3}
 .muwrap .mu-pchb{margin-left:10px;font-family:var(--body);font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:99px;border:1.5px solid #D4E1EB;background:#fff;color:#0E5E8E;cursor:pointer;vertical-align:middle}
 .muwrap .mu-pch{padding:6px 10px}
@@ -1754,7 +1775,7 @@ table.cr-t{width:100%;border-collapse:collapse}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h99 — état du jour (wellness) branché sur la séance · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
+    <div style="font-size:.7rem;opacity:.5">h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
   </footer>
 </div>
 
@@ -1884,6 +1905,7 @@ table.cr-t{width:100%;border-collapse:collapse}
       <button type="button" id="mu_printall" onclick="muImprimerTous()">Fiches muscu de tous</button>
       <button type="button" id="mu_dl">Télécharger</button>
       <button type="button" id="mu_grp" onclick="muGroupes()">Groupes</button>
+      <button type="button" id="mu_liens" onclick="muLiens()">Liens joueurs</button>
       <button type="button" id="mu_new" onclick="muNouveauCycle()">Nouveau cycle</button>
       <button type="button" id="mu_edc" onclick="muModifierCycle()">Modifier ce cycle</button>
       <button type="button" id="mu_import">Importer mes cycles</button>
@@ -3714,7 +3736,7 @@ function muInstallerCycles(){
   MU_BUILT.forEach(function(b){
     CY.push({id:b.id,n:b.n,s:"S"+b.deb+" → S"+b.fin+(b.intention?" · "+b.intention:""),built:true,
              deb:b.deb,fin:b.fin,d:b.d,seances:b.seances,schemas:b.schemas||null,
-             wk:muSemainesEntre(b.deb,b.fin).map(function(n){ return [muLabelSemaine(n),"S"+n]; })});
+             wk:muSemainesEntre(b.deb,b.fin).map(function(n){ return [(b.etiquettes&&b.etiquettes[n])||muLabelSemaine(n),"S"+n]; })});
   });
 }
 async function muSauverCycles(){
@@ -3962,6 +3984,7 @@ function muBoutonsCycle(){
   const n=document.getElementById("mu_new"), m=document.getElementById("mu_edc");
   if(n) n.style.display=adm?"":"none";
   const g=document.getElementById("mu_grp"); if(g) g.style.display=adm?"":"none";
+  const lj=document.getElementById("mu_liens"); if(lj) lj.style.display=adm?"":"none";
   if(m) m.style.display=(adm&&CY[ci]&&CY[ci].built)?"":"none";
 }
 
@@ -3990,6 +4013,21 @@ function muEtatJour(p){
     if(c.length===1) k=c[0];
   }
   return k?J[k]:null;
+}
+function muCaler(){
+  /* a l ouverture : cycle, semaine et seance du jour */
+  const n=muSemaineISO(muAujISO());
+  for(let c=CY.length-1;c>=0;c--){
+    const w=(CY[c].wk||[]).findIndex(function(x){ return parseInt(String(x[1]).replace(/\D/g,""),10)===n; });
+    if(w<0) continue;
+    ci=c; wi=w;
+    const auj=new Date().toLocaleDateString("fr-FR",{weekday:"long",timeZone:"Europe/Paris"}).toLowerCase();
+    const jours=(CY[c].d||[]).map(function(j){ return String(j[0]).toLowerCase(); });
+    const ordre=["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"], k=ordre.indexOf(auj);
+    let d=jours.indexOf(auj);
+    if(d<0) d=jours.findIndex(function(j){ return ordre.indexOf(j)>k; });
+    di=d>=0?d:0; return;
+  }
 }
 function muEtatSeance(p,c,d,i){
   /* l etat du jour ne s applique qu a la seance du jour, semaine en cours */
@@ -4186,7 +4224,7 @@ function muBandeauEtat(p){
     const q=[];
     if(sj.niv==="rouge") q.push("Séance réduite : vitesse et force à 2 séries, pas de bloc C ni D. À valider avec le staff.");
     if(sj.niv==="entame") q.push("Une série en moins en force, pas d’échec ni de drop en C.");
-    if(sj.cou) q.push("Courbatures élevées : une série en moins au squat, accélérations à 90 % max.");
+    if(sj.cou&&sj.niv!=="rouge") q.push("Courbatures élevées : une série en moins au squat, accélérations à 90 % max.");
     if(sj.dol) q.push("Douleur "+sj.dol.n+"/10 ("+sj.dol.zone+") : exercices de la zone à valider.");
     if(!q.length) q.push("Séance normale.");
     h+='<div class="mu-etat '+((sj.niv==="rouge"||sj.dol)?"mu-etat-bl":"mu-etat-tdj")+'"><b>État du jour · '+t+'</b>'+q.join(" ")+'</div>';
@@ -4228,6 +4266,71 @@ function muGroupesRendu(){
     +'<button type="button" class="mb-close" data-gclose="1">×</button></div>'
     +'<div class="mb-body"><div class="mg-k"><span class="mg-force">Force <b>'+nb("force")+'</b></span><span class="mg-socle">Socle <b>'+nb("socle")+'</b></span><span class="mg-masse">Masse <b>'+nb("masse")+'</b></span></div>'
     +bloc("Avants",P.filter(function(p){ return p.av; }))+bloc("Trois-quarts",P.filter(function(p){ return !p.av; }))+'</div>';
+}
+/* ----- espace joueur : instantane public + liens personnels ----- */
+let MU_PUB=null;
+function muJeton(){
+  const a="abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789", b=new Uint8Array(22);
+  crypto.getRandomValues(b); return Array.from(b).map(function(x){ return a[x%a.length]; }).join("");
+}
+function muBaseJoueur(){ return location.origin+location.pathname.replace(/[^\/]*$/,"")+"joueur.html?t="; }
+async function muPublier(force){
+  /* ce que la page joueur a le droit de voir : profil, 1RM, poids, prehab ; tenu a jour a chaque ouverture du module */
+  if(!(typeof ROLE!=="undefined"&&ROLE==="admin")) return;
+  let old=null;
+  try{ const r=await sb.from("app_data").select("data").eq("id","joueurs_pub").maybeSingle(); old=(r&&!r.error&&r.data&&r.data.data)||null; }catch(e){}
+  const oj=(old&&old.joueurs)||{}, J={};
+  P.forEach(function(p){
+    const o=oj[p.n]||{};
+    J[p.n]={tok:o.tok||muJeton(),off:!!o.off,av:!!p.av,poste:p.poste||0,pl:p.pl||"",prof:p.prof||"socle",
+            esq:p.esq||null,edc:p.edc||null,etb:p.etb||null,w:p.w||null,prehab:prehab(p)};
+  });
+  const labels={};
+  CY.forEach(function(c){ if(c.built) (c.wk||[]).forEach(function(w){ labels[String(w[1]).replace(/\D/g,"")]=w[0]; }); });
+  const data={joueurs:J,labels:labels,maj:(old&&old.maj)||""};
+  if(!force&&old&&JSON.stringify({j:old.joueurs,l:old.labels})===JSON.stringify({j:J,l:labels})){ MU_PUB=old; return; }
+  data.maj=new Date().toISOString();
+  const r=await sb.from("app_data").upsert({id:"joueurs_pub",data:data,updated_at:new Date().toISOString()});
+  if(r&&r.error) throw new Error(r.error.message||"écriture refusée");
+  MU_PUB=data;
+}
+window.muLiens=async function(){
+  let o=document.getElementById("mu_liens_ov");
+  if(!o){ o=document.createElement("div"); o.id="mu_liens_ov"; o.className="mb";
+    document.querySelector("#muscuOverlay .muwrap").appendChild(o);
+    o.addEventListener("click",async function(ev){
+      if(ev.target.closest("[data-lclose]")){ o.classList.remove("on"); return; }
+      const t=ev.target.closest("[data-la]"); if(!t) return;
+      const n=t.dataset.n, j=MU_PUB&&MU_PUB.joueurs[n], url=j?muBaseJoueur()+j.tok:"";
+      const txt="Salut "+String(n).split(" ").filter(function(w){ return w!==w.toUpperCase(); }).join(" ")
+        +", voici ton lien muscu perso. Garde-le en favori : il affiche ta séance du jour, adaptée à ta réponse Wellness du matin. "+url;
+      if(t.dataset.la==="copier"){ try{ await navigator.clipboard.writeText(txt); toast("Message copié"); }catch(e){ prompt("Copie le message :",txt); } }
+      if(t.dataset.la==="wa"){ window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank"); }
+      if(t.dataset.la==="nouveau"){
+        if(!confirm("Créer un nouveau lien pour "+n+" ? L’ancien ne marchera plus.")) return;
+        MU_PUB.joueurs[n].tok=muJeton();
+        try{ await sb.from("app_data").upsert({id:"joueurs_pub",data:Object.assign({},MU_PUB,{maj:new Date().toISOString()}),updated_at:new Date().toISOString()}); toast("Nouveau lien créé"); }catch(e){ toast("Échec : "+e.message); }
+        muLiensRendu();
+      }
+    });
+  }
+  o.classList.add("on"); o.innerHTML='<div class="mb-body">Chargement…</div>';
+  try{ await muPublier(); }catch(e){ toast("Liens : "+e.message); }
+  muLiensRendu();
+};
+function muLiensRendu(){
+  const o=document.getElementById("mu_liens_ov"); if(!o||!MU_PUB) return;
+  const lig=function(arr){ return arr.slice().sort(function(a,b){ return (a.poste-b.poste)||a.n.localeCompare(b.n); }).map(function(p){
+    const j=MU_PUB.joueurs[p.n]; if(!j) return "";
+    return '<div class="ml-r"><div class="ml-n"><b>'+mbEsc(p.n)+'</b><span>…'+mbEsc(j.tok.slice(-6))+'</span></div>'
+      +'<button type="button" data-la="wa" data-n="'+mbEsc(p.n)+'">WhatsApp</button>'
+      +'<button type="button" data-la="copier" data-n="'+mbEsc(p.n)+'">Copier</button>'
+      +'<button type="button" class="ml-x" data-la="nouveau" data-n="'+mbEsc(p.n)+'" title="Nouveau lien">↻</button></div>'; }).join(""); };
+  o.innerHTML='<div class="mb-hd"><div><h3>Liens joueurs</h3><p>Un lien perso par joueur, à envoyer une seule fois</p></div>'
+    +'<button type="button" class="mb-close" data-lclose="1">×</button></div>'
+    +'<div class="mb-body"><div class="ml-info">Le joueur voit sa séance du jour, ses charges et sa préhab, adaptées à sa réponse Wellness. Il ne voit ni les autres joueurs ni les notes médicales. ↻ crée un nouveau lien et désactive l’ancien.</div>'
+    +'<div class="mg-t">Avants</div>'+lig(P.filter(function(p){ return p.av; }))
+    +'<div class="mg-t">Trois-quarts</div>'+lig(P.filter(function(p){ return !p.av; }))+'</div>';
 }
 /* ----- choix de la prehab d un joueur ----- */
 window.muPrehabChoix=function(n){
@@ -4426,7 +4529,7 @@ function mxGroupe(titre,arr,cliquable){
     const cel=cols.map(function(c){
       const e=l.ex.filter(function(x){ return mxCourt(x[1])===c.k; })[0];
       const v=(e&&e[3]&&e[3].v)?String(e[3].v).replace(".",","):"—";
-      return '<td class="mx-ld'+(v==="PDC"?" mx-pdc":"")+'">'+v+'</td>';
+      return '<td class="mx-ld'+(v==="PDC"?" mx-pdc":"")+(e&&e[6]==="adapt"?" mx-adapt":"")+(e&&e[6]==="tdj"?" mx-tdj":"")+'">'+v+'</td>';
     }).join("");
     return '<tr'+(i%2?' class="mx-z"':'')+(cliquable?' onclick=\'open_('+JSON.stringify(l.p.n)+')\'':'')+'>'
       +'<td class="mx-n">'+l.p.poste+'</td><td class="mx-nm">'+l.p.n+'</td>'
@@ -4442,22 +4545,42 @@ function render(){
   const f=P.filter(p=>p.n.toLowerCase().includes(q));
   const av=f.filter(p=>p.av), tq=f.filter(p=>!p.av);
   const blk=(t,arr)=>arr.length?`<div class="mu-grp">${t} · ${arr.length}</div>`+arr.map(card).join(""):"";
-  document.getElementById("mu_list").innerHTML = f.length? blk("Avants",av)+blk("Trois-quarts",tq)
+  const val=[], adp=[];
+  P.forEach(function(p){ const t=muFlagSeance(p); if(t==="adapt") val.push(p); else if(t==="tdj") adp.push(p); });
+  const lien=function(arr){ return arr.map(function(p){ return '<a onclick=\'open_('+JSON.stringify(p.n)+')\'>'+p.n+'</a>'; }).join(", "); };
+  const res=(val.length||adp.length)?'<div class="mu-res">'+(val.length?'<div class="mu-res-v"><b>À valider · '+val.length+'</b>'+lien(val)+'</div>':'')
+    +(adp.length?'<div class="mu-res-a"><b>Adaptés automatiquement · '+adp.length+'</b>'+lien(adp)+'</div>':'')+'</div>':'';
+  document.getElementById("mu_list").innerHTML = f.length? res+blk("Avants",av)+blk("Trois-quarts",tq)
     : '<div class="mu-empty">Aucun joueur</div>';
 }
+function muFlagSeance(p){
+  /* "adapt" = au moins un exercice a valider, "tdj" = seance ajustee automatiquement */
+  const ex=sess(p,ci,di,wi);
+  if(ex.some(function(e){ return e&&e[6]==="adapt"; })) return "adapt";
+  if(ex.some(function(e){ return e&&e[6]==="tdj"; })) return "tdj";
+  return "";
+}
 function card(p){
-  const ex=sess(p,ci,di,wi).filter(e=>e[3]&&e[3].v&&e[3].v!=="—").slice(0,3);
-  const tg=p.prof!=="socle"?`<span class="mu-tag mu-${p.prof}">${p.prof}</span>`:"";
+  const tous=sess(p,ci,di,wi).filter(e=>e[3]&&e[3].v&&e[3].v!=="—");
+  /* sur la carte : les charges en kg d abord (force puis le reste), sinon les premiers exercices */
+  const kg=tous.filter(e=>/^[\d.,]+$/.test(String(e[3].v))).sort((a,b)=>(String(a[0]).charAt(0)==="B"?0:1)-(String(b[0]).charAt(0)==="B"?0:1));
+  const ex=(kg.length?kg.concat(tous.filter(e=>kg.indexOf(e)<0)):tous).slice(0,3);
+  const fl=muFlagSeance(p);
+  const tg=(p.prof!=="socle"?`<span class="mu-tag mu-${p.prof}">${p.prof}</span>`:"")
+    +(fl==="adapt"?'<span class="mu-badge mu-b-v">à valider</span>':(fl==="tdj"?'<span class="mu-badge mu-b-a">adaptée</span>':""));
   return `<div class="mu-card" onclick='open_(${JSON.stringify(p.n)})'>
     <div class="mu-row"><div class="mu-pos">${p.poste}</div>
-      <div class="mu-nm"><b>${p.n}</b><span>${p.pl}${p.w?" · "+p.w+" kg":""}</span></div>${tg}</div>
-    <div class="mu-kgs">${ex.map(e=>`<div class="mu-kg ${e[3].pct?"mu-pct":""}"><b>${e[3].v}</b><span>${e[1].split(" —")[0].slice(0,15)}</span></div>`).join("")}</div></div>`;
+      <div class="mu-nm"><b>${p.n}</b><span>${p.pl}${p.w?" · "+String(p.w).replace(".",",")+" kg":""}</span></div>${tg}</div>
+    <div class="mu-kgs">${ex.map(e=>`<div class="mu-kg ${e[3].pct?"mu-pct":""}"><b>${String(e[3].v).replace(".",",")}</b><span>${e[1].split(" —")[0].split(" ").slice(0,2).join(" ")}</span></div>`).join("")}</div></div>`;
 }
 function open_(n){
   const p=P.find(x=>x.n===n); const S=document.getElementById("mu_sheet");
   const ex=sess(p,ci,di,wi);
   const ph=prehab(p);
-  const note = ci!==3 ? "Cycle archivé — charges recalculées sur les tests de juillet, à titre d'historique." : p.prof==="force" ? "Priorité force : 5 séries au squat, repos 3′, aucun superset, volume accessoire réduit."
+  const note = CY[ci].built ? (p.prof==="force" ? "Profil force : 5 séries en force, 6 à 8 reps en C, sans échec ni drop."
+      : p.prof==="masse" ? "Profil masse : 6, 5, 4 reps en force, 4 tours en C."
+      : "Profil socle. Plus de 60 min jouées au dernier match → une série en moins sur le A1 du mardi.")
+    : ci!==3 ? "Cycle archivé — charges recalculées sur les tests de juillet, à titre d'historique." : p.prof==="force" ? "Priorité force : 5 séries au squat, repos 3′, aucun superset, volume accessoire réduit."
     : p.prof==="masse" ? "Prise de masse : charges à 80-85 % mais séries de 5 puis 4, volume accessoire doublé, repos courts."
     : "Socle commun. Plus de 60 min jouées au dernier match → une série en moins sur le A1 du mardi, appliquée automatiquement.";
   S.innerHTML=`<div class="mu-sh"><button class="mu-close" onclick="document.getElementById('mu_sheet').classList.remove('on')">×</button>
@@ -4472,7 +4595,7 @@ function open_(n){
       <div><b>${p.cmj!=null&&p.cmj!==""?String(p.cmj).replace(".",","):"—"}</b><span>CMJ cm</span></div></div>
     ${muBandeauEtat(p)}
     <div class="mu-sec">${CY[ci].d[di][0]} · ${CY[ci].d[di][1]}${muModifiee(p,ci,di,wi)?'<span class="mu-mdf">séance modifiée</span>':''}</div>
-    ${ex.map(e=>`<div class="mu-ex ${e[4]||""}${e[6]==="adapt"?" adapt":""}"><div class="mu-bl">${e[0]}</div>
+    ${ex.map(e=>`<div class="mu-ex ${e[4]||""}${e[6]==="adapt"?" adapt":""}${e[6]==="tdj"?" tdj":""}"><div class="mu-bl">${e[0]}</div>
       <div class="mu-t"><b>${e[1]}</b><span>${e[2]}</span></div>
       <div class="mu-v">${e[3]?`<b>${String(e[3].v).replace(".",",")}</b><span>${e[3].sub||""}</span>`:""}</div></div>`).join("")}
     <div class="mu-sec">Ma préhab · 2 × / semaine${(typeof ROLE!=="undefined"&&ROLE==="admin")?`<button type="button" class="mu-pchb" onclick='muPrehabChoix(${JSON.stringify(p.n)})'>Choisir</button>`:""}${muPrehabIds(p).perso?'<span class="mu-mdf">personnalisée</span>':''}</div>
@@ -4721,8 +4844,8 @@ chips(); render(); centre();
   };
   if(typeof open_==="function") window.open_=open_;
   $("btnMuscu").addEventListener("click",async function(){
-    if(!MUREADY){ MUREADY=true; try{ await muCharger(); await muChargerOvr(); await muChargerCycles(); await muChargerJoueurs(); await muChargerEtat(); muSyncJoueurs(); muSyncRM(); chips(); render(); centre(); }catch(e){} }
-    else { try{ muSyncJoueurs(); muSyncRM(); render(); }catch(e){} }
+    if(!MUREADY){ MUREADY=true; try{ await muCharger(); await muChargerOvr(); await muChargerCycles(); await muChargerJoueurs(); await muChargerEtat(); muSyncJoueurs(); muSyncRM(); muCaler(); chips(); render(); centre(); muPublier().catch(function(){}); }catch(e){} }
+    else { try{ muSyncJoueurs(); muSyncRM(); render(); muPublier().catch(function(){}); }catch(e){} }
     muscuOverlay.classList.add("open");
   });
 })();
