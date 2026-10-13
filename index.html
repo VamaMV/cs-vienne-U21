@@ -1754,7 +1754,7 @@ table.cr-t{width:100%;border-collapse:collapse}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h98 — cycle 5 : 1RM depuis les tests, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
+    <div style="font-size:.7rem;opacity:.5">h99 — état du jour (wellness) branché sur la séance · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
   </footer>
 </div>
 
@@ -3970,6 +3970,41 @@ let MU_J={prof:{},prehab:{}};
 const MU_POSTES={1:"Pilier G",2:"Talonneur",3:"Pilier D",4:"2e ligne",5:"2e ligne",6:"3e ligne aile",7:"3e ligne aile",8:"N°8",
   9:"Demi de mêlée",10:"Ouvreur",11:"Ailier",12:"1er centre",13:"2e centre",14:"Ailier",15:"Arrière"};
 const MU_PHASES={attente:"Attente de diagnostic",soins:"Soins",reathle:"Réathlé",reentrainement:"Réentraînement",retourp:"Retour partiel"};
+let MU_ETAT=null;
+async function muChargerEtat(){
+  try{
+    const r=await sb.from("app_data").select("data").eq("id","etat_jour").maybeSingle();
+    MU_ETAT=(r&&!r.error&&r.data&&r.data.data)?r.data.data:null;
+  }catch(e){ MU_ETAT=null; }
+}
+function muAujISO(){ return new Date().toLocaleDateString("fr-CA",{timeZone:"Europe/Paris"}); }
+function muEtatJour(p){
+  /* reponse wellness du jour du joueur (formulaire), rapprochee par le nom */
+  if(!MU_ETAT||MU_ETAT.date!==muAujISO()||!MU_ETAT.joueurs) return null;
+  const nz=function(x){ return String(x||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z ]/g," ").split(/\s+/).filter(Boolean).sort().join(" "); };
+  const cle=nz(p.n), J=MU_ETAT.joueurs, ks=Object.keys(J);
+  let k=ks.find(function(x){ return nz(x)===cle; });
+  if(!k){
+    const nom=nz(String(p.n).split(" ").filter(function(w){ return w===w.toUpperCase(); }).join(" "));
+    const c=ks.filter(function(x){ const t=" "+nz(x)+" "; return nom&&nom.split(" ").every(function(w){ return t.indexOf(" "+w+" ")>=0; }); });
+    if(c.length===1) k=c[0];
+  }
+  return k?J[k]:null;
+}
+function muEtatSeance(p,c,d,i){
+  /* l etat du jour ne s applique qu a la seance du jour, semaine en cours */
+  const e=muEtatJour(p); if(!e) return null;
+  const jr=((CY[c]||{}).d||[])[d]; if(!jr) return null;
+  const auj=new Date().toLocaleDateString("fr-FR",{weekday:"long",timeZone:"Europe/Paris"}).toLowerCase();
+  if(String(jr[0]).toLowerCase()!==auj) return null;
+  const l=muLundiSemaine(c,i), now=new Date();
+  const lc=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-((now.getUTCDay()||7)-1)));
+  if(!l||l.getTime()!==lc.getTime()) return null;
+  const h=(e.h==null)?null:+e.h, cou=(Array.isArray(e.it)&&e.it[2]!=null)?+e.it[2]:null;
+  const niv=(e.mal||(h!=null&&h>21))?"rouge":((h!=null&&h>=17)?"entame":((h!=null&&h>=12)?"correct":(h==null?"":"frais")));
+  return {e:e,h:h,niv:niv,cou:(cou!=null&&cou>=6&&/mardi/i.test(jr[0])),
+          dol:(e.dol!=null&&+e.dol>=4&&String(e.zone||"").trim())?{n:+e.dol,zone:String(e.zone).trim()}:null};
+}
 async function muChargerJoueurs(){
   try{
     const r=await sb.from("app_data").select("data").eq("id","muscu_joueurs").maybeSingle();
@@ -3993,14 +4028,6 @@ function muSyncJoueurs(){
     p.poste=p.poste||0; p.pl=p.pl||"";
     if(h.ant) p.ant=h.ant;
     p.acc=h.acc||""; p.cat=h.cat;
-    /* 1RM estime = dernier 3RM saisi x 1,08 ; poids = derniere pesee */
-    const _t=Array.isArray(h.tests)?h.tests.slice().sort(function(a,b){ return String(a.d||"").localeCompare(String(b.d||"")); }):[];
-    [["esq",/squat/i],["edc",/^\s*dc\s*$|d[ée]velopp[ée] couch/i],["etb",/trap|sdt|soulev/i]].forEach(function(k){
-      const x=_t.filter(function(t){ return k[1].test(t.ex||"")&&String(t.load==null?"":t.load).trim()!==""; }).pop();
-      const v=x?parseFloat(String(x.load).replace(",",".")):NaN; if(v>0) p[k[0]]=Math.round(v*1.08); });
-    const _ps=Array.isArray(h.pesees)?h.pesees.filter(function(x){ return x&&x.w; }):[];
-    const _w=_ps.length?parseFloat(String(_ps[_ps.length-1].w).replace(",",".")):parseFloat(String(h.poids||"").replace(",","."));
-    if(_w>0) p.w=_w;
     if(MU_J.prof[h.n]) p.prof=MU_J.prof[h.n];
     if(["force","socle","masse"].indexOf(p.prof)<0) p.prof="socle";
     out.push(p);
@@ -4088,7 +4115,7 @@ function muEtat(p,c,i){
 }
 function muAdapter(p,rows,c,d,i){
   const et=muEtat(p,c,i);
-  let out=rows;
+  let out=muAdapterEtat(p,rows,c,d,i);
   if(et.ep){
     out=out.map(function(r){
       if(!r||!r[3]||r[0]==="TER") return r;
@@ -4110,6 +4137,39 @@ function muAdapter(p,rows,c,d,i){
   }
   return out;
 }
+function muSeries(r,f){
+  const m=String((r[3]&&r[3].sub)||"").match(/^(\d+)\s*×(.*)$/); if(!m) return null;
+  const n=f(+m[1]); if(n===+m[1]) return null;
+  const x=r.slice(); x[3]=Object.assign({},r[3],{sub:n+" ×"+m[2]}); return x;
+}
+function muAdapterEtat(p,rows,c,d,i){
+  const s=muEtatSeance(p,c,d,i); if(!s) return rows;
+  return rows.map(function(r){
+    if(!r||!r[3]||r[0]==="TER") return r;
+    const b=String(r[0]||""), n=String(r[1]||""); let x=r;
+    if(s.dol){
+      const reg=muRegion(s.dol.zone);
+      if(reg==="tete"||reg==="medical"||(reg==="haut"&&MU_HAUT.test(n))||(reg==="bas"&&MU_BAS.test(n))||(reg==="tronc"&&MU_TRONC.test(n))){
+        x=x.slice(); x[3]=Object.assign({},x[3],{v:"à valider"}); x[6]="adapt"; return x; }
+    }
+    if(s.niv==="rouge"){
+      if(/^[CDE]/.test(b)){ x=x.slice(); x[3]={v:"pas aujourd’hui",sub:""}; x[6]="adapt"; return x; }
+      if(/^[AB]/.test(b)){ const y=muSeries(x,function(k){ return Math.min(k,2); }); if(y){ y[6]="adapt"; return y; } }
+      return x;
+    }
+    if(s.niv==="entame"){
+      if(/^B/.test(b)){ const y=muSeries(x,function(k){ return Math.max(1,k-1); }); if(y){ y[6]="tdj"; x=y; } }
+      if(/^C/.test(b)){ x=x.slice(); x[2]=(x[2]?x[2]+" · ":"")+"pas d’échec ni de drop"; x[6]="tdj"; }
+    }
+    if(s.cou){
+      if(b==="B1"&&s.niv!=="entame"){ const y=muSeries(x,function(k){ return Math.max(1,k-1); }); if(y){ y[6]="tdj"; x=y; } }
+      const pc=String(x[3].v||"").match(/(\d+)\s*%/g);
+      if(/^A/.test(b)&&/accél|sprint|départ/i.test(n)&&!/iso/i.test(n)&&pc&&Math.max.apply(null,pc.map(function(z){ return parseInt(z,10); }))>90){
+        x=x.slice(); x[3]=Object.assign({},x[3],{v:"90 % max"}); x[6]="tdj"; }
+    }
+    return x;
+  });
+}
 function muBandeauEtat(p){
   const et=muEtat(p,ci,wi); let h="";
   if(et.ep){
@@ -4118,6 +4178,18 @@ function muBandeauEtat(p){
       :(et.tout?"Toutes les charges sont à valider avec le staff médical."
       :"Exercices "+(reg||"concernés")+" à valider avec le staff médical, le reste est maintenu.");
     h+='<div class="mu-etat mu-etat-bl"><b>'+(MU_PHASES[et.ep.phase]||"Blessure")+(et.ep.zone?" · "+et.ep.zone:"")+'</b>'+quoi+'</div>';
+  }
+  const sj=muEtatSeance(p,ci,di,wi);
+  if(sj){
+    const hs=(sj.h!=null)?"Hooper "+sj.h+"/28":"Hooper incomplet";
+    const t={rouge:(sj.e.mal?"Malade":"Dans le rouge")+" · "+hs,entame:"Entamé · "+hs,correct:"Correct · "+hs,frais:"Frais · "+hs}[sj.niv]||hs;
+    const q=[];
+    if(sj.niv==="rouge") q.push("Séance réduite : vitesse et force à 2 séries, pas de bloc C ni D. À valider avec le staff.");
+    if(sj.niv==="entame") q.push("Une série en moins en force, pas d’échec ni de drop en C.");
+    if(sj.cou) q.push("Courbatures élevées : une série en moins au squat, accélérations à 90 % max.");
+    if(sj.dol) q.push("Douleur "+sj.dol.n+"/10 ("+sj.dol.zone+") : exercices de la zone à valider.");
+    if(!q.length) q.push("Séance normale.");
+    h+='<div class="mu-etat '+((sj.niv==="rouge"||sj.dol)?"mu-etat-bl":"mu-etat-tdj")+'"><b>État du jour · '+t+'</b>'+q.join(" ")+'</div>';
   }
   if(et.min&&et.min.min>60&&/mardi/i.test((CY[ci].d[di]||[""])[0]))
     h+='<div class="mu-etat mu-etat-tdj"><b>'+et.min.min+'′ au dernier match</b>Une série en moins sur le A1, appliquée automatiquement.</div>';
@@ -4649,7 +4721,7 @@ chips(); render(); centre();
   };
   if(typeof open_==="function") window.open_=open_;
   $("btnMuscu").addEventListener("click",async function(){
-    if(!MUREADY){ MUREADY=true; try{ await muCharger(); await muChargerOvr(); await muChargerCycles(); await muChargerJoueurs(); muSyncJoueurs(); muSyncRM(); chips(); render(); centre(); }catch(e){} }
+    if(!MUREADY){ MUREADY=true; try{ await muCharger(); await muChargerOvr(); await muChargerCycles(); await muChargerJoueurs(); await muChargerEtat(); muSyncJoueurs(); muSyncRM(); chips(); render(); centre(); }catch(e){} }
     else { try{ muSyncJoueurs(); muSyncRM(); render(); }catch(e){} }
     muscuOverlay.classList.add("open");
   });
