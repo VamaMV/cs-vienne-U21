@@ -1108,6 +1108,15 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
 
 
 
+/* ---- assiduite dans la fiche joueur ---- */
+.as-load{font-size:.8rem;color:var(--faint)}
+.as-r{display:grid;grid-template-columns:70px 1fr 58px;grid-template-rows:auto auto;column-gap:9px;align-items:center;margin:6px 0 2px}
+.as-l{font-size:.8rem;font-weight:700;color:var(--ink)}
+.as-b{height:8px;border-radius:99px;background:#EAF0F5;overflow:hidden}.as-b i{display:block;height:100%;border-radius:99px}
+.as-r b{font-family:var(--display);font-size:.95rem;font-weight:800;text-align:right;white-space:nowrap}
+.as-r em{grid-column:2/4;font-style:normal;font-size:.7rem;color:var(--faint)}
+.as-h{margin-top:8px;font-size:.78rem;color:#41566A;line-height:1.5}.as-h b{color:var(--ink)}.as-h b.al{color:#C32A2A}.as-h i{font-style:normal;color:#C7D4DD;margin:0 6px}
+.as-m{margin-top:6px;font-size:.72rem;color:var(--faint)}
 /* ---- point staff : A4 portrait ---- */
 @page ps{size:A4 portrait;margin:9mm}
 .ps{page:ps;font-family:var(--body);color:#13283B;font-size:9.6px;line-height:1.35}
@@ -1842,7 +1851,7 @@ table.cr-t{width:100%;border-collapse:collapse}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h101 — point staff PP / médical par joueur et du groupe, import des présences muscu · séances : motif de chaque adaptation, ancien prévu barré, envoi de la séance au joueur · h100 — état du jour : noms du formulaire rapprochés au prénom près ; adaptation blessure : prowler, sprints, sauts, RDL et tirages reconnus ; squat libre = 92 % du box (plafond 2,4 × PdC) · h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
+    <div style="font-size:.7rem;opacity:.5">h101 — assiduité dans la fiche joueur, point staff PP / médical par joueur et du groupe, import des présences muscu · séances : motif de chaque adaptation, ancien prévu barré, envoi de la séance au joueur · h100 — état du jour : noms du formulaire rapprochés au prénom près ; adaptation blessure : prowler, sprints, sauts, RDL et tirages reconnus ; squat libre = 92 % du box (plafond 2,4 × PdC) · h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
   </footer>
 </div>
 
@@ -2956,8 +2965,10 @@ function openDetail(id){
   $("detailName").textContent=p.n;
   $("detailMeta").innerHTML=(p.cel?'<span class="cel-chip">CEL</span>':'')+metaHTML(p);
   const body=richParts(p);
-  $("detailBody").innerHTML=body||'<div class="val solo">Aucun antécédent à suivre. Montée en charge standard.</div>';
+  $("detailBody").innerHTML='<div class="field" id="detailAssid"><div class="label">Assiduité · 4 dernières semaines</div><div class="as-load">Chargement…</div></div>'
+    +(body||'<div class="val solo">Aucun antécédent à suivre. Montée en charge standard.</div>');
   detailOverlay.classList.add("open");
+  psAssiduiteCarte(p);
 }
 function closeDetail(){ detailOverlay.classList.remove("open"); detailId=null; }
 detailOverlay.addEventListener("click",e=>{ if(e.target===detailOverlay) closeDetail(); });
@@ -3262,13 +3273,29 @@ function psStats(p){
     const js=jours.filter(function(i){ return i<=auj; }), j4=js.filter(function(i){ return i>=lim; });
     return {s:[js.filter(function(i){ return S[i]; }).length,js.length], q:[j4.filter(function(i){ return S[i]; }).length,j4.length]};
   };
+  /* calendrier attendu : jours d entrainement collectifs pour tous, blesses et reathle compris ;
+     jours de match seulement pour ceux qui ont joue */
+  const MATCH={}; (typeof CALENDRIER!=="undefined"?CALENDRIER:[]).forEach(function(m){ if(m&&m.d) MATCH[idx(m.d)]=1; });
+  const JOUE={}; toutesMinutes(p).forEach(function(x){ if(x.d&&x.min>0){ JOUE[idx(x.d)]=1; MATCH[idx(x.d)]=MATCH[idx(x.d)]||2; } });
+  const BL={}; (Array.isArray(p.episodes)?p.episodes:[]).forEach(function(e){
+    if(!e||!e.deb) return;
+    const fin=e.retr||(e.phase!=="clos"?addJours(todayISO(),1):(e.ret||e.deb));
+    for(let i=idx(e.deb);i<idx(fin);i++) BL[i]=1;
+  });
+  const attendu=function(jours,avecMatch,sansBlessure){
+    return jours.filter(function(i){
+      if(MATCH[i]) return avecMatch&&!!JOUE[i];
+      if(sansBlessure&&BL[i]) return false;
+      return true;
+    });
+  };
   const r={wel:null,hoo:null,rpe:null,mus:null,maj:et.maj||"",musMaj:(D.presences_muscu&&D.presences_muscu.maj)||""};
   const W=H.wel;
   if(W&&W.j){
     const ks=psCles(p.n,Object.keys(W.j)), h={}; let mal=[],sym=[],dol=[];
     ks.forEach(function(k){ const o=W.j[k]; (o.d||[]).forEach(function(i,x){ h[i]=o.h[x]; }); mal=mal.concat(o.m||[]); sym=sym.concat(o.s||[]); dol=dol.concat(o.dol||[]); });
     const mine=Object.keys(h).map(Number);
-    r.wel=taux(mine,W.jours||[]);
+    r.wel=taux(mine,attendu(W.jours||[],false,false));
     const v=mine.filter(function(i){ return i>=lim&&h[i]!=null; }).map(function(i){ return h[i]; });
     const zs={};
     dol.filter(function(d){ return d[0]>=lim; }).forEach(function(d){
@@ -3285,14 +3312,14 @@ function psStats(p){
       der:der!=null?addJours(base,der):""};
   }
   const R=H.rpe;
-  if(R&&R.j){ let mine=[]; psCles(p.n,Object.keys(R.j)).forEach(function(k){ mine=mine.concat(R.j[k]); }); r.rpe=taux(mine,R.jours||[]); }
+  if(R&&R.j){ let mine=[]; psCles(p.n,Object.keys(R.j)).forEach(function(k){ mine=mine.concat(R.j[k]); }); r.rpe=taux(mine,attendu(R.jours||[],true,false)); }
   const M=D.presences_muscu;
   if(M&&M.j&&M.jours){ let mine=[]; psCles(p.n,Object.keys(M.j)).forEach(function(k){ mine=mine.concat(M.j[k]); });
-    r.mus=taux(mine.map(idx),M.jours.map(idx)); }
+    r.mus=taux(mine.map(idx),attendu(M.jours.map(idx),false,false)); }
   return r;
 }
 function psPct(t){ return (t&&t[1])?Math.round(t[0]/t[1]*100):null; }
-function psTxtTaux(o){ if(!o) return "—"; const q=psPct(o.q), s=psPct(o.s);
+function psTxtTaux(o){ if(!o) return "—"; if(!o.q[1]&&!o.s[1]) return "aucun jour attendu (blessure)"; const q=psPct(o.q), s=psPct(o.s);
   return (q!=null?q+" % sur 4 sem. ("+o.q[0]+"/"+o.q[1]+")":"—")+(s!=null?" · saison "+s+" %":""); }
 function psCouleur(v){ return v==null?"#8A9BA8":(v>=85?"#1C8C5A":(v>=65?"#B45309":"#C32A2A")); }
 function psTests(p){
@@ -3416,6 +3443,30 @@ function pointStaffTexte(p){
   psTests(p).forEach(function(l){ L.push(l[0]+" : "+l[1]+(l[2]?" → "+l[2]:"")); });
   if(nbMatchs(p)) L.push("Temps de jeu : "+nbMatchs(p)+" matchs · "+totalMin(p)+" min · "+tauxTitu(p)+" % titulaire");
   return L.join("\n");
+}
+let PS_T=0;
+async function psAssiduiteCarte(p){
+  /* bloc assiduite dans la fiche du joueur : donnees rechargees au plus toutes les 5 min */
+  try{ if(!PS_DATA||Date.now()-PS_T>300000){ await psCharger(); PS_T=Date.now(); } }catch(e){}
+  const box=document.getElementById("detailAssid"); if(!box||detailId!==p.id) return;
+  const S=psStats(p);
+  const bar=function(lab,o){
+    const v=o?psPct(o.q):null, sv=o?psPct(o.s):null, c=psCouleur(v);
+    return '<div class="as-r"><span class="as-l">'+lab+'</span><div class="as-b"><i style="width:'+(v||0)+'%;background:'+c+'"></i></div>'
+      +'<b style="color:'+c+'">'+(v!=null?v+' %':'—')+'</b><em>'+(o&&o.q[1]?o.q[0]+'/'+o.q[1]:(o?'en blessure sur la période':''))+(sv!=null?' · saison '+sv+' %':'')+'</em></div>';
+  };
+  let h='<div class="label">Assiduité · 4 dernières semaines</div>'+bar("Wellness",S.wel)+bar("RPE",S.rpe)+bar("Muscu",S.mus);
+  if(S.hoo&&S.hoo.n){
+    const o=S.hoo, x=[];
+    x.push('Hooper moyen <b>'+String(o.moy).replace(".",",")+'</b>/28');
+    if(o.ent) x.push('<b>'+o.ent+'</b> j entamé');
+    if(o.rouge) x.push('<b class="al">'+o.rouge+'</b> j dans le rouge');
+    if(o.mal+o.sym) x.push('<b'+(o.mal?' class="al"':'')+'>'+(o.mal+o.sym)+'</b> j malade');
+    if(o.dol.length) x.push('douleurs : '+o.dol.slice(0,3).map(function(d){ return esc(d.zone)+' ×'+d.n; }).join(", "));
+    h+='<div class="as-h">'+x.join('<i>·</i>')+'</div>';
+  }
+  if(!S.mus) h+='<div class="as-m">Présence muscu : importe l’Excel (Outils › Importer présences muscu).</div>';
+  box.innerHTML=h;
 }
 async function openPointStaff(id){
   const p=players.find(function(x){ return x.id===id; }); if(!p) return;
