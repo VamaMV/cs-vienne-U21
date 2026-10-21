@@ -181,10 +181,25 @@ function muEtatJour(p){
   const nz=function(x){ return String(x||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z ]/g," ").split(/\s+/).filter(Boolean).sort().join(" "); };
   const cle=nz(p.n), J=MU_ETAT.joueurs, ks=Object.keys(J);
   let k=ks.find(function(x){ return nz(x)===cle; });
+  const lev=function(a,b){ const m=a.length,n=b.length,d=[]; for(let i=0;i<=m;i++){ d[i]=[i]; } for(let j=1;j<=n;j++) d[0][j]=j;
+    for(let i=1;i<=m;i++) for(let j=1;j<=n;j++) d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1)); return d[m][n]; };
   if(!k){
     const nom=nz(String(p.n).split(" ").filter(function(w){ return w===w.toUpperCase(); }).join(" "));
-    const c=ks.filter(function(x){ const t=" "+nz(x)+" "; return nom&&nom.split(" ").every(function(w){ return t.indexOf(" "+w+" ")>=0; }); });
+    const pr=nz(String(p.n).split(" ").filter(function(w){ return w!==w.toUpperCase(); }).join(" "));
+    const c=ks.filter(function(x){ const t=" "+nz(x)+" "; if(!nom||!nom.split(" ").every(function(w){ return t.indexOf(" "+w+" ")>=0; })) return false;
+      /* meme nom de famille : le prenom saisi (s il y en a un) doit etre celui du joueur (LAURENT Aurelien / LAURENT Pacome) */
+      const reste=nz(x).split(" ").filter(function(w){ return nom.split(" ").indexOf(w)<0; }).join(" ");
+      return !reste||reste===pr||(pr&&lev(reste,pr)<=2); });
     if(c.length===1) k=c[0];
+  }
+  if(!k){
+    /* faute de frappe dans le formulaire (ex. BIAMONGO pour BIMANGO) : meme prenom, nom a 2 lettres pres */
+    const mots=String(p.n).split(" "), fam=nz(mots.filter(function(w){ return w===w.toUpperCase(); }).join(" ")),
+          pre=nz(mots.filter(function(w){ return w!==w.toUpperCase(); }).join(" "));
+    const c2=ks.filter(function(x){ const xm=String(x).split(" "),
+      xf=nz(xm.filter(function(w){ return w===w.toUpperCase(); }).join(" ")), xp=nz(xm.filter(function(w){ return w!==w.toUpperCase(); }).join(" "));
+      return pre&&xp===pre&&fam&&xf&&lev(xf,fam)<=2; });
+    if(c2.length===1) k=c2[0];
   }
   return k?J[k]:null;
 }
@@ -198,8 +213,12 @@ function muEtatSeance(p,c,d,i){
   const lc=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-((now.getUTCDay()||7)-1)));
   if(!l||l.getTime()!==lc.getTime()) return null;
   const h=(e.h==null)?null:+e.h, cou=(Array.isArray(e.it)&&e.it[2]!=null)?+e.it[2]:null;
-  const niv=(e.mal||(h!=null&&h>21))?"rouge":((h!=null&&h>=17)?"entame":((h!=null&&h>=12)?"correct":(h==null?"":"frais")));
-  return {e:e,h:h,niv:niv,cou:(cou!=null&&cou>=6&&/mardi/i.test(jr[0])),
+  /* question maladie : "Non" / "Symptomes legers" / "Malade" (texte brut du formulaire ; true = ancien format) */
+  const mt=(typeof e.mal==="string")?e.mal.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim():"";
+  const sym=/leger|legere|peu/.test(mt);
+  const mal=(e.mal===true)||(!!mt&&!sym&&!/^(non|no|rien|aucun|ras|na|0)\b/.test(mt));
+  const niv=(mal||(h!=null&&h>21))?"rouge":(((h!=null&&h>=17)||sym)?"entame":((h!=null&&h>=12)?"correct":(h==null?"":"frais")));
+  return {e:e,h:h,niv:niv,mal:mal,sym:sym,cou:(cou!=null&&cou>=6&&/mardi/i.test(jr[0])),
           dol:(e.dol!=null&&+e.dol>=4&&String(e.zone||"").trim())?{n:+e.dol,zone:String(e.zone).trim()}:null};
 }
 function muSeries(r,f){
@@ -308,7 +327,7 @@ function rendu(){
   const sj=muEtatSeance(pp,SEL.c,SEL.d,SEL.i), et=muEtat(pp,SEL.c,SEL.i);
   if(sj){
     const cls={frais:"vert",correct:"jaune",entame:"orange",rouge:"rouge"}[sj.niv]||"gris";
-    const tit={frais:"Frais ce matin",correct:"Correct ce matin",entame:"Entamé ce matin",rouge:sj.e.mal?"Malade ce matin":"Dans le rouge ce matin"}[sj.niv]||"Ta réponse du matin";
+    const tit={frais:"Frais ce matin",correct:"Correct ce matin",entame:sj.sym?"Symptômes légers ce matin":"Entamé ce matin",rouge:sj.mal?"Malade ce matin":"Dans le rouge ce matin"}[sj.niv]||"Ta réponse du matin";
     const q=[];
     if(sj.niv==="rouge") q.push("Séance réduite : vitesse et force à 2 séries, pas de bloc C ni D. Vois le staff avant de commencer.");
     if(sj.niv==="entame") q.push("Ta séance est allégée : une série en moins en force, pas d’échec ni de drop en masse.");
