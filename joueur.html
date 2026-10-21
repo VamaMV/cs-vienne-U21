@@ -61,11 +61,11 @@ const K=(b,p)=>b?fmt(r25(b*p)):"—";
 
 const MU_PHASES={attente:"Attente de diagnostic",soins:"Soins",reathle:"Réathlé",reentrainement:"Réentraînement",retourp:"Retour partiel"};
 
-const MU_BAS=/squat|fente|split|soulev|sdt|hip thrust|nordic|box jump|traîneau|trainea|départs|épaulé|mêlée|farmer/i;
+const MU_BAS=/squat|fente|split|soulev|sdt|rdl|hip thrust|glute|nordic|cossack|box jump|broad jump|bonds|haie|réception|saut|pogo|prowler|sprint|accélération|traîneau|trainea|départ|épaulé|high pull|mêlée|farmer/i;
 
-const MU_HAUT=/développé|developpe|dév\.|rowing|traction|landmine|curl|push-up|jeté mb|élévation|épaulé|mêlée|farmer|back squat|front squat|box squat/i;
+const MU_HAUT=/développé|developpe|dév\.|rowing|traction|tirage|landmine|push press|curl|skull|pompes|push-up|face pull|shrug|militaire|jeté mb|élévation|épaulé|high pull|mêlée|farmer|back squat|front squat|box squat|safety/i;
 
-const MU_TRONC=/squat|soulev|sdt|rowing|épaulé|hip thrust|mêlée/i;
+const MU_TRONC=/squat|soulev|sdt|rdl|rowing|inclinaison|side plank|lombaires|landmine|push press|épaulé|high pull|hip thrust|mêlée/i;
 
 function muLundiISO(an,sem){
   const j4=new Date(Date.UTC(an,0,4)); const jj=j4.getUTCDay()||7;
@@ -116,6 +116,10 @@ function muCharge(regle,v,p){
   if(isNaN(n)||!/^[+-]?\d+([.,]\d+)?$/.test(t)) return t;
   switch(regle){
     case "esq": return K(p.esq,n/100);
+    case "sql": {
+      /* squat libre (pause, front, safety bar) alors que le test est au box : 92 % du box, plafonne a 2,4 x PdC */
+      const b=p.esqBox?p.esq:(p.esq&&p.w?Math.min(p.esq*.92,2.4*p.w):(p.esq?p.esq*.92:null));
+      return K(b,n/100); }
     case "edc": return K(p.edc,n/100);
     case "etb": return K(p.etb,n/100);
     case "pc":  return p.w?fmt(r25(p.w*n/100)):"—";
