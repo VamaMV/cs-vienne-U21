@@ -1775,7 +1775,7 @@ table.cr-t{width:100%;border-collapse:collapse}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h100 — adaptation blessure : prowler, sprints, sauts, RDL et tirages reconnus ; squat libre = 92 % du box (plafond 2,4 × PdC) · h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
+    <div style="font-size:.7rem;opacity:.5">h100 — état du jour : noms du formulaire rapprochés au prénom près ; adaptation blessure : prowler, sprints, sauts, RDL et tirages reconnus ; squat libre = 92 % du box (plafond 2,4 × PdC) · h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
   </footer>
 </div>
 
@@ -4011,10 +4011,25 @@ function muEtatJour(p){
   const nz=function(x){ return String(x||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z ]/g," ").split(/\s+/).filter(Boolean).sort().join(" "); };
   const cle=nz(p.n), J=MU_ETAT.joueurs, ks=Object.keys(J);
   let k=ks.find(function(x){ return nz(x)===cle; });
+  const lev=function(a,b){ const m=a.length,n=b.length,d=[]; for(let i=0;i<=m;i++){ d[i]=[i]; } for(let j=1;j<=n;j++) d[0][j]=j;
+    for(let i=1;i<=m;i++) for(let j=1;j<=n;j++) d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1)); return d[m][n]; };
   if(!k){
     const nom=nz(String(p.n).split(" ").filter(function(w){ return w===w.toUpperCase(); }).join(" "));
-    const c=ks.filter(function(x){ const t=" "+nz(x)+" "; return nom&&nom.split(" ").every(function(w){ return t.indexOf(" "+w+" ")>=0; }); });
+    const pr=nz(String(p.n).split(" ").filter(function(w){ return w!==w.toUpperCase(); }).join(" "));
+    const c=ks.filter(function(x){ const t=" "+nz(x)+" "; if(!nom||!nom.split(" ").every(function(w){ return t.indexOf(" "+w+" ")>=0; })) return false;
+      /* meme nom de famille : le prenom saisi (s il y en a un) doit etre celui du joueur (LAURENT Aurelien / LAURENT Pacome) */
+      const reste=nz(x).split(" ").filter(function(w){ return nom.split(" ").indexOf(w)<0; }).join(" ");
+      return !reste||reste===pr||(pr&&lev(reste,pr)<=2); });
     if(c.length===1) k=c[0];
+  }
+  if(!k){
+    /* faute de frappe dans le formulaire (ex. BIAMONGO pour BIMANGO) : meme prenom, nom a 2 lettres pres */
+    const mots=String(p.n).split(" "), fam=nz(mots.filter(function(w){ return w===w.toUpperCase(); }).join(" ")),
+          pre=nz(mots.filter(function(w){ return w!==w.toUpperCase(); }).join(" "));
+    const c2=ks.filter(function(x){ const xm=String(x).split(" "),
+      xf=nz(xm.filter(function(w){ return w===w.toUpperCase(); }).join(" ")), xp=nz(xm.filter(function(w){ return w!==w.toUpperCase(); }).join(" "));
+      return pre&&xp===pre&&fam&&xf&&lev(xf,fam)<=2; });
+    if(c2.length===1) k=c2[0];
   }
   return k?J[k]:null;
 }
@@ -4043,8 +4058,12 @@ function muEtatSeance(p,c,d,i){
   const lc=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-((now.getUTCDay()||7)-1)));
   if(!l||l.getTime()!==lc.getTime()) return null;
   const h=(e.h==null)?null:+e.h, cou=(Array.isArray(e.it)&&e.it[2]!=null)?+e.it[2]:null;
-  const niv=(e.mal||(h!=null&&h>21))?"rouge":((h!=null&&h>=17)?"entame":((h!=null&&h>=12)?"correct":(h==null?"":"frais")));
-  return {e:e,h:h,niv:niv,cou:(cou!=null&&cou>=6&&/mardi/i.test(jr[0])),
+  /* question maladie : "Non" / "Symptomes legers" / "Malade" (texte brut du formulaire ; true = ancien format) */
+  const mt=(typeof e.mal==="string")?e.mal.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim():"";
+  const sym=/leger|legere|peu/.test(mt);
+  const mal=(e.mal===true)||(!!mt&&!sym&&!/^(non|no|rien|aucun|ras|na|0)\b/.test(mt));
+  const niv=(mal||(h!=null&&h>21))?"rouge":(((h!=null&&h>=17)||sym)?"entame":((h!=null&&h>=12)?"correct":(h==null?"":"frais")));
+  return {e:e,h:h,niv:niv,mal:mal,sym:sym,cou:(cou!=null&&cou>=6&&/mardi/i.test(jr[0])),
           dol:(e.dol!=null&&+e.dol>=4&&String(e.zone||"").trim())?{n:+e.dol,zone:String(e.zone).trim()}:null};
 }
 async function muChargerJoueurs(){
@@ -4224,7 +4243,7 @@ function muBandeauEtat(p){
   const sj=muEtatSeance(p,ci,di,wi);
   if(sj){
     const hs=(sj.h!=null)?"Hooper "+sj.h+"/28":"Hooper incomplet";
-    const t={rouge:(sj.e.mal?"Malade":"Dans le rouge")+" · "+hs,entame:"Entamé · "+hs,correct:"Correct · "+hs,frais:"Frais · "+hs}[sj.niv]||hs;
+    const t={rouge:(sj.mal?"Malade":"Dans le rouge")+" · "+hs,entame:(sj.sym?"Symptômes légers":"Entamé")+" · "+hs,correct:"Correct · "+hs,frais:"Frais · "+hs}[sj.niv]||hs;
     const q=[];
     if(sj.niv==="rouge") q.push("Séance réduite : vitesse et force à 2 séries, pas de bloc C ni D. À valider avec le staff.");
     if(sj.niv==="entame") q.push("Une série en moins en force, pas d’échec ni de drop en C.");
