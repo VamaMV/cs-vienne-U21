@@ -1851,7 +1851,7 @@ table.cr-t{width:100%;border-collapse:collapse}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h101 — assiduité dans la fiche joueur, point staff PP / médical par joueur et du groupe, import des présences muscu · séances : motif de chaque adaptation, ancien prévu barré, envoi de la séance au joueur · h100 — état du jour : noms du formulaire rapprochés au prénom près ; adaptation blessure : prowler, sprints, sauts, RDL et tirages reconnus ; squat libre = 92 % du box (plafond 2,4 × PdC) · h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
+    <div style="font-size:.7rem;opacity:.5">h102 — séance adaptée selon le Hooper (écart à sa moyenne), la douleur et sa récidive, les courbatures et le sommeil · h101 — assiduité dans la fiche joueur, point staff PP / médical par joueur et du groupe, import des présences muscu · séances : motif de chaque adaptation, ancien prévu barré, envoi de la séance au joueur · h100 — état du jour : noms du formulaire rapprochés au prénom près ; adaptation blessure : prowler, sprints, sauts, RDL et tirages reconnus ; squat libre = 92 % du box (plafond 2,4 × PdC) · h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
   </footer>
 </div>
 
@@ -4438,14 +4438,28 @@ function muEtatSeance(p,c,d,i){
   const l=muLundiSemaine(c,i), now=new Date();
   const lc=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-((now.getUTCDay()||7)-1)));
   if(!l||l.getTime()!==lc.getTime()) return null;
-  const h=(e.h==null)?null:+e.h, cou=(Array.isArray(e.it)&&e.it[2]!=null)?+e.it[2]:null;
+  const h=(e.h==null)?null:+e.h, it=Array.isArray(e.it)?e.it:[];
+  const som=it[0]!=null?+it[0]:null, cou=it[2]!=null?+it[2]:null;
   /* question maladie : "Non" / "Symptomes legers" / "Malade" (texte brut du formulaire ; true = ancien format) */
-  const mt=(typeof e.mal==="string")?e.mal.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim():"";
+  const mt=(typeof e.mal==="string")?e.mal.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").trim():"";
   const sym=/leger|legere|peu/.test(mt);
   const mal=(e.mal===true)||(!!mt&&!sym&&!/^(non|no|rien|aucun|ras|na|0)\b/.test(mt));
-  const niv=(mal||(h!=null&&h>21))?"rouge":(((h!=null&&h>=17)||sym)?"entame":((h!=null&&h>=12)?"correct":(h==null?"":"frais")));
-  return {e:e,h:h,niv:niv,mal:mal,sym:sym,cou:(cou!=null&&cou>=6&&/mardi/i.test(jr[0])),
-          dol:(e.dol!=null&&+e.dol>=4&&String(e.zone||"").trim())?{n:+e.dol,zone:String(e.zone).trim()}:null};
+  /* niveau : seuils absolus du Hooper (4-28) croises avec l ecart a la moyenne habituelle du joueur
+     (28 jours precedents, z = ecart / ecart-type, plancher 1,5 point ; au moins 8 reponses) */
+  const ref=(e.ref&&e.ref.n>=8)?e.ref:null;
+  const z=(ref&&h!=null)?(h-ref.m)/Math.max(ref.s||0,1.5):null;
+  let lvl=0;
+  if(h!=null){ if(h>=22) lvl=3; else if(h>=19) lvl=2; else if(h>=17) lvl=1; }
+  if(z!=null&&h!=null){
+    if(z>=2) lvl=Math.max(lvl,h>=17?3:2);
+    else if(z>=1.5) lvl=Math.max(lvl,h>=12?2:1);
+    else if(z>=1&&h>=10) lvl=Math.max(lvl,1);
+  }
+  if(sym) lvl=Math.max(lvl,1);
+  if(mal) lvl=3;
+  const niv=(lvl===3?"rouge":(lvl===2?"entame":(lvl===1?"vigil":(h==null?"":(h>=12?"correct":"frais")))));
+  const dol=(e.dol!=null&&+e.dol>=3&&String(e.zone||"").trim())?{n:+e.dol,zone:String(e.zone).trim(),rec:(+e.dz||0)+1}:null;
+  return {e:e,h:h,lvl:lvl,niv:niv,z:z,ref:ref,mal:mal,sym:sym,cou:(cou!=null&&cou>=6),som:(som!=null&&som>=6),dol:dol};
 }
 async function muChargerJoueurs(){
   try{
@@ -4589,33 +4603,73 @@ function muSeries(r,f){
   const x=r.slice(); x[3]=Object.assign({},r[3],{sub:n+" ×"+m[2]}); return x;
 }
 function muAdapterEtat(p,rows,c,d,i){
+  /* regles : douleur (modele de Thomee : 0-2 sans risque, 3-5 accepte, > 5 risque eleve ; recidive = meme zone 3 jours sur 7),
+     etat general (on garde l intensite, on retire du volume : la force se maintient avec peu de series si la charge reste haute),
+     courbatures (vitesse et sauts plafonnes), mauvaise nuit (volume de masse reduit, la force max est peu touchee) */
   const s=muEtatSeance(p,c,d,i); if(!s) return rows;
-  const RN=s.niv==="rouge"?(s.mal?"malade":"Hooper "+s.h+"/28"):(s.sym?"symptômes légers":"Hooper "+s.h+"/28");
+  const RN=muEtatRaison(s);
+  const reg=s.dol?muRegion(s.dol.zone):"";
+  const DZ=s.dol?("douleur "+String(s.dol.zone).toLowerCase()+" "+s.dol.n+"/10"+(s.dol.rec>=3?" · "+s.dol.rec+" j sur 7":"")):"";
+  const touche=function(n){ return !!s.dol&&(reg==="tete"||reg==="medical"||(reg==="haut"&&MU_HAUT.test(n))||(reg==="bas"&&MU_BAS.test(n))||(reg==="tronc"&&MU_TRONC.test(n))); };
+  const bloque=!!s.dol&&(s.dol.n>=6||s.dol.rec>=3||reg==="tete"||reg==="medical");
+  const plus=function(x,why,fl){ x[7]=x[7]?(x[7].indexOf(why)<0?x[7]+" · "+why:x[7]):why; if(fl==="adapt"||!x[6]) x[6]=fl; return x; };
+  const moins=function(x){ return muSeries(x,function(k){ return Math.max(1,k-1); }); };
+  const charge=function(x,pc){ const t=String(x[3].v==null?"":x[3].v); if(!/^[\d.,]+$/.test(t)) return null;
+    const v=parseFloat(t.replace(",",".")), st=v>=20?2.5:1, nv=Math.max(st,Math.round(v*(1-pc)/st)*st);
+    if(!(nv<v)) return null; const y=x.slice(); y[3]=Object.assign({},x[3],{v:nv}); return y; };
+  const cap90=function(x){ const pc=String(x[3].v||"").match(/(\d+)\s*%/g);
+    if(pc&&Math.max.apply(null,pc.map(function(q){ return parseInt(q,10); }))>90){ const y=x.slice(); y[3]=Object.assign({},x[3],{v:"90 % max"}); return y; } return null; };
+  const VIT=/accél|sprint|départ|bond|haie|jump|saut|pogo/i, SAUT=/bond|haie|jump|saut|pogo/i;
   return rows.map(function(r){
     if(!r||!r[3]||r[0]==="TER") return r;
-    const b=String(r[0]||""), n=String(r[1]||""); let x=r;
-    if(s.dol){
-      const reg=muRegion(s.dol.zone);
-      if(reg==="tete"||reg==="medical"||(reg==="haut"&&MU_HAUT.test(n))||(reg==="bas"&&MU_BAS.test(n))||(reg==="tronc"&&MU_TRONC.test(n))){
-        x=x.slice(); x[3]=Object.assign({},x[3],{v:"à valider"}); x[6]="adapt"; x[7]="douleur "+String(s.dol.zone).toLowerCase()+" "+s.dol.n+"/10"; return x; }
+    const b=String(r[0]||""), n=String(r[1]||""); let x=r, red=false;
+    if(s.dol&&touche(n)){
+      if(bloque){ x=x.slice(); x[3]=Object.assign({},x[3],{v:"à valider"}); return plus(x,DZ,"adapt"); }
+      const y=moins(x)||x.slice(); y[2]=(y[2]?y[2]+" · ":"")+"stop si la douleur dépasse 5/10"; x=plus(y,DZ,"tdj"); red=true;
     }
-    if(s.niv==="rouge"){
-      if(/^[CDE]/.test(b)){ x=x.slice(); x[3]={v:"pas aujourd’hui",sub:""}; x[6]="adapt"; x[7]=RN; return x; }
-      if(/^[AB]/.test(b)){ const y=muSeries(x,function(k){ return Math.min(k,2); }); if(y){ y[6]="adapt"; y[7]=RN; return y; } }
+    if(s.lvl>=3){
+      if(/^[CDE]/.test(b)){ x=x.slice(); x[3]={v:"pas aujourd’hui",sub:""}; return plus(x,RN,"adapt"); }
+      if(/^[AB]/.test(b)){ x=muSeries(x,function(k){ return Math.min(k,2); })||x.slice();
+        if(/^B/.test(b)){ const y=charge(x,0.10); if(y) x=y; }
+        if(/^A/.test(b)){ const y=cap90(x); if(y) x=y; }
+        return plus(x,RN,"adapt"); }
       return x;
     }
-    if(s.niv==="entame"){
-      if(/^B/.test(b)){ const y=muSeries(x,function(k){ return Math.max(1,k-1); }); if(y){ y[6]="tdj"; y[7]=RN; x=y; } }
-      if(/^C/.test(b)){ x=x.slice(); x[2]=(x[2]?x[2]+" · ":"")+"pas d’échec ni de drop"; x[6]="tdj"; x[7]=RN; }
+    if(s.lvl>=1){
+      if(/^B/.test(b)){ if(!red){ const y=moins(x); if(y){ x=plus(y,RN,"tdj"); red=true; } }
+        if(s.lvl>=2){ const y=charge(x,0.05); if(y) x=plus(y,RN,"tdj"); } }
+      if(/^C/.test(b)){ x=x.slice(); x[2]=(x[2]?x[2]+" · ":"")+"pas d’échec ni de drop";
+        if(s.lvl>=2&&!red){ const y=moins(x); if(y){ x=y; red=true; } } x=plus(x,RN,"tdj"); }
+      if((s.lvl>=2||s.sym)&&/^A/.test(b)){ const y=cap90(x); if(y) x=plus(y,RN,"tdj"); }
     }
-    if(s.cou){
-      if(b==="B1"&&s.niv!=="entame"){ const y=muSeries(x,function(k){ return Math.max(1,k-1); }); if(y){ y[6]="tdj"; y[7]=(y[7]?y[7]+" · ":"")+"courbatures"; x=y; } }
-      const pc=String(x[3].v||"").match(/(\d+)\s*%/g);
-      if(/^A/.test(b)&&/accél|sprint|départ/i.test(n)&&!/iso/i.test(n)&&pc&&Math.max.apply(null,pc.map(function(z){ return parseInt(z,10); }))>90){
-        x=x.slice(); x[3]=Object.assign({},x[3],{v:"90 % max"}); x[6]="tdj"; x[7]=(x[7]?x[7]+" · ":"")+"courbatures"; }
+    if(s.cou&&/^A/.test(b)&&VIT.test(n)&&!/iso/i.test(n)){
+      const y=cap90(x); if(y) x=plus(y,"courbatures","tdj");
+      if(SAUT.test(n)&&!red){ const q=moins(x); if(q){ x=plus(q,"courbatures","tdj"); red=true; } }
     }
+    if(s.cou&&b==="B1"&&MU_BAS.test(n)&&!red){ const y=moins(x); if(y){ x=plus(y,"courbatures","tdj"); red=true; } }
+    if(s.som&&/^C/.test(b)&&!red){ const y=moins(x); if(y){ x=plus(y,"mauvaise nuit","tdj"); red=true; } }
     return x;
   });
+}
+function muEtatRaison(s){
+  if(s.mal) return "malade";
+  if(s.sym&&s.lvl<=1) return "symptômes légers";
+  const d=(s.z!=null&&s.ref&&s.z>=1)?" · +"+String(Math.round((s.h-s.ref.m)*10)/10).replace(".",",")+" sur sa moyenne":"";
+  return "Hooper "+s.h+"/28"+d;
+}
+function muEtatConsignes(s){
+  /* texte des bandeaux (hub et page joueur) */
+  const q=[];
+  if(s.lvl>=3) q.push(s.mal?"Malade : séance réduite à valider avec le staff, vitesse et force à 2 séries (force −10 %), pas de bloc C ni D."
+                            :"Séance réduite : vitesse et force à 2 séries (force −10 %), pas de bloc C ni D.");
+  else if(s.lvl===2) q.push("Force : une série en moins et −5 %. Masse : une série en moins, sans échec ni drop. Vitesse à 90 % max.");
+  else if(s.lvl===1) q.push((s.sym?"Symptômes légers : ":"")+"une série en moins en force, pas d’échec ni de drop en masse"+(s.sym?", vitesse à 90 % max.":"."));
+  if(s.cou&&s.lvl<3) q.push("Courbatures fortes : vitesse à 90 % max, une série de sauts en moins, une série de squat en moins.");
+  if(s.som&&s.lvl<3) q.push("Mauvaise nuit : une série en moins en masse, la force est maintenue.");
+  if(s.dol){ const bl=s.dol.n>=6||s.dol.rec>=3||/tete|medical/.test(muRegion(s.dol.zone));
+    q.push("Douleur "+s.dol.n+"/10 ("+s.dol.zone+(s.dol.rec>=3?", "+s.dol.rec+" jours sur 7":"")+") : "
+      +(bl?"exercices de la zone à valider avec le staff.":"exercices de la zone maintenus avec une série en moins, stop si la douleur dépasse 5/10.")); }
+  return q;
 }
 function muBandeauEtat(p){
   const et=muEtat(p,ci,wi); let h="";
@@ -4629,14 +4683,12 @@ function muBandeauEtat(p){
   const sj=muEtatSeance(p,ci,di,wi);
   if(sj){
     const hs=(sj.h!=null)?"Hooper "+sj.h+"/28":"Hooper incomplet";
-    const t={rouge:(sj.mal?"Malade":"Dans le rouge")+" · "+hs,entame:(sj.sym?"Symptômes légers":"Entamé")+" · "+hs,correct:"Correct · "+hs,frais:"Frais · "+hs}[sj.niv]||hs;
-    const q=[];
-    if(sj.niv==="rouge") q.push("Séance réduite : vitesse et force à 2 séries, pas de bloc C ni D. À valider avec le staff.");
-    if(sj.niv==="entame") q.push("Une série en moins en force, pas d’échec ni de drop en C.");
-    if(sj.cou&&sj.niv!=="rouge") q.push("Courbatures élevées : une série en moins au squat, accélérations à 90 % max.");
-    if(sj.dol) q.push("Douleur "+sj.dol.n+"/10 ("+sj.dol.zone+") : exercices de la zone à valider.");
+    const hz=hs+((sj.z!=null&&sj.ref)?" · moyenne habituelle "+String(Math.round(sj.ref.m*10)/10).replace(".",","):"");
+    const t={rouge:(sj.mal?"Malade":"Dans le rouge")+" · "+hz,entame:"Entamé · "+hz,vigil:(sj.sym?"Symptômes légers":"À surveiller")+" · "+hz,correct:"Correct · "+hz,frais:"Frais · "+hz}[sj.niv]||hz;
+    const q=muEtatConsignes(sj);
     if(!q.length) q.push("Séance normale.");
-    h+='<div class="mu-etat '+((sj.niv==="rouge"||sj.dol)?"mu-etat-bl":"mu-etat-tdj")+'"><b>État du jour · '+t+'</b>'+q.join(" ")+'</div>';
+    const bl=sj.lvl>=3||(sj.dol&&(sj.dol.n>=6||sj.dol.rec>=3));
+    h+='<div class="mu-etat '+(bl?"mu-etat-bl":"mu-etat-tdj")+'"><b>État du jour · '+t+'</b>'+q.join(" ")+'</div>';
   }
   if(et.min&&et.min.min>60&&/mardi/i.test((CY[ci].d[di]||[""])[0]))
     h+='<div class="mu-etat mu-etat-tdj"><b>'+et.min.min+'′ au dernier match</b>Une série en moins sur le A1, appliquée automatiquement.</div>';
