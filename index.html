@@ -1775,7 +1775,7 @@ table.cr-t{width:100%;border-collapse:collapse}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
+    <div style="font-size:.7rem;opacity:.5">h100 — adaptation blessure : prowler, sprints, sauts, RDL et tirages reconnus ; squat libre = 92 % du box (plafond 2,4 × PdC) · h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
   </footer>
 </div>
 
@@ -3637,6 +3637,10 @@ function muCharge(regle,v,p){
   if(isNaN(n)||!/^[+-]?\d+([.,]\d+)?$/.test(t)) return t;
   switch(regle){
     case "esq": return K(p.esq,n/100);
+    case "sql": {
+      /* squat libre (pause, front, safety bar) alors que le test est au box : 92 % du box, plafonne a 2,4 x PdC */
+      const b=p.esqBox?p.esq:(p.esq&&p.w?Math.min(p.esq*.92,2.4*p.w):(p.esq?p.esq*.92:null));
+      return K(b,n/100); }
     case "edc": return K(p.edc,n/100);
     case "etb": return K(p.etb,n/100);
     case "pc":  return p.w?fmt(r25(p.w*n/100)):"—";
@@ -3715,7 +3719,7 @@ function muModeleC4(wk,nouveau){
 
 /* ===== constructeur de cycles : interface ===== */
 let MU_BUILT=[];
-const MB_REGLES=[["esq","% 1RM squat"],["edc","% 1RM développé couché"],["etb","% 1RM trap bar"],
+const MB_REGLES=[["esq","% 1RM squat"],["sql","% squat libre (test au box)"],["edc","% 1RM développé couché"],["etb","% 1RM trap bar"],
   ["pc","% poids de corps"],["lest","lest, % poids de corps"],["uni","unilatéral, par main (squat + poids de corps)"],["uni1","unilatéral, une charge (squat + poids de corps)"],["fixe","valeur libre (PDC, RPE, texte)"]];
 const MB_POSTES=[["","Tous"],["av","Avants"],["tq","Trois-quarts"]];
 const MB_PROFILS=[["","Tous"],["force","Force"],["socle","Socle"],["masse","Masse"]];
@@ -4114,9 +4118,9 @@ function prehab(p){
   return out;
 }
 /* ----- adaptation automatique : blessure en cours et temps de jeu ----- */
-const MU_BAS=/squat|fente|split|soulev|sdt|hip thrust|nordic|box jump|traîneau|trainea|départs|épaulé|mêlée|farmer/i;
-const MU_HAUT=/développé|developpe|dév\.|rowing|traction|landmine|curl|push-up|jeté mb|élévation|épaulé|mêlée|farmer|back squat|front squat|box squat/i;
-const MU_TRONC=/squat|soulev|sdt|rowing|épaulé|hip thrust|mêlée/i;
+const MU_BAS=/squat|fente|split|soulev|sdt|rdl|hip thrust|glute|nordic|cossack|box jump|broad jump|bonds|haie|réception|saut|pogo|prowler|sprint|accélération|traîneau|trainea|départ|épaulé|high pull|mêlée|farmer/i;
+const MU_HAUT=/développé|developpe|dév\.|rowing|traction|tirage|landmine|push press|curl|skull|pompes|push-up|face pull|shrug|militaire|jeté mb|élévation|épaulé|high pull|mêlée|farmer|back squat|front squat|box squat|safety/i;
+const MU_TRONC=/squat|soulev|sdt|rdl|rowing|inclinaison|side plank|lombaires|landmine|push press|épaulé|high pull|hip thrust|mêlée/i;
 function muRegion(t){
   t=String(t||"").toLowerCase();
   if(/commotion|tête|tete|crâne|crane|cervical|nuque/.test(t)) return "tete";
@@ -4283,7 +4287,7 @@ async function muPublier(force){
   P.forEach(function(p){
     const o=oj[p.n]||{};
     J[p.n]={tok:o.tok||muJeton(),off:!!o.off,av:!!p.av,poste:p.poste||0,pl:p.pl||"",prof:p.prof||"socle",
-            esq:p.esq||null,edc:p.edc||null,etb:p.etb||null,w:p.w||null,prehab:prehab(p)};
+            esq:p.esq||null,esqBox:p.esqBox||null,edc:p.edc||null,etb:p.etb||null,w:p.w||null,prehab:prehab(p)};
   });
   const labels={};
   CY.forEach(function(c){ if(c.built) (c.wk||[]).forEach(function(w){ labels[String(w[1]).replace(/\D/g,"")]=w[0]; }); });
@@ -4628,6 +4632,10 @@ chips(); render(); centre();
       const pw=(Array.isArray(h.pesees)?h.pesees:[]).filter(function(x){ return x&&x.w; })
                .sort(function(a,b){ return String(a.d).localeCompare(String(b.d)); });
       if(pw.length){ const v=parseFloat(String(pw[pw.length-1].w).replace(",",".")); if(!isNaN(v)) p.w=v; }
+      /* test squat fait au box : au-dela de 2,7 x le poids de corps, le box ne se transfere pas au squat libre ;
+         on retient 2,4 x le poids de corps (niveau des meilleurs du groupe sur le meme test) */
+      delete p.esqBox;
+      if(p.esq&&p.w&&p.esq>2.7*p.w){ const v=Math.round(2.4*p.w); if(p.esq!==v){ p.esqBox=p.esq; p.esq=v; n++; } }
     });
     return n;
   }
