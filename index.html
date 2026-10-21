@@ -1107,6 +1107,39 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
 .tdj-det .al{font-style:normal;font-weight:800;color:#C32A2A;font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;margin-left:4px}
 
 
+
+/* ---- point staff : A4 portrait ---- */
+@page ps{size:A4 portrait;margin:9mm}
+.ps{page:ps;font-family:var(--body);color:#13283B;font-size:9.6px;line-height:1.35}
+.ps-hd{display:flex;align-items:center;gap:12px;background:#12324C;color:#fff;border-radius:9px;padding:10px 14px}
+.ps-cr{width:40px;height:40px;flex:0 0 auto;background:#fff var(--logo) center/80% no-repeat;border-radius:8px}
+.ps-id{flex:1;min-width:0}.ps-id small{display:block;font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#9FC0DA}
+.ps-id b{display:block;font-family:var(--display);font-size:19px;font-weight:800;line-height:1.1}.ps-id span{font-size:9px;color:#D5E4EF}
+.ps-st{text-align:right;font-size:10px;font-weight:800;white-space:nowrap}.ps-st i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.ps-st small{display:block;font-size:8px;font-weight:600;color:#9FC0DA;margin-top:2px}
+.ps-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:9px 0 4px}
+.ps-k{border:1px solid #DCE6EE;border-radius:8px;padding:7px 9px}.ps-k span{display:block;font-size:7.6px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#5B7286}
+.ps-k b{display:block;font-family:var(--display);font-size:20px;font-weight:800;line-height:1.15}.ps-k b small{font-size:10px}.ps-k em{font-style:normal;font-size:8px;color:#5B7286}
+.ps-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ps-t{margin:10px 0 4px;padding-bottom:3px;border-bottom:2px solid #12324C;font-size:8.6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.ps-ep{border:1px solid #F1D2CD;background:#FDF6F5;border-radius:7px;padding:6px 8px;margin-bottom:6px}
+.ps-ep-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}.ps-ep-h b{font-size:11px}
+.ps-ep-h span{color:#fff;font-size:7.6px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;border-radius:99px;padding:1px 7px}
+.ps-kv{width:100%;border-collapse:collapse}.ps-kv td{padding:2px 0;vertical-align:top}.ps-kv td:first-child{width:34%;color:#5B7286;font-weight:600;padding-right:6px}
+.ps-kv span{color:#8A9BA8;font-size:8px}.ps-kv2{margin-top:6px}
+.ps-ok{padding:6px 8px;border-radius:7px;background:#EDF8F1;color:#1C7A4E;font-weight:700}
+.ps-tb{width:100%;border-collapse:collapse;margin-top:6px}.ps-tb th{text-align:left;font-size:7.6px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#5B7286;border-bottom:1px solid #DCE6EE;padding:3px 4px}
+.ps-tb td{border-bottom:1px solid #EEF3F7;padding:3px 4px;vertical-align:top}.ps-tb td span{color:#8A9BA8;font-size:8px}
+.ps-tb i.up{font-style:normal;color:#1C8C5A;font-weight:800}.ps-tb i.dn{font-style:normal;color:#C32A2A;font-weight:800}
+.ps-w{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.ps-w div{background:#F4F8FB;border-radius:6px;padding:5px 6px;text-align:center}
+.ps-w b{display:block;font-family:var(--display);font-size:16px;font-weight:800}.ps-w b.al{color:#C32A2A}.ps-w span{font-size:7.6px;color:#5B7286}
+.ps-dol{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}.ps-dol b{font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:#5B7286;margin-right:3px}
+.ps-dol span{border:1px solid #DCE6EE;border-radius:5px;padding:1px 6px;font-weight:700}.ps-dol span.al{border-color:#E8A49C;background:#FDF0EE;color:#B3261E}.ps-dol i{font-style:normal;font-weight:500;color:#8A9BA8}
+.ps-mut{color:#8A9BA8;margin-top:4px}
+.ps-rq{margin-top:12px;border:1px solid #DCE6EE;border-radius:8px;height:80px;padding:6px 9px}.ps-rq b{font-size:8px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#5B7286}
+.ps-ft{margin-top:8px;font-size:7.6px;color:#8A9BA8;text-align:center}
+.ps-syn-t{margin-top:10px}.ps-syn-t td{padding:3px 4px}.ps-syn-t td i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}
+.ps-syn-t tr:nth-child(even) td{background:#F7FAFC}
 /* ---- fiche joueur : paysage, une page ---- */
 @page fiche{size:A4 landscape;margin:9mm}
 .pf{page:fiche}
@@ -1475,7 +1508,38 @@ table.fj-t{width:100%;border-collapse:collapse;table-layout:fixed}
 .ml-r button{font:inherit;font-size:.74rem;font-weight:700;padding:7px 10px;border-radius:8px;border:1px solid #CFE3F1;background:#EEF6FB;color:#0E5E8E;cursor:pointer;white-space:nowrap}
 .ml-r button.ml-x{background:#fff;color:#6B7C8C;border-color:#E1E8EF}
 .mu-b-v{background:#FDF0EE;color:#B3261E;border:1px solid #F4CFC9} .mu-b-a{background:#EEF6FB;color:#0E5E8E;border:1px solid #CFE3F1}
-.mu-res{margin:4px 0 10px;display:flex;flex-direction:column;gap:6px}
+.mu-res{grid-column:1/-1;margin:4px 0 12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px}
+.mu-res>div p{margin:1px 0 6px;font-size:.72rem;line-height:1.35;color:#5B7286}
+.mu-rl{display:flex;flex-direction:column;gap:2px}
+.mu-rl a{cursor:pointer;font-weight:700;color:#13283B;text-decoration:none!important;display:flex;justify-content:space-between;gap:8px;padding:2px 0;border-bottom:1px dashed rgba(19,40,59,.12)}
+.mu-rl a:last-child{border-bottom:0}.mu-rl a:hover{color:#0E5E8E}
+.mu-rl a i{font-style:normal;font-weight:600;font-size:.72rem;color:#5B7286;text-align:right}
+.mu-res-e{background:#EDF8F1;border:1px solid #C5E6D2;color:#41566A} .mu-res-e b{color:#1C7A4E}
+.mu-res-n{background:#F3F5F7;border:1px solid #E1E7ED;color:#41566A} .mu-res-n b{color:#5B7286}
+.mu-rn{display:flex;flex-wrap:wrap;gap:4px}.mu-rn a{cursor:pointer;font-size:.74rem;font-weight:700;color:#41566A;background:#fff;border:1px solid #E1E7ED;border-radius:6px;padding:2px 7px;text-decoration:none!important}
+.muwrap .mu-ex.adapt .mu-v b{font-family:var(--display);font-size:1.12rem;font-style:normal;color:#B3261E}
+.mu-b-e{background:#EDF8F1;color:#1C7A4E;border:1px solid #C5E6D2}
+.muwrap .mu-env{margin:10px 12px 0;padding:10px 12px;border-radius:10px;background:#fff;border:1px solid #DCE6EE;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.muwrap .mu-env b{display:block;font-size:.8rem;color:#13283B}.muwrap .mu-env span{font-size:.74rem;color:#5B7286}
+.muwrap .mu-env-v{background:#FDF0EE;border-color:#F4CFC9}.muwrap .mu-env-v b{color:#B3261E}
+.muwrap .mu-env-a{background:#EEF6FB;border-color:#CFE3F1}.muwrap .mu-env-a b{color:#0E5E8E}
+.muwrap .mu-env-ok{background:#EDF8F1;border-color:#C5E6D2}.muwrap .mu-env-ok b{color:#1C7A4E}
+.muwrap .mu-env-b{display:flex;gap:6px;flex-wrap:wrap}
+.muwrap .mu-env-b button{font:inherit;font-size:.76rem;font-weight:700;padding:7px 11px;border-radius:8px;border:1px solid #CFDCE6;background:#fff;color:#13283B;cursor:pointer}
+.muwrap .mu-env-b .mu-env-go{background:#13283B;border-color:#13283B;color:#fff}
+.muwrap .mu-env-b .mu-env-wa{background:#1C7A4E;border-color:#1C7A4E;color:#fff}
+.muwrap .mu-env-b .mu-env-x{color:#8A9BA8}
+.muwrap .mu-leg{display:flex;gap:12px;flex-wrap:wrap;padding:2px 16px 8px;font-size:.7rem;color:#5B7286}
+.muwrap .mu-leg span{display:inline-flex;align-items:center;gap:5px}
+.muwrap .mu-leg-v::before,.muwrap .mu-leg-a::before{content:"";width:10px;height:10px;border-radius:2px;display:inline-block}
+.muwrap .mu-leg-v::before{background:#F4CFC9;border:1px solid #D4473F}.muwrap .mu-leg-a::before{background:#CFE3F1;border:1px solid #3d7fbf}
+.muwrap .mu-ex.adapt{background:#FDF3F1;border-left:4px solid #D4473F!important}
+.muwrap .mu-ex.tdj{background:#F1F7FC;border-left:4px solid #3d7fbf!important}
+.muwrap .mu-ex .mu-why{display:block;font-style:normal;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.03em;margin-top:2px}
+.muwrap .mu-ex.adapt .mu-why{color:#B3261E}.muwrap .mu-ex.tdj .mu-why{color:#0E5E8E}
+.muwrap .mu-ex .mu-v s{display:block;font-size:.68rem;color:#8A9BA8;margin-top:2px;white-space:nowrap}
+.muwrap .mu-edr-v input{border-color:#E8A49C!important;background:#FFF7F6}
+.muwrap .mu-edr-a input{border-color:#A9CBE6!important;background:#F6FAFD}
 .mu-res>div{padding:8px 11px;border-radius:10px;font-size:.8rem;line-height:1.5}
 .mu-res b{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em}
 .mu-res a{cursor:pointer;text-decoration:underline;text-underline-offset:2px}
@@ -1737,6 +1801,9 @@ table.cr-t{width:100%;border-collapse:collapse}
         <div class="menu" id="menuOutils">
           <button type="button" id="btnReload">Recharger</button>
           <button type="button" id="btnFiches">Fiches profils PDF</button>
+          <button type="button" id="btnPointStaff">Point staff du groupe</button>
+          <button type="button" id="btnPresences">Importer présences muscu</button>
+          <input type="file" id="fPresences" accept=".xlsx,.xls" style="display:none">
           <button type="button" id="btnBareme">Barème</button>
           <button type="button" id="btnExport">Exporter</button>
           <button type="button" id="btnImport">Importer</button>
@@ -1775,7 +1842,7 @@ table.cr-t{width:100%;border-collapse:collapse}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h100 — état du jour : noms du formulaire rapprochés au prénom près ; adaptation blessure : prowler, sprints, sauts, RDL et tirages reconnus ; squat libre = 92 % du box (plafond 2,4 × PdC) · h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
+    <div style="font-size:.7rem;opacity:.5">h101 — point staff PP / médical par joueur et du groupe, import des présences muscu · séances : motif de chaque adaptation, ancien prévu barré, envoi de la séance au joueur · h100 — état du jour : noms du formulaire rapprochés au prénom près ; adaptation blessure : prowler, sprints, sauts, RDL et tirages reconnus ; squat libre = 92 % du box (plafond 2,4 × PdC) · h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
   </footer>
 </div>
 
@@ -1891,6 +1958,7 @@ table.cr-t{width:100%;border-collapse:collapse}
     <div class="actions" id="detailActions">
       <button class="btn" id="detailEdit" type="button">Modifier</button>
       <button class="btn ghost" id="detailShare" type="button">Partager sa fiche</button>
+      <button class="btn ghost" id="detailPoint" type="button">Point staff</button>
       <button class="btn ghost" id="detailClose" type="button">Fermer</button>
     </div>
   </div>
@@ -2895,6 +2963,7 @@ function closeDetail(){ detailOverlay.classList.remove("open"); detailId=null; }
 detailOverlay.addEventListener("click",e=>{ if(e.target===detailOverlay) closeDetail(); });
 $("detailEdit").addEventListener("click",()=>{ const id=detailId; closeDetail(); openEdit(id); });
 $("detailShare").addEventListener("click",()=>{ const id=detailId; closeDetail(); openShare(id); });
+$("detailPoint").addEventListener("click",()=>{ const id=detailId; closeDetail(); openPointStaff(id); });
 $("detailClose").addEventListener("click",closeDetail);
 function fillSelectCustom(sel,cust,value,known){ if(value && !known(value)){ sel.value="__custom__"; cust.style.display="block"; cust.value=value; } else { sel.value=value||"none"; cust.style.display="none"; cust.value=""; } }
 function readSelectCustom(sel,cust){ if(sel.value==="__custom__"){ return cust.value.trim()||"none"; } return sel.value; }
@@ -3159,6 +3228,267 @@ function openShare(id){
   const close=document.createElement("button"); close.className="btn ghost"; close.textContent="Fermer"; close.onclick=closeData; a.appendChild(close);
   dataOverlay.classList.add("open");
 }
+
+/* ===== point staff : PP + médical, une page par joueur ===== */
+let PS_DATA=null;
+async function psCharger(){
+  const o={};
+  for(const id of ["etat_jour","presences_muscu","muscu_joueurs"]){
+    try{ const r=await sb.from("app_data").select("data").eq("id",id).maybeSingle(); o[id]=(r&&!r.error&&r.data)?r.data.data:null; }
+    catch(e){ o[id]=null; }
+  }
+  PS_DATA=o; return o;
+}
+function psNz(x){ return String(x||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z ]/g," ").split(/\s+/).filter(Boolean); }
+function psLev(a,b){ const m=a.length,n=b.length,d=[]; for(let i=0;i<=m;i++) d[i]=[i]; for(let j=1;j<=n;j++) d[0][j]=j;
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++) d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1)); return d[m][n]; }
+function psCles(n,keys){
+  /* toutes les orthographes du joueur dans un formulaire ou l Excel (fautes de frappe a 2 lettres pres, meme prenom) */
+  const w=String(n).split(" "), fam=psNz(w.filter(x=>x===x.toUpperCase()).join(" ")), pre=psNz(w.filter(x=>x!==x.toUpperCase()).join(" "));
+  const tout=psNz(n).sort().join(" "), fs=fam.slice().sort().join(" "), ps=pre.slice().sort().join(" ");
+  return (keys||[]).filter(function(k){
+    const t=psNz(k); if(t.slice().sort().join(" ")===tout) return true;
+    if(fam.length&&fam.every(x=>t.indexOf(x)>=0)){ const r=t.filter(x=>fam.indexOf(x)<0).sort().join(" "); return !r||r===ps||(ps&&psLev(r,ps)<=2); }
+    if(pre.length&&pre.every(x=>t.indexOf(x)>=0)){ const r=t.filter(x=>pre.indexOf(x)<0).sort().join(" "); return !!(r&&fs&&psLev(r,fs)<=2); }
+    return false;
+  });
+}
+function psStats(p){
+  const D=PS_DATA||{}, et=D.etat_jour||{}, H=et.hist||{}, base=H.b||"2026-06-29";
+  const idx=function(iso){ return Math.round((Date.parse(iso+"T00:00:00Z")-Date.parse(base+"T00:00:00Z"))/864e5); };
+  const auj=idx(todayISO()), lim=auj-27;
+  const taux=function(mine,jours){
+    const S={}; mine.forEach(function(i){ S[i]=1; });
+    const js=jours.filter(function(i){ return i<=auj; }), j4=js.filter(function(i){ return i>=lim; });
+    return {s:[js.filter(function(i){ return S[i]; }).length,js.length], q:[j4.filter(function(i){ return S[i]; }).length,j4.length]};
+  };
+  const r={wel:null,hoo:null,rpe:null,mus:null,maj:et.maj||"",musMaj:(D.presences_muscu&&D.presences_muscu.maj)||""};
+  const W=H.wel;
+  if(W&&W.j){
+    const ks=psCles(p.n,Object.keys(W.j)), h={}; let mal=[],sym=[],dol=[];
+    ks.forEach(function(k){ const o=W.j[k]; (o.d||[]).forEach(function(i,x){ h[i]=o.h[x]; }); mal=mal.concat(o.m||[]); sym=sym.concat(o.s||[]); dol=dol.concat(o.dol||[]); });
+    const mine=Object.keys(h).map(Number);
+    r.wel=taux(mine,W.jours||[]);
+    const v=mine.filter(function(i){ return i>=lim&&h[i]!=null; }).map(function(i){ return h[i]; });
+    const zs={};
+    dol.filter(function(d){ return d[0]>=lim; }).forEach(function(d){
+      const k=psNz(d[1]).join(" ")||"non précisée";
+      if(!zs[k]) zs[k]={zone:String(d[1]||"non précisée").trim(),n:0,max:0};
+      zs[k].n++; zs[k].max=Math.max(zs[k].max,+d[2]||0);
+    });
+    const der=mine.length?Math.max.apply(null,mine):null;
+    r.hoo={n:v.length,moy:v.length?Math.round(v.reduce(function(a,b){ return a+b; },0)/v.length*10)/10:null,
+      ent:v.filter(function(x){ return x>=17&&x<=21; }).length, rouge:v.filter(function(x){ return x>21; }).length,
+      mal:mal.filter(function(i,x,a){ return i>=lim&&a.indexOf(i)===x; }).length,
+      sym:sym.filter(function(i,x,a){ return i>=lim&&a.indexOf(i)===x; }).length,
+      dol:Object.keys(zs).map(function(k){ return zs[k]; }).sort(function(a,b){ return b.n-a.n||b.max-a.max; }),
+      der:der!=null?addJours(base,der):""};
+  }
+  const R=H.rpe;
+  if(R&&R.j){ let mine=[]; psCles(p.n,Object.keys(R.j)).forEach(function(k){ mine=mine.concat(R.j[k]); }); r.rpe=taux(mine,R.jours||[]); }
+  const M=D.presences_muscu;
+  if(M&&M.j&&M.jours){ let mine=[]; psCles(p.n,Object.keys(M.j)).forEach(function(k){ mine=mine.concat(M.j[k]); });
+    r.mus=taux(mine.map(idx),M.jours.map(idx)); }
+  return r;
+}
+function psPct(t){ return (t&&t[1])?Math.round(t[0]/t[1]*100):null; }
+function psTxtTaux(o){ if(!o) return "—"; const q=psPct(o.q), s=psPct(o.s);
+  return (q!=null?q+" % sur 4 sem. ("+o.q[0]+"/"+o.q[1]+")":"—")+(s!=null?" · saison "+s+" %":""); }
+function psCouleur(v){ return v==null?"#8A9BA8":(v>=85?"#1C8C5A":(v>=65?"#B45309":"#C32A2A")); }
+function psTests(p){
+  /* premier et dernier releve de chaque test */
+  const L=[], fr=function(x){ return String(x).replace(".",","); };
+  const evo=function(a,b,inv,u){ if(a==null||b==null||a===b) return ""; const d=Math.round((b-a)*100)/100; const bon=inv?d<0:d>0; return '<i class="'+(bon?"up":"dn")+'">'+(d>0?"+":"")+fr(d)+(u?" "+u:"")+'</i>'; };
+  const grp={};
+  (Array.isArray(p.tests)?p.tests:[]).filter(function(t){ return t&&t.ex&&t.load!==""&&t.load!=null; })
+    .slice().sort(function(a,b){ return String(a.d||"").localeCompare(String(b.d||"")); })
+    .forEach(function(t){ const k=String(t.ex).trim(); (grp[k]=grp[k]||[]).push(t); });
+  Object.keys(grp).forEach(function(k){ const a=grp[k][0], b=grp[k][grp[k].length-1];
+    const va=parseFloat(String(a.load).replace(",",".")), vb=parseFloat(String(b.load).replace(",","."));
+    L.push([k+" 3RM",fr(a.load)+" kg",grp[k].length>1?fr(b.load)+" kg":"",grp[k].length>1?evo(va,vb,false,"kg"):"",grp[k].length>1?frDate(b.d):frDate(a.d)]); });
+  const serie=function(arr,lab,get,unit,inv){ const s=(Array.isArray(arr)?arr:[]).filter(function(x){ return x&&get(x)!=null; }).slice().sort(function(a,b){ return String(a.d||"").localeCompare(String(b.d||"")); });
+    if(!s.length) return; const a=s[0], b=s[s.length-1];
+    L.push([lab,fr(get(a))+unit,s.length>1?fr(get(b))+unit:"",s.length>1?evo(get(a),get(b),inv,unit.trim()):"",frDate(b.d)]); };
+  serie(p.cmjs,"CMJ",function(x){ return cmjNum(x.v); }," cm");
+  serie(p.broncos,"Bronco",function(x){ const s=broncoSec(x.t); return s?s:null; }," s",true);
+  serie(p.sprints,"Sprint 10 m",function(x){ const v=parseFloat(String(x.t10||"").replace(",",".")); return isNaN(v)?null:v; }," s",true);
+  serie(p.sprints,"Sprint 30 m",function(x){ const v=parseFloat(String(x.t30||"").replace(",",".")); return isNaN(v)?null:v; }," s",true);
+  return L.map(function(l){ if(/^Bronco/.test(l[0])){ const t=function(s){ const n=parseFloat(String(s).replace(",",".")); return isNaN(n)?s:(Math.floor(n/60)+":"+String(Math.round(n%60)).padStart(2,"0")); };
+    l[1]=t(l[1]); if(l[2]) l[2]=t(l[2]); } return l; });
+}
+function psProfil(p){ const D=PS_DATA||{}, mj=D.muscu_joueurs||{}; return ((mj.prof||{})[p.n])||"socle"; }
+function pointStaffHTML(p){
+  const st=etatDe(p), pi=posteInfo(p), S=psStats(p), auj=todayISO();
+  const eps=(Array.isArray(p.episodes)?p.episodes:[]).slice().sort(function(a,b){ return String(b.deb||"").localeCompare(String(a.deb||"")); });
+  const cur=eps.filter(function(e){ return e.phase!=="clos"; });
+  const kpi=function(lab,o,sub){ const v=o?psPct(o.q):null;
+    return '<div class="ps-k"><span>'+lab+'</span><b style="color:'+psCouleur(v)+'">'+(v!=null?v+'<small> %</small>':'—')+'</b>'
+      +'<em>'+(o?(o.q[1]?o.q[0]+'/'+o.q[1]+' sur 4 sem.':'')+(psPct(o.s)!=null?' · saison '+psPct(o.s)+' %':''):sub)+'</em></div>'; };
+  let h='<div class="ps">';
+  h+='<div class="ps-hd"><div class="ps-cr"></div><div class="ps-id"><small>Point staff PP · médical</small><b>'+esc(p.n)+'</b>'
+    +'<span>'+esc([pi.key!=="none"?posteDisplay(pi):"",catLabel(p),p.cel?"CEL":"","profil muscu "+psProfil(p)].filter(Boolean).join(" · "))+'</span></div>'
+    +'<div class="ps-st"><i style="background:'+st.color+'"></i>'+esc(st.label)+(st.zone?' · '+esc(st.zone):'')+'<small>au '+frDate(auj)+'</small></div></div>';
+  h+='<div class="ps-kpis">'+kpi("Wellness rempli",S.wel,"pas de données")+kpi("RPE rempli",S.rpe,"pas de données")
+    +kpi("Présence muscu",S.mus,"importer l’Excel")
+    +'<div class="ps-k"><span>Temps de jeu</span><b>'+totalMin(p)+'<small> min</small></b><em>'+nbMatchs(p)+' match'+(nbMatchs(p)>1?'s':'')
+    +(tauxTitu(p)?' · '+tauxTitu(p)+' % titulaire':'')+'</em></div></div>';
+  /* ---- colonne gauche : medical + wellness ---- */
+  let g='<div class="ps-t">Médical</div>';
+  if(cur.length) cur.forEach(function(e){
+    const pa=pathoOf(e), ec=ecartFourchette(e), jl=jalonsOf(e), ok=(e.jal||[]).filter(Boolean).length;
+    g+='<div class="ps-ep"><div class="ps-ep-h"><b>'+esc(e.zone||EPTYPES[e.type]||"Blessure")+'</b><span style="background:'+PHASES[e.phase].color+'">'+esc(PHASES[e.phase].label)+'</span></div>'
+      +'<table class="ps-kv">'
+      +(pa?'<tr><td>Pathologie</td><td>'+esc(pa.lab)+'</td></tr>':'<tr><td>Type</td><td>'+esc(EPTYPES[e.type]||"")+'</td></tr>')
+      +'<tr><td>Depuis</td><td>'+(e.deb?frDate(e.deb)+' ('+daysSince(e.deb)+' j)':'—')+'</td></tr>'
+      +(e.diag||e.rdv?'<tr><td>Diagnostic</td><td>'+esc(DIAGSTAT[e.diag]||"")+(e.rdv?(e.diag?' · ':'')+'RDV '+frDate(e.rdv):'')+'</td></tr>':'')
+      +(fenetreTxt(e)?'<tr><td>Fenêtre de retour</td><td>'+esc(fenetreTxt(e))+(ec&&ETATCOL[ec.etat]?' · '+esc(ETATCOL[ec.etat].l):'')+'</td></tr>':'')
+      +(e.ret?'<tr><td>Retour prévu</td><td>'+frDate(e.ret)+'</td></tr>':'')
+      +'<tr><td>Jalons</td><td>'+ok+' / '+jl.length+' validés'+(e.medok?' · accord médical obtenu':'')+'</td></tr>'
+      +(e.note?'<tr><td>Note</td><td>'+esc(e.note)+'</td></tr>':'')
+      +'</table></div>';
+  });
+  else g+='<div class="ps-ok">Aucune blessure en cours.</div>';
+  const clos=eps.filter(function(e){ return e.phase==="clos"; });
+  if(clos.length){
+    g+='<table class="ps-tb"><thead><tr><th>Blessures de la saison</th><th>Début</th><th>Retour</th><th>Arrêt</th></tr></thead><tbody>'
+      +clos.map(function(e){ const pa=pathoOf(e); const dur=(e.deb&&e.retr)?Math.max(0,Math.round((Date.parse(e.retr)-Date.parse(e.deb))/864e5)):null;
+        return '<tr><td><b>'+esc(e.zone||EPTYPES[e.type])+'</b>'+(pa?'<br><span>'+esc(pa.lab)+'</span>':(closSansDiag(e)?'<br><span>retour sans diagnostic</span>':''))+'</td>'
+          +'<td>'+(e.deb?frDate(e.deb):'—')+'</td><td>'+(e.retr?frDate(e.retr):'—')+'</td><td>'+(dur!=null?dur+' j':'—')+'</td></tr>'; }).join("")
+      +'</tbody></table>';
+  }
+  if((p.ant&&p.ant.trim())||(p.acc&&p.acc.trim())||(p.z&&p.z!=="none")){
+    g+='<table class="ps-kv ps-kv2">'+(p.ant&&p.ant.trim()?'<tr><td>Antécédents</td><td>'+esc(p.ant)+'</td></tr>':'')
+      +(p.acc&&p.acc.trim()?'<tr><td>Prévention</td><td>'+esc(p.acc)+'</td></tr>':'')
+      +(p.z&&p.z!=="none"?'<tr><td>Zone à surveiller</td><td>'+esc(zoneInfo(p).label)+'</td></tr>':'')+'</table>';
+  }
+  g+='<div class="ps-t">Wellness · 4 dernières semaines</div>';
+  if(S.hoo&&S.hoo.n){
+    const o=S.hoo;
+    g+='<div class="ps-w"><div><b>'+String(o.moy).replace(".",",")+'</b><span>Hooper moyen /28</span></div><div><b>'+o.ent+'</b><span>jours entamé (17-21)</span></div>'
+      +'<div><b'+(o.rouge?' class="al"':'')+'>'+o.rouge+'</b><span>jours dans le rouge</span></div><div><b'+(o.mal?' class="al"':'')+'>'+(o.mal+o.sym)+'</b><span>jours malade'+(o.sym?' ('+o.sym+' légers)':'')+'</span></div></div>';
+    g+=o.dol.length?'<div class="ps-dol"><b>Douleurs déclarées</b>'+o.dol.map(function(d){ return '<span'+(d.n>=3?' class="al"':'')+'>'+esc(d.zone)+' × '+d.n+' <i>max '+d.max+'/10</i></span>'; }).join("")+'</div>'
+      :'<div class="ps-dol"><b>Douleurs déclarées</b><span>aucune</span></div>';
+    if(o.der) g+='<div class="ps-mut">Dernière réponse le '+frDate(o.der)+'.</div>';
+  } else g+='<div class="ps-mut">'+(S.wel?'Aucune réponse sur les 4 dernières semaines.':'Historique Wellness pas encore reçu.')+'</div>';
+  /* ---- colonne droite : physique + jeu ---- */
+  let d='<div class="ps-t">Physique</div>';
+  { const pw=pesWeights(p), b=bilanPoids(p);
+    if(pw.length){ const last=pw[pw.length-1];
+      d+='<table class="ps-kv"><tr><td>Poids</td><td><b>'+String(last.w).replace(".",",")+' kg</b> le '+frDate(last.d)
+        +(p.poidsCible!==""&&p.poidsCible!=null?' · cible '+String(p.poidsCible).replace(".",",")+' kg':'')+'</td></tr>'
+        +(b?'<tr><td>Évolution</td><td>'+(b.delta>0?'+':'')+String(b.delta).replace(".",",")+' kg depuis le '+frDate(b.depuis)+' ('+b.n+' pesées)</td></tr>':'')+'</table>'; } }
+  const T=psTests(p);
+  d+=T.length?'<table class="ps-tb ps-tests"><thead><tr><th>Test</th><th>Premier</th><th>Dernier</th><th>Écart</th><th>Le</th></tr></thead><tbody>'
+    +T.map(function(l){ return '<tr><td><b>'+esc(l[0])+'</b></td><td>'+esc(l[1])+'</td><td>'+esc(l[2]||"—")+'</td><td>'+(l[3]||"")+'</td><td>'+esc(l[4]||"")+'</td></tr>'; }).join("")+'</tbody></table>'
+    :'<div class="ps-mut">Aucun test enregistré.</div>';
+  d+='<div class="ps-t">Temps de jeu</div>';
+  { const nb=nbMatchs(p);
+    d+=nb?'<table class="ps-kv"><tr><td>Matchs</td><td>'+nb+' joués · '+totalMin(p)+' min · '+moyMin(p)+' min / match</td></tr>'
+      +'<tr><td>Titularisations</td><td>'+tauxTitu(p)+' %</td></tr><tr><td>21 derniers jours</td><td>'+minSurJours(p,21)+' min</td></tr>'
+      +(serieConsecutive(p)>1?'<tr><td>Série</td><td>'+serieConsecutive(p)+' matchs de suite</td></tr>':'')+'</table>'
+      :'<div class="ps-mut">Aucun match joué.</div>'; }
+  d+='<div class="ps-t">Assiduité</div><table class="ps-kv">'
+    +'<tr><td>Wellness</td><td>'+psTxtTaux(S.wel)+'</td></tr><tr><td>RPE</td><td>'+psTxtTaux(S.rpe)+'</td></tr>'
+    +'<tr><td>Muscu</td><td>'+psTxtTaux(S.mus)+(S.musMaj?'<br><span>Excel importé le '+frDate(String(S.musMaj).slice(0,10))+'</span>':'')+'</td></tr></table>';
+  h+='<div class="ps-cols"><div class="ps-c">'+g+'</div><div class="ps-c">'+d+'</div></div>';
+  h+='<div class="ps-rq"><b>Remarques</b></div>';
+  h+='<div class="ps-ft">CS Vienne Rugby · Espoirs Reichel Accession U21 · document interne au staff, ne pas diffuser</div></div>';
+  return h;
+}
+function pointStaffTexte(p){
+  const st=etatDe(p), S=psStats(p), L=[];
+  L.push("POINT STAFF — "+p.n+" ("+frDate(todayISO())+")");
+  L.push("État : "+st.label+(st.zone?" · "+st.zone:""));
+  (Array.isArray(p.episodes)?p.episodes:[]).filter(function(e){ return e.phase!=="clos"; }).forEach(function(e){ const pa=pathoOf(e);
+    L.push("• "+(e.zone||EPTYPES[e.type])+(pa?" — "+pa.lab:"")+" · "+PHASES[e.phase].label+(e.deb?" depuis le "+frDate(e.deb)+" ("+daysSince(e.deb)+" j)":"")
+      +(e.rdv?" · RDV "+frDate(e.rdv):"")+(fenetreTxt(e)?" · retour "+fenetreTxt(e):"")+(e.note?" · "+e.note:"")); });
+  const clos=(Array.isArray(p.episodes)?p.episodes:[]).filter(function(e){ return e.phase==="clos"; });
+  if(clos.length) L.push("Saison : "+clos.map(function(e){ return (e.zone||EPTYPES[e.type])+" "+(e.deb?frDate(e.deb).slice(0,5):"")+(e.retr?"→"+frDate(e.retr).slice(0,5):""); }).join(", "));
+  if(p.ant&&p.ant.trim()) L.push("Antécédents : "+p.ant);
+  L.push("");
+  L.push("Wellness : "+psTxtTaux(S.wel));
+  L.push("RPE : "+psTxtTaux(S.rpe));
+  L.push("Présence muscu : "+psTxtTaux(S.mus));
+  if(S.hoo&&S.hoo.n){ L.push("Hooper 4 sem. : "+String(S.hoo.moy).replace(".",",")+"/28 · "+S.hoo.ent+" j entamé · "+S.hoo.rouge+" j rouge"+((S.hoo.mal+S.hoo.sym)?" · "+(S.hoo.mal+S.hoo.sym)+" j malade":""));
+    if(S.hoo.dol.length) L.push("Douleurs : "+S.hoo.dol.map(function(d){ return d.zone+" ×"+d.n+" (max "+d.max+"/10)"; }).join(", ")); }
+  L.push("");
+  const pw=pesWeights(p); if(pw.length){ const b=bilanPoids(p); L.push("Poids : "+String(pw[pw.length-1].w).replace(".",",")+" kg"+(b?" ("+(b.delta>0?"+":"")+String(b.delta).replace(".",",")+" kg depuis le "+frDate(b.depuis)+")":"")); }
+  psTests(p).forEach(function(l){ L.push(l[0]+" : "+l[1]+(l[2]?" → "+l[2]:"")); });
+  if(nbMatchs(p)) L.push("Temps de jeu : "+nbMatchs(p)+" matchs · "+totalMin(p)+" min · "+tauxTitu(p)+" % titulaire");
+  return L.join("\n");
+}
+async function openPointStaff(id){
+  const p=players.find(function(x){ return x.id===id; }); if(!p) return;
+  toast("Chargement du point staff…");
+  await psCharger();
+  const txt=pointStaffTexte(p);
+  $("dataTitle").textContent="Point staff — "+p.n;
+  $("dataHint").textContent="Blessures, assiduité, Wellness, physique et temps de jeu. Document interne au staff.";
+  $("dataText").value=txt; $("dataText").readOnly=true;
+  const a=$("dataActions"); a.innerHTML=""; a.style.flexDirection="column";
+  const mk=function(l,cls,fn){ const b=document.createElement("button"); b.className=cls; b.textContent=l; b.onclick=fn; a.appendChild(b); };
+  mk("Enregistrer en PDF","btn",function(){ closeData(); setTimeout(function(){ psImprimer([p]); },60); });
+  mk("Envoyer sur WhatsApp","btn ghost",function(){ window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank"); });
+  mk("Copier le texte","btn ghost",function(){ try{ navigator.clipboard.writeText(txt); toast("Copié"); }catch(e){ toast("Copie indisponible"); } });
+  mk("Fermer","btn ghost",closeData);
+  dataOverlay.classList.add("open");
+}
+function psSynthese(list){
+  const rows=list.map(function(p){ const S=psStats(p), st=etatDe(p);
+    const c=function(o){ const v=o?psPct(o.q):null; return '<td style="color:'+psCouleur(v)+'"><b>'+(v!=null?v+' %':'—')+'</b></td>'; };
+    return '<tr><td><b>'+esc(p.n)+'</b></td><td><i style="background:'+st.color+'"></i>'+esc(st.label)+(st.zone?' · '+esc(st.zone):'')+'</td>'
+      +c(S.wel)+c(S.rpe)+c(S.mus)+'<td>'+(S.hoo&&S.hoo.moy!=null?String(S.hoo.moy).replace(".",","):'—')+'</td>'
+      +'<td>'+(S.hoo&&S.hoo.dol.length?esc(S.hoo.dol.slice(0,2).map(function(d){ return d.zone+" ×"+d.n; }).join(", ")):'')+'</td>'
+      +'<td>'+totalMin(p)+'</td></tr>'; }).join("");
+  return '<div class="ps ps-syn"><div class="ps-hd"><div class="ps-cr"></div><div class="ps-id"><small>Point staff PP · médical</small><b>Synthèse du groupe</b>'
+    +'<span>'+list.length+' joueurs · au '+frDate(todayISO())+' · assiduité et Hooper sur les 4 dernières semaines</span></div></div>'
+    +'<table class="ps-tb ps-syn-t"><thead><tr><th>Joueur</th><th>État</th><th>Wellness</th><th>RPE</th><th>Muscu</th><th>Hooper</th><th>Douleurs</th><th>Min jouées</th></tr></thead><tbody>'+rows+'</tbody></table>'
+    +'<div class="ps-ft">Vert ≥ 85 % · orange 65-84 % · rouge &lt; 65 % · document interne au staff, ne pas diffuser</div></div>';
+}
+function psImprimer(list,synthese){
+  const pages=(synthese?[psSynthese(list)]:[]).concat(list.map(pointStaffHTML));
+  document.getElementById("printArea").innerHTML=pages.map(function(x,i){ return '<div class="pfwrap'+(i<pages.length-1?" pfbreak":"")+'">'+x+'</div>'; }).join("");
+  if(window.print) window.print(); else toast("Ouvre le fichier dans un navigateur pour le PDF");
+}
+async function psGroupe(){ toast("Préparation du point staff…"); await psCharger(); psImprimer(filteredBase().slice().sort(function(a,b){ return a.n.localeCompare(b.n); }),true); }
+async function psImporterPresences(f){
+  if(!f) return;
+  try{
+    if(!window.XLSX){ await new Promise(function(ok,ko){ const s=document.createElement("script"); s.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"; s.onload=ok; s.onerror=function(){ ko(new Error("lecteur Excel indisponible")); }; document.head.appendChild(s); }); }
+    const r=psLireExcel(window.XLSX,new Uint8Array(await f.arrayBuffer()));
+    if(!r.jours.length||!Object.keys(r.j).length) throw new Error("aucune présence trouvée (colonnes NOM / PRENOM et dates attendues)");
+    const data={maj:new Date().toISOString(),fichier:f.name,jours:r.jours,j:r.j};
+    const w=await sb.from("app_data").upsert({id:"presences_muscu",data:data,updated_at:new Date().toISOString()});
+    if(w&&w.error) throw new Error(w.error.message||"écriture refusée");
+    const nonTrouves=actifs().filter(function(p){ return !psCles(p.n,Object.keys(r.j)).length; }).map(function(p){ return p.n; });
+    toast("Présences importées : "+r.jours.length+" séances, "+Object.keys(r.j).length+" joueurs");
+    if(nonTrouves.length) setTimeout(function(){ alert("Joueurs du hub absents de l’Excel :\n"+nonTrouves.join("\n")); },400);
+  }catch(e){ toast("Import impossible : "+e.message); }
+}
+function psLireExcel(XLSX,buf){
+  /* Excel de presence muscu : un onglet par mois, ligne d en-tete avec NOM / PRENOM puis les dates ; 1 = present */
+  const wb=XLSX.read(buf,{type:"array"}), pres={}, jours={};
+  const iso=function(n){ const o=XLSX.SSF.parse_date_code(n); return o?(o.y+"-"+String(o.m).padStart(2,"0")+"-"+String(o.d).padStart(2,"0")):""; };
+  wb.SheetNames.forEach(function(sn){
+    const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:null});
+    let h=-1, cN=-1, cP=-1;
+    for(let r=0;r<Math.min(rows.length,15)&&h<0;r++){ (rows[r]||[]).forEach(function(v,c){
+      const t=String(v==null?"":v).trim().toUpperCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+      if(t==="NOM"&&cN<0){ h=r; cN=c; } if(t==="PRENOM"&&cP<0) cP=c; }); }
+    if(h<0||cN<0) return;
+    const dc={}; (rows[h]||[]).forEach(function(v,c){ if(typeof v==="number"&&v>40000&&v<60000) dc[c]=iso(v); });
+    for(let r=h+1;r<rows.length;r++){
+      const row=rows[r]||[], nom=row[cN], pre=cP>=0?row[cP]:"";
+      if(!nom||typeof nom!=="string"||!nom.trim()) continue;
+      const k=(nom.trim()+" "+String(pre||"").trim()).trim();
+      Object.keys(dc).forEach(function(c){ const v=row[c];
+        if(v===1||v==="1"||String(v).trim().toLowerCase()==="x"){ (pres[k]=pres[k]||{})[dc[c]]=1; jours[dc[c]]=(jours[dc[c]]||0)+1; } });
+    }
+  });
+  const J={}; Object.keys(pres).forEach(function(k){ J[k]=Object.keys(pres[k]).sort(); });
+  return {jours:Object.keys(jours).sort(),j:J};
+}
+
 function frD(x){ return String(x).replace(".",","); }
 function ficheHTML(p){
   const pi=posteInfo(p), st=etatDe(p);
@@ -4174,6 +4504,9 @@ function muEtat(p,c,i){
   r.min=muMatchAvant(h,c,i);
   return r;
 }
+/* ce qui etait prevu avant adaptation, pour l afficher barre */
+function muFmtV(r){ if(!r||!r[3]) return ""; const v=String(r[3].v==null?"":r[3].v).replace(".",","); return [r[3].sub||"",/^[\d,]+$/.test(v)?v+" kg":v].filter(Boolean).join(" · "); }
+function muPrevu(e,b0){ if(!e||!b0) return ""; const a=muFmtV(b0), z=muFmtV(e); return (a&&a!==z)?a:""; }
 function muAdapter(p,rows,c,d,i){
   const et=muEtat(p,c,i);
   let out=muAdapterEtat(p,rows,c,d,i);
@@ -4183,7 +4516,8 @@ function muAdapter(p,rows,c,d,i){
       const n=String(r[1]||"");
       const touche=et.tout||(et.region==="haut"&&MU_HAUT.test(n))||(et.region==="bas"&&MU_BAS.test(n))||(et.region==="tronc"&&MU_TRONC.test(n));
       if(!touche) return r;
-      const x=r.slice(); x[3]=Object.assign({},r[3],{v:"à valider"}); x[6]="adapt"; return x;
+      const x=r.slice(); x[3]=Object.assign({},r[3],{v:"à valider"}); x[6]="adapt";
+      x[7]="blessure"+(et.ep.zone?" "+String(et.ep.zone).toLowerCase():"")+(MU_PHASES&&MU_PHASES[et.ep.phase]?" · "+MU_PHASES[et.ep.phase].toLowerCase():""); return x;
     });
   }
   const jour=((CY[c]||{}).d||[])[d];
@@ -4193,7 +4527,7 @@ function muAdapter(p,rows,c,d,i){
       const m=String(r[3].sub||"").match(/^(\d+)\s*×(.*)$/);
       if(!m||+m[1]<=1) return r;
       const x=r.slice(); x[3]=Object.assign({},r[3],{sub:(+m[1]-1)+"×"+m[2]});
-      x[2]=(r[2]?r[2]+" · ":"")+"−1 série ("+et.min.min+"′ au dernier match)"; x[6]="tdj"; return x;
+      x[2]=(r[2]?r[2]+" · ":"")+"−1 série ("+et.min.min+"′ au dernier match)"; x[6]="tdj"; x[7]=(x[7]?x[7]+" · ":"")+et.min.min+"′ au dernier match"; return x;
     });
   }
   return out;
@@ -4205,28 +4539,29 @@ function muSeries(r,f){
 }
 function muAdapterEtat(p,rows,c,d,i){
   const s=muEtatSeance(p,c,d,i); if(!s) return rows;
+  const RN=s.niv==="rouge"?(s.mal?"malade":"Hooper "+s.h+"/28"):(s.sym?"symptômes légers":"Hooper "+s.h+"/28");
   return rows.map(function(r){
     if(!r||!r[3]||r[0]==="TER") return r;
     const b=String(r[0]||""), n=String(r[1]||""); let x=r;
     if(s.dol){
       const reg=muRegion(s.dol.zone);
       if(reg==="tete"||reg==="medical"||(reg==="haut"&&MU_HAUT.test(n))||(reg==="bas"&&MU_BAS.test(n))||(reg==="tronc"&&MU_TRONC.test(n))){
-        x=x.slice(); x[3]=Object.assign({},x[3],{v:"à valider"}); x[6]="adapt"; return x; }
+        x=x.slice(); x[3]=Object.assign({},x[3],{v:"à valider"}); x[6]="adapt"; x[7]="douleur "+String(s.dol.zone).toLowerCase()+" "+s.dol.n+"/10"; return x; }
     }
     if(s.niv==="rouge"){
-      if(/^[CDE]/.test(b)){ x=x.slice(); x[3]={v:"pas aujourd’hui",sub:""}; x[6]="adapt"; return x; }
-      if(/^[AB]/.test(b)){ const y=muSeries(x,function(k){ return Math.min(k,2); }); if(y){ y[6]="adapt"; return y; } }
+      if(/^[CDE]/.test(b)){ x=x.slice(); x[3]={v:"pas aujourd’hui",sub:""}; x[6]="adapt"; x[7]=RN; return x; }
+      if(/^[AB]/.test(b)){ const y=muSeries(x,function(k){ return Math.min(k,2); }); if(y){ y[6]="adapt"; y[7]=RN; return y; } }
       return x;
     }
     if(s.niv==="entame"){
-      if(/^B/.test(b)){ const y=muSeries(x,function(k){ return Math.max(1,k-1); }); if(y){ y[6]="tdj"; x=y; } }
-      if(/^C/.test(b)){ x=x.slice(); x[2]=(x[2]?x[2]+" · ":"")+"pas d’échec ni de drop"; x[6]="tdj"; }
+      if(/^B/.test(b)){ const y=muSeries(x,function(k){ return Math.max(1,k-1); }); if(y){ y[6]="tdj"; y[7]=RN; x=y; } }
+      if(/^C/.test(b)){ x=x.slice(); x[2]=(x[2]?x[2]+" · ":"")+"pas d’échec ni de drop"; x[6]="tdj"; x[7]=RN; }
     }
     if(s.cou){
-      if(b==="B1"&&s.niv!=="entame"){ const y=muSeries(x,function(k){ return Math.max(1,k-1); }); if(y){ y[6]="tdj"; x=y; } }
+      if(b==="B1"&&s.niv!=="entame"){ const y=muSeries(x,function(k){ return Math.max(1,k-1); }); if(y){ y[6]="tdj"; y[7]=(y[7]?y[7]+" · ":"")+"courbatures"; x=y; } }
       const pc=String(x[3].v||"").match(/(\d+)\s*%/g);
       if(/^A/.test(b)&&/accél|sprint|départ/i.test(n)&&!/iso/i.test(n)&&pc&&Math.max.apply(null,pc.map(function(z){ return parseInt(z,10); }))>90){
-        x=x.slice(); x[3]=Object.assign({},x[3],{v:"90 % max"}); x[6]="tdj"; }
+        x=x.slice(); x[3]=Object.assign({},x[3],{v:"90 % max"}); x[6]="tdj"; x[7]=(x[7]?x[7]+" · ":"")+"courbatures"; }
     }
     return x;
   });
@@ -4382,7 +4717,19 @@ window.muPrehabChoix=function(n){
   };
 };
 
-let MU_OVR={};
+let MU_OVR={}, MU_ENV={};
+function muPrenom(n){ return String(n).split(" ").filter(function(w){ return w!==w.toUpperCase(); }).join(" ")||String(n); }
+function muIsoSeance(c,i,d){
+  const l=muLundiSemaine(c,i), jr=((CY[c]||{}).d||[])[d]; if(!l||!jr) return "";
+  const k=["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"].indexOf(String(jr[0]).toLowerCase()); if(k<0) return "";
+  const x=new Date(l); x.setUTCDate(l.getUTCDate()+k); return x.toISOString().slice(0,10);
+}
+function muEnvoi(p){ const e=MU_ENV[p.n]; return (e&&e.date===muIsoSeance(ci,wi,di)&&String(e.d)===String((CY[ci].d[di]||[""])[0]))?e:null; }
+function muRaisons(p){
+  if(muModifiee(p,ci,di,wi)) return "séance modifiée";
+  const r=[]; sess(p,ci,di,wi).forEach(function(e){ if(e&&e[6]&&e[7]) String(e[7]).split(" · ").forEach(function(t){ if(r.indexOf(t)<0) r.push(t); }); });
+  return r.join(" · ");
+}
 function muCle(p,c,d,i){ const cy=CY[c]||{}; return (cy.id||cy.n||c)+"|"+i+"|"+d+"|"+p.n; }
 function muModifiee(p,c,d,i){ const o=MU_OVR[muCle(p,c,d,i)]; return Array.isArray(o)&&o.length>0; }
 function sess(p,c,d,i){
@@ -4568,11 +4915,23 @@ function render(){
   const f=P.filter(p=>p.n.toLowerCase().includes(q));
   const av=f.filter(p=>p.av), tq=f.filter(p=>!p.av);
   const blk=(t,arr)=>arr.length?`<div class="mu-grp">${t} · ${arr.length}</div>`+arr.map(card).join(""):"";
-  const val=[], adp=[];
-  P.forEach(function(p){ const t=muFlagSeance(p); if(t==="adapt") val.push(p); else if(t==="tdj") adp.push(p); });
-  const lien=function(arr){ return arr.map(function(p){ return '<a onclick=\'open_('+JSON.stringify(p.n)+')\'>'+p.n+'</a>'; }).join(", "); };
-  const res=(val.length||adp.length)?'<div class="mu-res">'+(val.length?'<div class="mu-res-v"><b>À valider · '+val.length+'</b>'+lien(val)+'</div>':'')
-    +(adp.length?'<div class="mu-res-a"><b>Adaptés automatiquement · '+adp.length+'</b>'+lien(adp)+'</div>':'')+'</div>':'';
+  const val=[], adp=[], env=[], sans=[];
+  const auj=muIsoSeance(ci,wi,di)===muAujISO();
+  P.forEach(function(p){
+    if(auj&&!muEtatJour(p)) sans.push(p);
+    if(muEnvoi(p)){ env.push(p); return; }
+    const t=muFlagSeance(p); if(t==="adapt") val.push(p); else if(t==="tdj") adp.push(p);
+  });
+  const lien=function(arr,mot){ return '<div class="mu-rl">'+arr.map(function(p){
+    const r=mot?mot(p):""; return '<a onclick=\'open_('+JSON.stringify(p.n)+')\'>'+mbEsc(p.n)+(r?'<i>'+mbEsc(r)+'</i>':'')+'</a>'; }).join("")+'</div>'; };
+  const boite=function(cls,tit,txt,arr,mot){ return arr.length?'<div class="'+cls+'"><b>'+tit+' · '+arr.length+'</b><p>'+txt+'</p>'+lien(arr,mot)+'</div>':''; };
+  const res=(val.length||adp.length||env.length||sans.length)?'<div class="mu-res">'
+    +boite("mu-res-v","À décider","Le hub a bloqué des exercices. Ouvre le joueur, décide, puis envoie-lui la séance.",val,muRaisons)
+    +boite("mu-res-a","Allégées par le hub","Séries retirées d’après le Wellness. Le joueur les voit déjà sur son lien : envoie seulement si tu changes quelque chose.",adp,muRaisons)
+    +boite("mu-res-e","Envoyées","Séance validée par toi, affichée telle quelle sur le téléphone du joueur.",env,function(p){ return "à "+muEnvoi(p).t; })
+    +(sans.length?'<div class="mu-res-n"><b>Pas de réponse Wellness · '+sans.length+'</b><p>Séance normale tant qu’ils n’ont pas répondu.</p><div class="mu-rn">'
+      +sans.map(function(p){ return '<a onclick=\'open_('+JSON.stringify(p.n)+')\'>'+mbEsc(p.n)+'</a>'; }).join("")+'</div></div>':'')
+    +'</div>':'';
   document.getElementById("mu_list").innerHTML = f.length? res+blk("Avants",av)+blk("Trois-quarts",tq)
     : '<div class="mu-empty">Aucun joueur</div>';
 }
@@ -4583,6 +4942,21 @@ function muFlagSeance(p){
   if(ex.some(function(e){ return e&&e[6]==="tdj"; })) return "tdj";
   return "";
 }
+function muBlocEnvoi(p){
+  if(!(typeof ROLE!=="undefined"&&ROLE==="admin")) return "";
+  const e=muEnvoi(p), nj=JSON.stringify(p.n), ex=sess(p,ci,di,wi);
+  const bloq=ex.filter(function(x){ return x&&x[3]&&/à valider/i.test(String(x[3].v)); }).length;
+  const chg=ex.some(function(x){ return x&&x[6]; })||muModifiee(p,ci,di,wi);
+  if(e) return '<div class="mu-env mu-env-ok"><div><b>Envoyée à '+mbEsc(e.t)+'</b><span>'+muPrenom(p.n)+' voit cette séance sur son lien, à la place du calcul automatique.</span></div>'
+    +'<div class="mu-env-b"><button type="button" class="mu-env-wa" onclick=\'muPrevenir('+nj+')\'>Prévenir sur WhatsApp</button>'
+    +'<button type="button" onclick=\'muEnvoyer('+nj+')\'>Renvoyer</button><button type="button" class="mu-env-x" onclick=\'muAnnulerEnvoi('+nj+')\'>Retirer</button></div></div>';
+  if(bloq) return '<div class="mu-env mu-env-v"><div><b>'+bloq+' exercice'+(bloq>1?'s':'')+' à décider</b><span>Remplace « à valider » par ce que '+muPrenom(p.n)+' doit faire, puis envoie.</span></div>'
+    +'<div class="mu-env-b"><button type="button" class="mu-env-go" onclick=\'muEditer('+nj+',true)\'>Décider et envoyer</button></div></div>';
+  const red=ex.some(function(x){ return x&&x[6]==="adapt"; });
+  return '<div class="mu-env'+(red?' mu-env-v':(chg?' mu-env-a':''))+'"><div><b>'+(red?'Séance réduite par le hub':(chg?'Séance allégée par le hub':'Séance prévue'))+'</b><span>'
+    +(red?'Vérifie les lignes en rouge. ':(chg?'Vérifie les lignes en bleu. ':''))+'Envoyer la fige sur le téléphone de '+muPrenom(p.n)+'.</span></div>'
+    +'<div class="mu-env-b"><button type="button" onclick=\'muEditer('+nj+',true)\'>Modifier et envoyer</button><button type="button" class="mu-env-go" onclick=\'muEnvoyer('+nj+')\'>Envoyer à '+mbEsc(muPrenom(p.n))+'</button></div></div>';
+}
 function card(p){
   const tous=sess(p,ci,di,wi).filter(e=>e[3]&&e[3].v&&e[3].v!=="—");
   /* sur la carte : les charges en kg d abord (force puis le reste), sinon les premiers exercices */
@@ -4590,7 +4964,7 @@ function card(p){
   const ex=(kg.length?kg.concat(tous.filter(e=>kg.indexOf(e)<0)):tous).slice(0,3);
   const fl=muFlagSeance(p);
   const tg=(p.prof!=="socle"?`<span class="mu-tag mu-${p.prof}">${p.prof}</span>`:"")
-    +(fl==="adapt"?'<span class="mu-badge mu-b-v">à valider</span>':(fl==="tdj"?'<span class="mu-badge mu-b-a">adaptée</span>':""));
+    +(muEnvoi(p)?'<span class="mu-badge mu-b-e">envoyée</span>':(fl==="adapt"?'<span class="mu-badge mu-b-v">à décider</span>':(fl==="tdj"?'<span class="mu-badge mu-b-a">allégée</span>':"")));
   return `<div class="mu-card" onclick='open_(${JSON.stringify(p.n)})'>
     <div class="mu-row"><div class="mu-pos">${p.poste}</div>
       <div class="mu-nm"><b>${p.n}</b><span>${p.pl}${p.w?" · "+String(p.w).replace(".",",")+" kg":""}</span></div>${tg}</div>
@@ -4598,7 +4972,7 @@ function card(p){
 }
 function open_(n){
   const p=P.find(x=>x.n===n); const S=document.getElementById("mu_sheet");
-  const ex=sess(p,ci,di,wi);
+  const ex=sess(p,ci,di,wi), bs=sessBase(p,ci,di,wi);
   const ph=prehab(p);
   const note = CY[ci].built ? (p.prof==="force" ? "Profil force : 5 séries en force, 6 à 8 reps en C, sans échec ni drop."
       : p.prof==="masse" ? "Profil masse : 6, 5, 4 reps en force, 4 tours en C."
@@ -4617,10 +4991,13 @@ function open_(n){
       <div><b>${p.bron??"—"}</b><span>Bronco</span></div>
       <div><b>${p.cmj!=null&&p.cmj!==""?String(p.cmj).replace(".",","):"—"}</b><span>CMJ cm</span></div></div>
     ${muBandeauEtat(p)}
+    ${muBlocEnvoi(p)}
     <div class="mu-sec">${CY[ci].d[di][0]} · ${CY[ci].d[di][1]}${muModifiee(p,ci,di,wi)?'<span class="mu-mdf">séance modifiée</span>':''}</div>
-    ${ex.map(e=>`<div class="mu-ex ${e[4]||""}${e[6]==="adapt"?" adapt":""}${e[6]==="tdj"?" tdj":""}"><div class="mu-bl">${e[0]}</div>
-      <div class="mu-t"><b>${e[1]}</b><span>${e[2]}</span></div>
-      <div class="mu-v">${e[3]?`<b>${String(e[3].v).replace(".",",")}</b><span>${e[3].sub||""}</span>`:""}</div></div>`).join("")}
+    ${ex.some(e=>e[6])?'<div class="mu-leg"><span class="mu-leg-v">bloqué : à toi de décider</span><span class="mu-leg-a">allégé par le hub</span><span><s>barré</s> = prévu au départ</span></div>':''}
+    ${ex.map((e,k)=>{ const pv=(!muModifiee(p,ci,di,wi)&&e[6])?muPrevu(e,bs[k]):"";
+      return `<div class="mu-ex ${e[4]||""}${e[6]==="adapt"?" adapt":""}${e[6]==="tdj"?" tdj":""}"><div class="mu-bl">${e[0]}</div>
+      <div class="mu-t"><b>${e[1]}</b><span>${e[2]}</span>${e[6]&&e[7]?`<em class="mu-why">${e[6]==="adapt"?"bloqué":"allégé"} · ${mbEsc(e[7])}</em>`:""}</div>
+      <div class="mu-v">${e[3]?`<b>${String(e[3].v).replace(".",",")}</b><span>${e[3].sub||""}</span>`:""}${pv?`<s>${mbEsc(pv)}</s>`:""}</div></div>`; }).join("")}
     <div class="mu-sec">Ma préhab · 2 × / semaine${(typeof ROLE!=="undefined"&&ROLE==="admin")?`<button type="button" class="mu-pchb" onclick='muPrehabChoix(${JSON.stringify(p.n)})'>Choisir</button>`:""}${muPrehabIds(p).perso?'<span class="mu-mdf">personnalisée</span>':''}</div>
     <div class="mu-pre">${p.ant?`<div class="mu-ant">Antécédent · ${p.ant}</div>`:""}${p.acc?`<div class="mu-acc">Aménagement · ${p.acc}</div>`:""}
       ${ph.map(x=>`<div class="mu-ex"><div class="mu-t"><b>${x[0]}</b></div><div class="mu-v"><b>${x[1]}</b></div></div>`).join("")}</div>
@@ -4678,17 +5055,56 @@ chips(); render(); centre();
       if(r&&!r.error&&r.data&&r.data.data&&r.data.data.o&&typeof r.data.data.o==="object") MU_OVR=r.data.data.o;
     }catch(e){}
   }
+  async function muChargerEnv(){
+    try{
+      const r=await sb.from("app_data").select("data").eq("id","seances_envoyees").maybeSingle();
+      MU_ENV=(r&&!r.error&&r.data&&r.data.data&&r.data.data.s)||{};
+    }catch(e){}
+  }
+  async function muSauverEnv(){
+    const r=await sb.from("app_data").upsert({id:"seances_envoyees",data:{s:MU_ENV,maj:new Date().toISOString()},updated_at:new Date().toISOString()});
+    if(r&&r.error) throw new Error(r.error.message||"écriture refusée");
+  }
+  window.muEnvoyer=async function(n){
+    const p=P.find(function(x){ return x.n===n; }); if(!p) return false;
+    const ex=sess(p,ci,di,wi), mod=muModifiee(p,ci,di,wi), base=sessBase(p,ci,di,wi);
+    const parB={}; base.forEach(function(b){ const k=String(b[0]||""); if(k&&!(k in parB)) parB[k]=b; });
+    const rows=ex.map(function(e,k){
+      const b0=mod?parB[String(e[0]||"")]:base[k];
+      return {b:e[0]||"",nom:e[1]||"",det:e[2]||"",v:(e[3]&&e[3].v!=null)?String(e[3].v):"",sub:(e[3]&&e[3].sub)||"",
+              fl:e[6]||"",why:e[7]||"",prevu:(b0&&String(b0[1])===String(e[1]))?muPrevu(e,b0):(b0&&b0[1]!==e[1]?"prévu : "+b0[1]:"")};
+    });
+    const reste=rows.filter(function(r){ return /à valider/i.test(r.v); }).length;
+    if(reste&&!confirm(reste+" exercice(s) encore « à valider ». Envoyer quand même ?")) return false;
+    const now=new Date();
+    MU_ENV[p.n]={date:muIsoSeance(ci,wi,di),cy:CY[ci].id||CY[ci].n,w:CY[ci].wk[wi][1],d:CY[ci].d[di][0],rows:rows,modif:mod,
+      t:now.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Paris"}),at:now.toISOString()};
+    try{ await muSauverEnv(); toast("Séance envoyée à "+muPrenom(p.n)); }catch(e){ toast("Échec de l envoi : "+e.message); return false; }
+    render(); open_(n); return true;
+  };
+  window.muAnnulerEnvoi=async function(n){
+    if(!confirm("Retirer la séance envoyée ? Le joueur reverra la séance calculée automatiquement.")) return;
+    delete MU_ENV[n];
+    try{ await muSauverEnv(); toast("Envoi retiré"); }catch(e){ toast("Échec : "+e.message); }
+    render(); open_(n);
+  };
+  window.muPrevenir=function(n){
+    const j=MU_PUB&&MU_PUB.joueurs&&MU_PUB.joueurs[n], url=j?muBaseJoueur()+j.tok:"";
+    const jour=String((CY[ci].d[di]||[""])[0]).toLowerCase();
+    const txt="Salut "+muPrenom(n)+", ta séance de "+jour+" a été adaptée par le staff. Elle est sur ton lien"+(url?" : "+url:" muscu perso.");
+    window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank");
+  };
   async function muSauverOvr(){
     const r=await sb.from("app_data").upsert({id:"muscu_ovr",data:{o:MU_OVR,maj:new Date().toISOString()},updated_at:new Date().toISOString()});
     if(r&&r.error) throw new Error(r.error.message||"écriture refusée");
   }
-  window.muEditer=function(n){
+  window.muEditer=function(n,envoyer){
     const p=P.find(function(x){ return x.n===n; }); if(!p) return;
     const ex=sess(p,ci,di,wi);
     const S=document.getElementById("mu_sheet");
     const lig=function(e){
       const v=(e[3]&&e[3].v!=null&&e[3].v!=="—")?String(e[3].v).replace(".",","):"";
-      return '<div class="mu-edr">'
+      return '<div class="mu-edr'+(/à valider|pas aujourd/i.test(v)?' mu-edr-v':(e[6]==="tdj"?' mu-edr-a':''))+'">'
         +'<input class="mu-e-b" value="'+String(e[0]||"").replace(/"/g,"&quot;")+'" placeholder="Bloc">'
         +'<div class="mu-e-mid"><input class="mu-e-n" value="'+String(e[1]||"").replace(/"/g,"&quot;")+'" placeholder="Exercice">'
         +'<input class="mu-e-d" value="'+String(e[2]||"").replace(/"/g,"&quot;")+'" placeholder="Consigne"></div>'
@@ -4697,14 +5113,14 @@ chips(); render(); centre();
         +'<button type="button" class="mu-e-x" title="Retirer">×</button></div>';
     };
     S.innerHTML='<div class="mu-sh"><button class="mu-close" onclick="document.getElementById(\'mu_sheet\').classList.remove(\'on\')">×</button>'
-      +'<h2>'+p.n+'</h2><p>Modifier · '+CY[ci].wk[wi][0]+' '+CY[ci].wk[wi][1]+' · '+CY[ci].d[di][0]+'</p></div>'
+      +'<h2>'+p.n+'</h2><p>'+(envoyer?'Décider et envoyer · ':'Modifier · ')+CY[ci].wk[wi][0]+' '+CY[ci].wk[wi][1]+' · '+CY[ci].d[di][0]+'</p></div>'
       +'<div class="mu-edh"><span>Bloc</span><span>Exercice · consigne</span><span>Charge</span><span>Séries</span><span></span></div>'
       +'<div id="mu_edl">'+ex.map(lig).join("")+'</div>'
       +'<button type="button" class="mu-e-add" id="mu_eadd">Ajouter un exercice</button>'
       +'<div class="mu-e-act">'
       +(muModifiee(p,ci,di,wi)?'<button type="button" class="mu-e-rz" id="mu_erz">Revenir au calcul automatique</button>':'<span></span>')
       +'<span><button type="button" class="mu-e-an" id="mu_ean">Annuler</button>'
-      +'<button type="button" class="mu-e-ok" id="mu_eok">Enregistrer</button></span></div>';
+      +'<button type="button" class="mu-e-ok" id="mu_eok">'+(envoyer?'Enregistrer et envoyer':'Enregistrer')+'</button></span></div>';
     const L=document.getElementById("mu_edl");
     L.addEventListener("click",function(ev){ const x=ev.target.closest(".mu-e-x"); if(x){ x.parentNode.remove(); } });
     document.getElementById("mu_eadd").onclick=function(){ L.insertAdjacentHTML("beforeend",lig(["","","",{v:"",sub:""}])); };
@@ -4724,8 +5140,9 @@ chips(); render(); centre();
       }).filter(function(r){ return r.nom; });
       if(!rows.length){ if(typeof toast==="function") toast("Ajoute au moins un exercice"); return; }
       MU_OVR[muCle(p,ci,di,wi)]=rows;
-      try{ await muSauverOvr(); if(typeof toast==="function") toast("Séance enregistrée"); }
-      catch(e){ if(typeof toast==="function") toast("Échec de l enregistrement : "+e.message); }
+      try{ await muSauverOvr(); if(typeof toast==="function"&&!envoyer) toast("Séance enregistrée"); }
+      catch(e){ if(typeof toast==="function") toast("Échec de l enregistrement : "+e.message); render(); open_(n); return; }
+      if(envoyer){ const ok=await muEnvoyer(n); if(ok) return; }
       render(); open_(n);
     };
   };
@@ -4871,8 +5288,8 @@ chips(); render(); centre();
   };
   if(typeof open_==="function") window.open_=open_;
   $("btnMuscu").addEventListener("click",async function(){
-    if(!MUREADY){ MUREADY=true; try{ await muCharger(); await muChargerOvr(); await muChargerCycles(); await muChargerJoueurs(); await muChargerEtat(); muSyncJoueurs(); muSyncRM(); muCaler(); chips(); render(); centre(); muPublier().catch(function(){}); }catch(e){} }
-    else { try{ muSyncJoueurs(); muSyncRM(); render(); muPublier().catch(function(){}); }catch(e){} }
+    if(!MUREADY){ MUREADY=true; try{ await muCharger(); await muChargerOvr(); await muChargerCycles(); await muChargerJoueurs(); await muChargerEtat(); await muChargerEnv(); muSyncJoueurs(); muSyncRM(); muCaler(); chips(); render(); centre(); muPublier().catch(function(){}); }catch(e){} }
+    else { try{ await muChargerEtat(); await muChargerEnv(); muSyncJoueurs(); muSyncRM(); render(); muPublier().catch(function(){}); }catch(e){} }
     muscuOverlay.classList.add("open");
   });
 })();
@@ -5541,6 +5958,9 @@ $("btnBip").addEventListener("click",async function(){
 })();
 
 $("btnFiches").addEventListener("click",()=>{ printFiches(filteredBase()); });
+$("btnPointStaff").addEventListener("click",()=>{ psGroupe(); });
+$("btnPresences").addEventListener("click",()=>{ $("fPresences").value=""; $("fPresences").click(); });
+$("fPresences").addEventListener("change",e=>{ psImporterPresences(e.target.files&&e.target.files[0]); });
 $("btnOutils").addEventListener("click",function(e){
   e.stopPropagation();
   const m=$("menuOutils"), b=e.currentTarget;
@@ -5999,8 +6419,8 @@ $("btnLogout").addEventListener("click",async function(){ try{ if(sb) await sb.a
 function appliquerRole(){
   if(isAdmin()) return;
   const cacher=isStagiaire()
-    ? ["btnImport","btnReset","btnBareme","tdjSaisie","fab"]
-    : ["fab","btnImport","btnReset","detailEdit","btnBareme","tdjSaisie"];
+    ? ["btnImport","btnReset","btnBareme","tdjSaisie","fab","btnPresences"]
+    : ["fab","btnImport","btnReset","detailEdit","btnBareme","tdjSaisie","btnPresences"];
   cacher.forEach(function(id){ const el=document.getElementById(id); if(el) el.style.display="none"; });
   const b=document.getElementById("dataHint");
   if(b) b.textContent=isStagiaire()

@@ -39,7 +39,10 @@ h2{font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:#3d7fbf;ma
 .ex .v{text-align:right;white-space:nowrap} .ex .v b{display:block;font-size:20px;font-weight:800;letter-spacing:-.01em}
 .ex .v b small{font-size:11px;color:#6B7C8C;font-weight:600;margin-left:2px} .ex .v span{display:block;font-size:12.5px;color:#41566A;font-weight:600;margin-top:1px}
 .ex.tdj{background:linear-gradient(90deg,#EEF6FB,#fff 60%)} .ex.tdj .v span,.ex.tdj .t span,.ex.tdj .v b{color:#0E5E8E}
-.ex.adapt{background:linear-gradient(90deg,#FDF0EE,#fff 60%)} .ex.adapt .v b{color:#B3261E;font-size:14px;font-style:italic}
+.ex.adapt{background:linear-gradient(90deg,#FDF0EE,#fff 60%)} .ex.adapt .v b{color:#B3261E}
+.ex .why{display:block;font-style:normal;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;margin-top:2px;color:#0E5E8E}
+.ex.adapt .why{color:#B3261E}
+.ex .v s{display:block;font-size:10.5px;color:#8A9BA8;margin-top:2px;white-space:nowrap}
 .pr{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(19,40,59,.05)}
 .pr b{font-size:12px;font-weight:800;color:#2A6FB0;background:#E3EEF8;border-radius:8px;padding:6px 8px;flex:0 0 auto}
 .pr div span{display:block;font-size:14.5px;font-weight:700} .pr div em{font-style:normal;font-size:12.5px;color:#6B7C8C}
@@ -228,32 +231,36 @@ function muSeries(r,f){
 }
 function muAdapterEtat(p,rows,c,d,i){
   const s=muEtatSeance(p,c,d,i); if(!s) return rows;
+  const RN=s.niv==="rouge"?(s.mal?"malade":"Hooper "+s.h+"/28"):(s.sym?"symptômes légers":"Hooper "+s.h+"/28");
   return rows.map(function(r){
     if(!r||!r[3]||r[0]==="TER") return r;
     const b=String(r[0]||""), n=String(r[1]||""); let x=r;
     if(s.dol){
       const reg=muRegion(s.dol.zone);
       if(reg==="tete"||reg==="medical"||(reg==="haut"&&MU_HAUT.test(n))||(reg==="bas"&&MU_BAS.test(n))||(reg==="tronc"&&MU_TRONC.test(n))){
-        x=x.slice(); x[3]=Object.assign({},x[3],{v:"à valider"}); x[6]="adapt"; return x; }
+        x=x.slice(); x[3]=Object.assign({},x[3],{v:"à valider"}); x[6]="adapt"; x[7]="douleur "+String(s.dol.zone).toLowerCase()+" "+s.dol.n+"/10"; return x; }
     }
     if(s.niv==="rouge"){
-      if(/^[CDE]/.test(b)){ x=x.slice(); x[3]={v:"pas aujourd’hui",sub:""}; x[6]="adapt"; return x; }
-      if(/^[AB]/.test(b)){ const y=muSeries(x,function(k){ return Math.min(k,2); }); if(y){ y[6]="adapt"; return y; } }
+      if(/^[CDE]/.test(b)){ x=x.slice(); x[3]={v:"pas aujourd’hui",sub:""}; x[6]="adapt"; x[7]=RN; return x; }
+      if(/^[AB]/.test(b)){ const y=muSeries(x,function(k){ return Math.min(k,2); }); if(y){ y[6]="adapt"; y[7]=RN; return y; } }
       return x;
     }
     if(s.niv==="entame"){
-      if(/^B/.test(b)){ const y=muSeries(x,function(k){ return Math.max(1,k-1); }); if(y){ y[6]="tdj"; x=y; } }
-      if(/^C/.test(b)){ x=x.slice(); x[2]=(x[2]?x[2]+" · ":"")+"pas d’échec ni de drop"; x[6]="tdj"; }
+      if(/^B/.test(b)){ const y=muSeries(x,function(k){ return Math.max(1,k-1); }); if(y){ y[6]="tdj"; y[7]=RN; x=y; } }
+      if(/^C/.test(b)){ x=x.slice(); x[2]=(x[2]?x[2]+" · ":"")+"pas d’échec ni de drop"; x[6]="tdj"; x[7]=RN; }
     }
     if(s.cou){
-      if(b==="B1"&&s.niv!=="entame"){ const y=muSeries(x,function(k){ return Math.max(1,k-1); }); if(y){ y[6]="tdj"; x=y; } }
+      if(b==="B1"&&s.niv!=="entame"){ const y=muSeries(x,function(k){ return Math.max(1,k-1); }); if(y){ y[6]="tdj"; y[7]=(y[7]?y[7]+" · ":"")+"courbatures"; x=y; } }
       const pc=String(x[3].v||"").match(/(\d+)\s*%/g);
       if(/^A/.test(b)&&/accél|sprint|départ/i.test(n)&&!/iso/i.test(n)&&pc&&Math.max.apply(null,pc.map(function(z){ return parseInt(z,10); }))>90){
-        x=x.slice(); x[3]=Object.assign({},x[3],{v:"90 % max"}); x[6]="tdj"; }
+        x=x.slice(); x[3]=Object.assign({},x[3],{v:"90 % max"}); x[6]="tdj"; x[7]=(x[7]?x[7]+" · ":"")+"courbatures"; }
     }
     return x;
   });
 }
+/* ce qui etait prevu avant adaptation, pour l afficher barre */
+function muFmtV(r){ if(!r||!r[3]) return ""; const v=String(r[3].v==null?"":r[3].v).replace(".",","); return [r[3].sub||"",/^[\d,]+$/.test(v)?v+" kg":v].filter(Boolean).join(" · "); }
+function muPrevu(e,b0){ if(!e||!b0) return ""; const a=muFmtV(b0), z=muFmtV(e); return (a&&a!==z)?a:""; }
 function muAdapter(p,rows,c,d,i){
   const et=muEtat(p,c,i);
   let out=muAdapterEtat(p,rows,c,d,i);
@@ -263,7 +270,8 @@ function muAdapter(p,rows,c,d,i){
       const n=String(r[1]||"");
       const touche=et.tout||(et.region==="haut"&&MU_HAUT.test(n))||(et.region==="bas"&&MU_BAS.test(n))||(et.region==="tronc"&&MU_TRONC.test(n));
       if(!touche) return r;
-      const x=r.slice(); x[3]=Object.assign({},r[3],{v:"à valider"}); x[6]="adapt"; return x;
+      const x=r.slice(); x[3]=Object.assign({},r[3],{v:"à valider"}); x[6]="adapt";
+      x[7]="blessure"+(et.ep.zone?" "+String(et.ep.zone).toLowerCase():"")+(MU_PHASES&&MU_PHASES[et.ep.phase]?" · "+MU_PHASES[et.ep.phase].toLowerCase():""); return x;
     });
   }
   const jour=((CY[c]||{}).d||[])[d];
@@ -273,7 +281,7 @@ function muAdapter(p,rows,c,d,i){
       const m=String(r[3].sub||"").match(/^(\d+)\s*×(.*)$/);
       if(!m||+m[1]<=1) return r;
       const x=r.slice(); x[3]=Object.assign({},r[3],{sub:(+m[1]-1)+"×"+m[2]});
-      x[2]=(r[2]?r[2]+" · ":"")+"−1 série ("+et.min.min+"′ au dernier match)"; x[6]="tdj"; return x;
+      x[2]=(r[2]?r[2]+" · ":"")+"−1 série ("+et.min.min+"′ au dernier match)"; x[6]="tdj"; x[7]=(x[7]?x[7]+" · ":"")+et.min.min+"′ au dernier match"; return x;
     });
   }
   return out;
@@ -322,10 +330,15 @@ function rendu(){
   const iso=dSess(SEL.c,SEL.i,SEL.d), auj=muAujISO(), jourJ=iso===auj;
   if(!SEL.cette) h+='<div class="etat bleu"><div class="l"><b>Plus de muscu cette semaine</b></div><p>Voici ta prochaine séance.</p></div>';
   const pp=Object.assign({n:D.n},p);
-  const rows=muAdapter(pp,muSessConstruite(pp,cy,SEL.d,SEL.i),SEL.c,SEL.d,SEL.i);
+  const base=muSessConstruite(pp,cy,SEL.d,SEL.i);
+  const env=(D.envoi&&D.envoi.date===iso&&String(D.envoi.d).toLowerCase()===String(jr[0]).toLowerCase()&&Array.isArray(D.envoi.rows))?D.envoi:null;
+  const rows=env?env.rows.map(function(r){ return [r.b,r.nom,r.det,{v:(r.v===""||r.v==null)?"—":r.v,sub:r.sub||""},"","",r.fl||"",r.why||"",r.prevu||""]; })
+    :muAdapter(pp,base,SEL.c,SEL.d,SEL.i).map(function(r,k){ const x=r.slice(); if(x[6]) x[8]=muPrevu(x,base[k]); return x; });
   /* bandeaux */
   const sj=muEtatSeance(pp,SEL.c,SEL.d,SEL.i), et=muEtat(pp,SEL.c,SEL.i);
-  if(sj){
+  if(env){
+    h+='<div class="etat vert"><div class="l"><b>Séance validée par le staff</b></div><p>Envoyée à '+esc(env.t)+'. Fais exactement ce qui est écrit ci-dessous'+(rows.some(function(r){ return r[6]; })?', les lignes en couleur ont été changées pour toi.':'.')+'</p></div>';
+  } else if(sj){
     const cls={frais:"vert",correct:"jaune",entame:"orange",rouge:"rouge"}[sj.niv]||"gris";
     const tit={frais:"Frais ce matin",correct:"Correct ce matin",entame:sj.sym?"Symptômes légers ce matin":"Entamé ce matin",rouge:sj.mal?"Malade ce matin":"Dans le rouge ce matin"}[sj.niv]||"Ta réponse du matin";
     const q=[];
@@ -339,16 +352,17 @@ function rendu(){
   } else if(jourJ){
     h+='<div class="etat gris"><div class="l"><b>Pas encore de réponse Wellness aujourd’hui</b></div><p>Remplis le formulaire du matin : ta séance s’adaptera à ton état.</p></div>';
   }
-  if(et.ep) h+='<div class="etat rouge"><div class="l"><b>Suivi par le staff</b></div><p>'+(et.tout?"Ta séance est à valider avec le staff avant de commencer.":"Les exercices marqués sont à valider avec le staff, le reste est maintenu.")+'</p></div>';
-  if(et.min&&et.min.min>60&&/mardi/i.test(jr[0])) h+='<div class="etat bleu"><div class="l"><b>'+et.min.min+'′ au dernier match</b></div><p>Une série en moins sur le premier exercice.</p></div>';
+  if(et.ep&&!env) h+='<div class="etat rouge"><div class="l"><b>Suivi par le staff</b></div><p>'+(et.tout?"Ta séance est à valider avec le staff avant de commencer.":"Les exercices marqués sont à valider avec le staff, le reste est maintenu.")+'</p></div>';
+  if(!env&&et.min&&et.min.min>60&&/mardi/i.test(jr[0])) h+='<div class="etat bleu"><div class="l"><b>'+et.min.min+'′ au dernier match</b></div><p>Une série en moins sur le premier exercice.</p></div>';
   h+='<h2>'+(jourJ?"Séance du jour":(iso>auj?"Séance à venir":"Séance passée"))+'</h2><div class="card">';
   let cur=null;
   rows.forEach(function(r){
     const b=String(r[0]||""), k=b.charAt(0);
     if(k!==cur){ cur=k; const t=BL[k]||[k,""]; h+='<div class="blk"><span>'+esc(k)+'</span>'+esc(t[0])+'<em>'+esc(r[5]||t[1])+'</em></div>'; }
     const det=detJoueur(r[2],D.n);
-    h+='<div class="ex '+(r[6]==="adapt"?"adapt":(r[6]==="tdj"?"tdj":""))+'"><div class="b">'+esc(b)+'</div><div class="t"><b>'+esc(r[1])+'</b>'+(det?'<span>'+esc(det)+'</span>':'')+'</div>'
-      +'<div class="v"><b>'+valeur(r[3]&&r[3].v)+'</b><span>'+esc((r[3]&&r[3].sub)||"")+'</span></div></div>';
+    h+='<div class="ex '+(r[6]==="adapt"?"adapt":(r[6]==="tdj"?"tdj":""))+'"><div class="b">'+esc(b)+'</div><div class="t"><b>'+esc(r[1])+'</b>'+(det?'<span>'+esc(det)+'</span>':'')
+      +(r[6]&&r[7]?'<em class="why">'+esc(r[7])+'</em>':'')+'</div>'
+      +'<div class="v"><b>'+valeur(r[3]&&r[3].v)+'</b><span>'+esc((r[3]&&r[3].sub)||"")+'</span>'+(r[8]?'<s>'+esc(r[8])+'</s>':'')+'</div></div>';
   });
   h+='</div>';
   if(Array.isArray(p.prehab)&&p.prehab.length){
