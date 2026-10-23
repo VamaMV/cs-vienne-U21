@@ -1851,7 +1851,7 @@ table.cr-t{width:100%;border-collapse:collapse}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h103 — plus de « à valider » : exercices retirés ou remplacés par une banque d’exercices sans doublon d’un jour à l’autre, fièvre = repos · h102 — séance adaptée selon le Hooper (écart à sa moyenne), la douleur et sa récidive, les courbatures et le sommeil · h101 — assiduité dans la fiche joueur, point staff PP / médical par joueur et du groupe, import des présences muscu · séances : motif de chaque adaptation, ancien prévu barré, envoi de la séance au joueur · h100 — état du jour : noms du formulaire rapprochés au prénom près ; adaptation blessure : prowler, sprints, sauts, RDL et tirages reconnus ; squat libre = 92 % du box (plafond 2,4 × PdC) · h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
+    <div style="font-size:.7rem;opacity:.5">h104 — séance envoyée avec le Wellness du joueur (score, 4 items, douleur) et le pourquoi de l’adaptation · h103 — plus de « à valider » : exercices retirés ou remplacés par une banque d’exercices sans doublon d’un jour à l’autre, fièvre = repos · h102 — séance adaptée selon le Hooper (écart à sa moyenne), la douleur et sa récidive, les courbatures et le sommeil · h101 — assiduité dans la fiche joueur, point staff PP / médical par joueur et du groupe, import des présences muscu · séances : motif de chaque adaptation, ancien prévu barré, envoi de la séance au joueur · h100 — état du jour : noms du formulaire rapprochés au prénom près ; adaptation blessure : prowler, sprints, sauts, RDL et tirages reconnus ; squat libre = 92 % du box (plafond 2,4 × PdC) · h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
   </footer>
 </div>
 
@@ -5262,7 +5262,16 @@ chips(); render(); centre();
     const reste=rows.filter(function(r){ return /à valider/i.test(r.v); }).length;
     if(reste&&!confirm(reste+" exercice(s) encore « à valider ». Envoyer quand même ?")) return false;
     const now=new Date();
-    MU_ENV[p.n]={date:muIsoSeance(ci,wi,di),cy:CY[ci].id||CY[ci].n,w:CY[ci].wk[wi][1],d:CY[ci].d[di][0],rows:rows,modif:mod,
+    /* ce que le joueur verra en haut de sa seance : son Wellness du jour et pourquoi la seance change */
+    const sj=muEtatSeance(p,ci,di,wi), et=muEtat(p,ci,wi), pq=[]; let etat=null;
+    if(sj){
+      etat={h:sj.h,it:(sj.e&&Array.isArray(sj.e.it))?sj.e.it:null,ref:sj.ref?Math.round(sj.ref.m*10)/10:null,niv:sj.niv,
+            dol:sj.dol?{n:sj.dol.n,zone:sj.dol.zone,rec:sj.dol.rec}:null,mal:sj.repos?"fievre":(sj.mal?"malade":(sj.sym?"sym":"")),t:(sj.e&&sj.e.t)||""};
+      muEtatConsignes(sj).forEach(function(q){ pq.push(q); });
+    }
+    if(et.ep) pq.push("Blessure"+(et.ep.zone?" "+String(et.ep.zone).toLowerCase():"")+(MU_PHASES[et.ep.phase]?" ("+MU_PHASES[et.ep.phase].toLowerCase()+")":"")+" : les exercices qui chargent la zone sont retirés ou remplacés.");
+    if(mod) pq.push("Séance ajustée par le staff.");
+    MU_ENV[p.n]={date:muIsoSeance(ci,wi,di),cy:CY[ci].id||CY[ci].n,w:CY[ci].wk[wi][1],d:CY[ci].d[di][0],rows:rows,modif:mod,etat:etat,pq:pq,
       t:now.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Paris"}),at:now.toISOString()};
     try{ await muSauverEnv(); toast("Séance envoyée à "+muPrenom(p.n)); }catch(e){ toast("Échec de l envoi : "+e.message); return false; }
     render(); open_(n); return true;
@@ -5276,7 +5285,10 @@ chips(); render(); centre();
   window.muPrevenir=function(n){
     const j=MU_PUB&&MU_PUB.joueurs&&MU_PUB.joueurs[n], url=j?muBaseJoueur()+j.tok:"";
     const jour=String((CY[ci].d[di]||[""])[0]).toLowerCase();
-    const txt="Salut "+muPrenom(n)+", ta séance de "+jour+" a été adaptée par le staff. Elle est sur ton lien"+(url?" : "+url:" muscu perso.");
+    const e=MU_ENV[n]||{}, et=e.etat||{};
+    const pourquoi=(et.h!=null?"Ton Wellness ce matin : "+et.h+"/28"+(et.ref!=null?" (ta moyenne : "+String(et.ref).replace(".",",")+")":"")+". ":"")
+      +((e.pq&&e.pq.length)?e.pq.join(" ")+" ":"");
+    const txt="Salut "+muPrenom(n)+", ta séance de "+jour+" a été adaptée. "+pourquoi+"Tout est sur ton lien"+(url?" : "+url:" muscu perso.");
     window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank");
   };
   async function muSauverOvr(){

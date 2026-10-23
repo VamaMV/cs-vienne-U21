@@ -43,6 +43,15 @@ h2{font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:#3d7fbf;ma
 .ex .why{display:block;font-style:normal;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;margin-top:2px;color:#0E5E8E}
 .ex.adapt .why{color:#B3261E}
 .ex .v s{display:block;font-size:10.5px;color:#8A9BA8;margin-top:2px;white-space:nowrap}
+.bar u{position:absolute;top:-3px;width:2px;height:12px;background:#41566A;opacity:.55;border-radius:1px}
+.bl{display:flex;justify-content:space-between;font-size:10.5px;color:#8A9BA8;margin-top:5px}
+.its{margin-top:13px;display:grid;gap:7px}
+.it{display:grid;grid-template-columns:88px 1fr 30px;align-items:center;gap:8px;font-size:13px;color:#41566A}
+.it .seg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.it .seg i{height:9px;border-radius:2px;background:#E6EDF3}
+.it em{font-style:normal;font-size:12.5px;font-weight:700;text-align:right;color:#13283B}
+.wch{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}.wch span{font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;background:#FDF0EE;color:#B3261E}
+.pq{margin:11px 0 0 18px;font-size:13.5px;line-height:1.45;color:#41566A}.pq li{margin-bottom:3px}
+.wt{margin-top:9px;font-size:11px;color:#8A9BA8}
 .pr{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(19,40,59,.05)}
 .pr b{font-size:12px;font-weight:800;color:#2A6FB0;background:#E3EEF8;border-radius:8px;padding:6px 8px;flex:0 0 auto}
 .pr div span{display:block;font-size:14.5px;font-weight:700} .pr div em{font-style:normal;font-size:12.5px;color:#6B7C8C}
@@ -448,6 +457,30 @@ function detJoueur(det,n){
   }).filter(Boolean).join(" · ");
 }
 function valeur(v){ v=String(v==null?"—":v).replace(".",","); return esc(v)+(/^[\d,]+$/.test(v)?"<small>kg</small>":""); }
+function carteWellness(env){
+  /* resume visuel du Wellness du jour + pourquoi la seance est adaptee */
+  const e=env.etat||{}, cls={frais:"vert",correct:"jaune",vigil:"jaune",entame:"orange",rouge:"rouge"}[e.niv]||"bleu";
+  const pos=function(v){ return Math.max(0,Math.min(28,+v))/28*100; };
+  let h='<div class="etat '+cls+' wc"><div class="l"><b>Pourquoi ta séance est adaptée</b>'+(e.h!=null?'<div class="sc">'+e.h+'<small> / 28</small></div>':'')+'</div>';
+  if(e.h!=null){
+    h+='<div class="bar"><i style="left:calc('+pos(e.h).toFixed(1)+'% - 1px)"></i>'+(e.ref!=null?'<u style="left:calc('+pos(e.ref).toFixed(1)+'% - 1px)"></u>':'')+'</div>'
+      +'<div class="bl"><span>en forme</span>'+(e.ref!=null?'<span>| ta moyenne : '+String(e.ref).replace(".",",")+'</span>':'')+'<span>dans le rouge</span></div>';
+  }
+  if(Array.isArray(e.it)){
+    h+='<div class="its">'+["Sommeil","Fatigue","Courbatures","Stress"].map(function(l,k){
+      const v=e.it[k]; if(v==null) return "";
+      const c=v<=2?"#7CC394":(v<=4?"#E7C33A":(v===5?"#E7A63A":"#D4473F"));
+      return '<div class="it"><span>'+l+'</span><div class="seg">'+[1,2,3,4,5,6,7].map(function(j){ return '<i'+(j<=v?' style="background:'+c+'"':'')+'></i>'; }).join("")+'</div><em>'+v+'/7</em></div>';
+    }).join("")+'</div>';
+  }
+  const ch=[];
+  if(e.dol) ch.push("Douleur "+esc(e.dol.zone)+" "+e.dol.n+"/10"+(e.dol.rec>=3?" · "+e.dol.rec+" jours sur 7":""));
+  if(e.mal==="fievre") ch.push("Fièvre / symptômes généraux"); else if(e.mal==="malade") ch.push("Malade"); else if(e.mal==="sym") ch.push("Symptômes légers");
+  if(ch.length) h+='<div class="wch">'+ch.map(function(x){ return '<span>'+x+'</span>'; }).join("")+'</div>';
+  if(env.pq&&env.pq.length) h+='<ul class="pq">'+env.pq.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul>';
+  if(e.t) h+='<div class="wt">D’après ta réponse Wellness de '+esc(e.t)+'. 1 = très bon, en forme · 7 = mauvais, pas en forme.</div>';
+  return h+'</div>';
+}
 let D=null, SEL=null;
 function rendu(){
   const p=D.p, cy=CY[SEL.c], jr=cy.d[SEL.d];
@@ -472,6 +505,7 @@ function rendu(){
   const sj=muEtatSeance(pp,SEL.c,SEL.d,SEL.i), et=muEtat(pp,SEL.c,SEL.i);
   if(env){
     h+='<div class="etat vert"><div class="l"><b>Séance validée par le staff</b></div><p>Envoyée à '+esc(env.t)+'. Fais exactement ce qui est écrit ci-dessous'+(rows.some(function(r){ return r[6]; })?', les lignes en couleur ont été changées pour toi.':'.')+'</p></div>';
+    if(env.etat||(env.pq&&env.pq.length)) h+=carteWellness(env);
   } else if(sj){
     const cls={frais:"vert",correct:"jaune",vigil:"jaune",entame:"orange",rouge:"rouge"}[sj.niv]||"gris";
     const tit={frais:"Frais ce matin",correct:"Correct ce matin",vigil:sj.sym?"Symptômes légers ce matin":"Un peu entamé ce matin",entame:"Entamé ce matin",rouge:sj.mal?"Malade ce matin":"Dans le rouge ce matin"}[sj.niv]||"Ta réponse du matin";
