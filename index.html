@@ -1109,6 +1109,28 @@ header .mu-s{font-size:10px;opacity:.62;letter-spacing:1px;text-transform:upperc
 
 
 /* ---- assiduite dans la fiche joueur ---- */
+/* ---- carte Wellness du joueur (staff) ---- */
+.muwrap .mu-wc{margin:10px 12px 0;background:#fff;border:1px solid #DCE6EE;border-left:5px solid var(--wc);border-radius:12px;padding:12px 14px}
+.muwrap .mu-wc-top{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center}
+.muwrap .mu-wc-sc{text-align:center;min-width:86px}.muwrap .mu-wc-sc b{font-family:var(--display);font-size:2.3rem;font-weight:800;color:var(--wc);line-height:1}
+.muwrap .mu-wc-sc span{font-size:.8rem;color:#8A9BA8;font-weight:700;margin-left:2px}.muwrap .mu-wc-sc em{display:block;font-style:normal;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--wc);margin-top:3px}
+.muwrap .mu-wc-bar{position:relative;height:8px;border-radius:99px;background:linear-gradient(90deg,#7CC394 0 33.3%,#FFE38A 33.3% 54.2%,#F6A866 54.2% 75%,#D4473F 75%)}
+.muwrap .mu-wc-bar i{position:absolute;top:-5px;width:4px;height:18px;background:#13283B;border-radius:2px}
+.muwrap .mu-wc-bar u{position:absolute;top:-4px;width:0;height:16px;border-left:2px dashed #41566A}
+.muwrap .mu-wc-bl{display:flex;justify-content:space-between;gap:8px;font-size:.68rem;color:#8A9BA8;margin-top:5px}.muwrap .mu-wc-bl em{font-style:normal}.muwrap .mu-wc-bl b{color:#13283B}
+.muwrap .mu-wc-sp{width:100%;height:auto;aspect-ratio:600/64;margin-top:8px;display:block;border-radius:6px;background:#F4F8FB}
+.muwrap .mu-wc-spl{display:flex;justify-content:space-between;font-size:.62rem;color:#8A9BA8;margin-top:2px}
+.muwrap .mu-wc-its{display:grid;gap:5px;min-width:210px}
+.muwrap .mu-wc-ih{font-size:.64rem;color:#8A9BA8;text-align:right;margin-bottom:1px}.muwrap .mu-wc-it{display:grid;grid-template-columns:80px 1fr 14px;gap:7px;align-items:center;font-size:.76rem;color:#41566A}
+.muwrap .mu-wc-it div{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}.muwrap .mu-wc-it i{height:8px;border-radius:2px;background:#E6EDF3}
+.muwrap .mu-wc-it b{font-weight:800;color:#13283B;text-align:right}
+.muwrap .mu-wc-bot{margin-top:10px;padding-top:9px;border-top:1px solid #EEF3F7;display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.muwrap .mu-wc-ch{display:flex;gap:5px;flex-wrap:wrap}.muwrap .mu-wc-ch span{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:99px;background:#EEF3F7;color:#41566A}
+.muwrap .mu-wc-ch span.al{background:#FDF0EE;color:#B3261E}.muwrap .mu-wc-ch .mu-wc-t{background:none;color:#8A9BA8;font-weight:600}
+.muwrap .mu-wc-q{flex:1;min-width:240px;font-size:.8rem;line-height:1.45;color:#13283B}.muwrap .mu-wc-q div{padding-left:12px;position:relative}
+.muwrap .mu-wc-q div:before{content:"";position:absolute;left:0;top:.55em;width:5px;height:5px;border-radius:50%;background:var(--wc)}
+@media (max-width:700px){.muwrap .mu-wc-top{grid-template-columns:1fr;gap:12px}.muwrap .mu-wc-sc{display:flex;align-items:baseline;gap:6px;text-align:left}.muwrap .mu-wc-sc em{margin:0 0 0 6px}.muwrap .mu-wc-bl em,.muwrap .mu-wc-spl .x{display:none}.muwrap .mu-wc-its{min-width:0}.muwrap .mu-wc-ih{text-align:left}.muwrap .mu-wc-q{min-width:0}}
+
 .as-load{font-size:.8rem;color:var(--faint)}
 .as-r{display:grid;grid-template-columns:70px 1fr 58px;grid-template-rows:auto auto;column-gap:9px;align-items:center;margin:6px 0 2px}
 .as-l{font-size:.8rem;font-weight:700;color:var(--ink)}
@@ -1851,7 +1873,7 @@ table.cr-t{width:100%;border-collapse:collapse}
   <footer class="foot">
     <div class="fcrest" role="img" aria-label="Blason CS Vienne Rugby"></div>
     <div class="ft"><b>CS Vienne Rugby</b>Fondé en 1899 · Ciel &amp; Blanc</div>
-    <div style="font-size:.7rem;opacity:.5">h104 — séance envoyée avec le Wellness du joueur (score, 4 items, douleur) et le pourquoi de l’adaptation · h103 — plus de « à valider » : exercices retirés ou remplacés par une banque d’exercices sans doublon d’un jour à l’autre, fièvre = repos · h102 — séance adaptée selon le Hooper (écart à sa moyenne), la douleur et sa récidive, les courbatures et le sommeil · h101 — assiduité dans la fiche joueur, point staff PP / médical par joueur et du groupe, import des présences muscu · séances : motif de chaque adaptation, ancien prévu barré, envoi de la séance au joueur · h100 — état du jour : noms du formulaire rapprochés au prénom près ; adaptation blessure : prowler, sprints, sauts, RDL et tirages reconnus ; squat libre = 92 % du box (plafond 2,4 × PdC) · h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
+    <div style="font-size:.7rem;opacity:.5">h105 — état du jour visuel dans la fiche joueur (score, sa moyenne, 4 items, 14 derniers jours) · h104 — séance envoyée avec le Wellness du joueur (score, 4 items, douleur) et le pourquoi de l’adaptation · h103 — plus de « à valider » : exercices retirés ou remplacés par une banque d’exercices sans doublon d’un jour à l’autre, fièvre = repos · h102 — séance adaptée selon le Hooper (écart à sa moyenne), la douleur et sa récidive, les courbatures et le sommeil · h101 — assiduité dans la fiche joueur, point staff PP / médical par joueur et du groupe, import des présences muscu · séances : motif de chaque adaptation, ancien prévu barré, envoi de la séance au joueur · h100 — état du jour : noms du formulaire rapprochés au prénom près ; adaptation blessure : prowler, sprints, sauts, RDL et tirages reconnus ; squat libre = 92 % du box (plafond 2,4 × PdC) · h99 — état du jour (wellness) branché sur la séance, liens joueurs · h98 — cycle 5, préhab auto · h97 — carton blanc dans la saisie des temps de jeu</div>
   </footer>
 </div>
 
@@ -4751,6 +4773,53 @@ function muZoneAuto(p,rows,c,d,i,reg,why,ep,seul){
   });
 }
 
+
+function muWellVisu(p,sj){
+  /* carte visuelle staff : score, moyenne habituelle, 4 items, alertes, consignes, 14 derniers jours */
+  const niv=sj.niv||"", col={frais:"#1C8C5A",correct:"#B08A12",vigil:"#B08A12",entame:"#C2410C",rouge:"#B3261E"}[niv]||"#41566A";
+  const lab={frais:"Frais",correct:"Correct",vigil:(sj.sym?"Symptômes légers":"À surveiller"),entame:"Entamé",rouge:(sj.repos?"Fièvre":(sj.mal?"Malade":"Dans le rouge"))}[niv]||"Réponse incomplète";
+  const pos=function(v){ return (Math.max(4,Math.min(28,+v))-4)/24*100; };
+  const it=(sj.e&&Array.isArray(sj.e.it))?sj.e.it:[];
+  let h='<div class="mu-wc" style="--wc:'+col+'"><div class="mu-wc-top">'
+    +'<div class="mu-wc-sc"><b>'+(sj.h!=null?sj.h:"—")+'</b><span>/ 28</span><em>'+lab+'</em></div>'
+    +'<div class="mu-wc-mid"><div class="mu-wc-bar"><i style="left:calc('+pos(sj.h||0).toFixed(1)+'% - 2px)"></i>'
+      +(sj.ref?'<u style="left:calc('+pos(sj.ref.m).toFixed(1)+'% - 1px)"></u>':'')+'</div>'
+    +'<div class="mu-wc-bl"><span>4<em> · en forme</em></span>'+(sj.ref?'<span>moyenne habituelle '+String(Math.round(sj.ref.m*10)/10).replace(".",",")
+      +(sj.h!=null?' · <b>'+(sj.h-sj.ref.m>=0?"+":"")+String(Math.round((sj.h-sj.ref.m)*10)/10).replace(".",",")+'</b>':'')+'</span>':'')+'<span>28<em> · au plus mal</em></span></div>'
+    +muWellSpark(p,sj)+'</div>'
+    +'<div class="mu-wc-its"><div class="mu-wc-ih">1 = très bon · 7 = mauvais</div>'+["Sommeil","Fatigue","Courbatures","Stress"].map(function(l,k){
+      const v=it[k]; if(v==null) return "";
+      const c=v<=2?"#7CC394":(v<=4?"#E7C33A":(v===5?"#E7A63A":"#D4473F"));
+      return '<div class="mu-wc-it"><span>'+l+'</span><div>'+[1,2,3,4,5,6,7].map(function(j){ return '<i'+(j<=v?' style="background:'+c+'"':'')+'></i>'; }).join("")+'</div><b>'+v+'</b></div>';
+    }).join("")+'</div></div>';
+  const ch=[];
+  if(sj.dol) ch.push('<span class="al">Douleur '+mbEsc(sj.dol.zone)+' '+sj.dol.n+'/10'+(sj.dol.rec>=3?' · '+sj.dol.rec+' j sur 7':'')+'</span>');
+  if(sj.sym&&sj.niv!=="vigil") ch.push('<span class="al">Symptômes légers</span>');
+  if(sj.e&&sj.e.t) ch.push('<span class="mu-wc-t">réponse de '+mbEsc(sj.e.t)+'</span>');
+  const q=muEtatConsignes(sj);
+  h+='<div class="mu-wc-bot">'+(ch.length?'<div class="mu-wc-ch">'+ch.join("")+'</div>':'')
+    +'<div class="mu-wc-q">'+(q.length?q.map(function(x){ x=String(x); return '<div>'+mbEsc(x.charAt(0).toUpperCase()+x.slice(1))+'</div>'; }).join(""):'<div>Séance normale.</div>')+'</div></div></div>';
+  return h;
+}
+function muWellSpark(p,sj){
+  /* Hooper des 14 derniers jours (historique envoye par le script Wellness) */
+  try{
+    const H=MU_ETAT&&MU_ETAT.hist, W=H&&H.wel; if(!W||!W.j||typeof psCles!=="function") return "";
+    const base=H.b||"2026-06-29", ks=psCles(p.n,Object.keys(W.j)); if(!ks.length) return "";
+    const idx=function(iso){ return Math.round((Date.parse(iso+"T00:00:00Z")-Date.parse(base+"T00:00:00Z"))/864e5); };
+    const auj=idx(muAujISO()), v={};
+    ks.forEach(function(k){ const o=W.j[k]; (o.d||[]).forEach(function(i,x){ if(o.h[x]!=null&&i>auj-14&&i<auj) v[i]=o.h[x]; }); });
+    if(sj.h!=null) v[auj]=sj.h;
+    const ds=Object.keys(v).map(Number).sort(function(a,b){ return a-b; }); if(ds.length<2) return "";
+    const W2=600, H2=64, X=function(i){ return ((i-(auj-13))/13*(W2-8)+4).toFixed(1); }, Y=function(h){ return (H2-4-(Math.max(4,Math.min(28,h))-4)/24*(H2-8)).toFixed(1); };
+    let svg='<svg viewBox="0 0 '+W2+' '+H2+'" class="mu-wc-sp" preserveAspectRatio="none">'
+      +'<rect x="0" y="0" width="'+W2+'" height="'+Y(22)+'" fill="#FBE3E0"/><rect x="0" y="'+Y(22)+'" width="'+W2+'" height="'+(Y(17)-Y(22)).toFixed(1)+'" fill="#FCF0DC"/>';
+    if(sj.ref) svg+='<line x1="0" x2="'+W2+'" y1="'+Y(sj.ref.m)+'" y2="'+Y(sj.ref.m)+'" stroke="#8A9BA8" stroke-dasharray="3 3" stroke-width="1"/>';
+    svg+='<polyline fill="none" stroke="#13283B" stroke-width="1.6" points="'+ds.map(function(i){ return X(i)+","+Y(v[i]); }).join(" ")+'"/>';
+    svg+=ds.map(function(i){ return '<circle cx="'+X(i)+'" cy="'+Y(v[i])+'" r="'+(i===auj?4:2.6)+'" fill="'+(i===auj?"var(--wc)":"#13283B")+'"/>'; }).join("");
+    return svg+'</svg><div class="mu-wc-spl"><span>14 derniers jours</span><span class="x">pointillés : sa moyenne · orange 17-21 · rouge 22+</span><span>aujourd’hui</span></div>';
+  }catch(e){ return ""; }
+}
 function muBandeauEtat(p){
   const et=muEtat(p,ci,wi); let h="";
   if(et.ep){
@@ -4769,8 +4838,7 @@ function muBandeauEtat(p){
     const t={rouge:(sj.mal?"Malade":"Dans le rouge")+" · "+hz,entame:"Entamé · "+hz,vigil:(sj.sym?"Symptômes légers":"À surveiller")+" · "+hz,correct:"Correct · "+hz,frais:"Frais · "+hz}[sj.niv]||hz;
     const q=muEtatConsignes(sj);
     if(!q.length) q.push("Séance normale.");
-    const bl=sj.lvl>=3||(sj.dol&&(sj.dol.n>=6||sj.dol.rec>=3));
-    h+='<div class="mu-etat '+(bl?"mu-etat-bl":"mu-etat-tdj")+'"><b>État du jour · '+t+'</b>'+q.join(" ")+'</div>';
+    h+=muWellVisu(p,sj);
   }
   if(et.min&&et.min.min>60&&/mardi/i.test((CY[ci].d[di]||[""])[0]))
     h+='<div class="mu-etat mu-etat-tdj"><b>'+et.min.min+'′ au dernier match</b>Une série en moins sur le A1, appliquée automatiquement.</div>';
